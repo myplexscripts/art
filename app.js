@@ -313,8 +313,9 @@ let currentProjectMedia = 0;
 let activeThreadId = null;
 
 function allArt() {
-  const uploads = state.uploads.map(item => ({ ...item, artist:'David Vale', artistId:'me' }));
-  return [...uploads, ...artworks];
+  const uploads = state.uploads.map(item => ({ ...item, artist:state.profile.name, artistId:'me' }));
+  const seeded = artworks.map(item => item.artistId === 'me' ? { ...item, artist:state.profile.name } : item);
+  return [...uploads, ...seeded];
 }
 
 function artById(id) {
@@ -843,7 +844,7 @@ function renderJobs() {
   const filtered = jobs.filter(job => {
     const typeKey = job.type === 'Full time' ? 'fulltime' : job.type.toLowerCase();
     const typeMatch = state.jobFilters[typeKey] !== false;
-    const locationMatch = (job.mode === 'Remote' && state.jobFilters.remote) || (job.location.includes('Canada') && state.jobFilters.canada) || (!state.jobFilters.remote && !state.jobFilters.canada);
+    const locationMatch = (job.mode === 'Remote' && state.jobFilters.remote) || (job.location.includes('Canada') && state.jobFilters.canada);
     return typeMatch && locationMatch;
   });
 
@@ -1223,7 +1224,7 @@ function renderArtist(id) {
       </div>
 
       <nav class="profile-tabs">
-        <button class="profile-tab is-active">Portfolio</button>
+        <button class="profile-tab is-active" id="artist-portfolio-tab">Portfolio</button>
         <button class="profile-tab" id="artist-about-tab">About</button>
       </nav>
 
@@ -1235,6 +1236,7 @@ function renderArtist(id) {
 
   document.querySelector('#follow-artist').addEventListener('click', () => toggleFollow(id));
   document.querySelector('#message-artist').addEventListener('click', () => openMessages(id));
+  document.querySelector('#artist-portfolio-tab').addEventListener('click', () => renderArtist(id));
   document.querySelector('#artist-about-tab').addEventListener('click', event => {
     document.querySelectorAll('.profile-tab').forEach(btn => btn.classList.remove('is-active'));
     event.currentTarget.classList.add('is-active');
@@ -1754,14 +1756,19 @@ async function fileToDataURL(file) {
 }
 
 async function addUploadFiles(fileList) {
-  const files = [...fileList].slice(0, Math.max(0, 8 - uploadMedia.length));
-  if (!files.length) return;
+  const existingCount = uploadMedia.length;
+  const incomingCount = fileList.length;
+  const files = [...fileList].slice(0, Math.max(0, 8 - existingCount));
+  if (!files.length) {
+    if (incomingCount) showToast('Projects can contain up to 8 images');
+    return;
+  }
   try {
     const encoded = [];
     for (const file of files) encoded.push(await fileToDataURL(file));
     uploadMedia.push(...encoded);
     renderUploadMedia();
-    if (fileList.length + uploadMedia.length > 8) showToast('Projects can contain up to 8 images');
+    if (existingCount + incomingCount > 8) showToast('Projects can contain up to 8 images');
   } catch (error) {
     showToast(error.message === 'too-large' ? 'Each image must be under 12 MB' : 'Choose image files only');
   }
@@ -1918,5 +1925,12 @@ function initializeGlobalEvents() {
 
 initializeGlobalEvents();
 updateBadges();
-renderRoute();
+const initialProjectMatch = location.hash.match(/^#project\/(.+)$/);
+if (initialProjectMatch) {
+  history.replaceState(null,'',location.pathname + '#explore');
+  renderRoute();
+  openArtwork(initialProjectMatch[1]);
+} else {
+  renderRoute();
+}
 refreshIcons();
