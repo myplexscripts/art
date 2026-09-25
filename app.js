@@ -2049,6 +2049,20 @@ function initializeGlobalEvents() {
     }
   });
 
+  const searchBox = document.querySelector('.search');
+  searchBox.addEventListener('click', () => {
+    if (window.innerWidth <= 700) {
+      searchBox.classList.add('is-mobile-open');
+      requestAnimationFrame(() => searchInput.focus());
+    }
+  });
+
+  searchInput.addEventListener('blur', () => {
+    if (window.innerWidth <= 700 && !searchInput.value.trim()) {
+      setTimeout(() => searchBox.classList.remove('is-mobile-open'), 80);
+    }
+  });
+
   document.addEventListener('keydown', event => {
     if (event.key === '/' && !['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)) {
       event.preventDefault();
@@ -2056,6 +2070,10 @@ function initializeGlobalEvents() {
     }
     if (event.key === 'Escape' && drawer.classList.contains('is-open')) closeUpload();
     if (event.key === 'Escape' && sidePanel.classList.contains('is-open')) closeSidePanel();
+    if (event.key === 'Escape') {
+      document.querySelector('.search')?.classList.remove('is-mobile-open');
+      searchInput.blur();
+    }
   });
 
   document.querySelector('#upload-button').addEventListener('click', () => openUpload());
