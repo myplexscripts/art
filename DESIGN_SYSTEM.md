@@ -1,307 +1,338 @@
 # Tomb Atlas Design System
 
-Tomb Atlas is an informational Tomb Raider archive. Its visual system is editorial first, with restrained expedition cues. The interface should feel deliberately designed, not like a dashboard, social network, game launcher, or collection of generic rounded cards.
+Tomb Atlas is an informational Tomb Raider fan archive. The design should feel like a polished modern product with restrained Tomb Raider character, not a generic dashboard, game launcher, social network, or themed 2000s fan site.
 
-## Foundation
+## Product hierarchy
 
-The whole site uses one shared layout system.
+The visual priority is:
 
-- Maximum content width: 1440px
-- Responsive side gutter: 16px to 38px
-- Desktop header height: 64px
-- Body font: Inter
-- Display font: Inter Tight
-- Minimum visible type size: 14px
-- Lucide icons only
-- Dark neutral canvas with one restrained bronze accent
-- Rules, spacing, and alignment create hierarchy before surfaces do
+1. Find a title or topic.
+2. Understand where it sits in the franchise.
+3. Open a predictable reference page.
+4. Reach walkthroughs, secrets, characters, technical help, media, or related material.
+5. Add community context only where it improves the reference.
 
-## Core visual rule
+## Global grid
 
-Do not make a card unless the content genuinely needs to behave like an isolated object.
-
-Most content should use:
-
-- whitespace
-- horizontal rules
-- vertical alignment
-- typographic hierarchy
-- image crops
-- consistent columns
-
-Avoid the old pattern of putting every section, statistic, filter, navigation item, and content group inside a rounded dark rectangle.
-
-## Colour
-
-Canvas: #0d0f0d  
-Canvas secondary: #111410  
-Surface: #151914  
-Surface raised: #1a1f19  
-Primary text: #f1efe9  
-Secondary text: #c6c7bf  
-Muted text: #92978e  
-Faint text: #6f756d  
-Bronze accent: #c18a4b  
-Focus accent: #e3b778
-
-Bronze is used for small accents, icons, section labels, and selected emphasis. It is not used for decorative borders or large branded gradients.
-
-## Radius system
-
-Radii remain concentric but deliberately restrained.
-
-- Large image or major container: 22px
-- Large component: 16px
-- Control: 12px
-- Small control: 8px
-
-Do not round plain editorial sections, tables, metadata rows, or lists.
+- Maximum page width: 1360px
+- Responsive page gutter: 14px to 32px
+- Desktop header: 66px
+- Main section spacing: 48px desktop, 36px mobile
+- No horizontal overflow
+- Mobile breakpoint: 620px for single-column content
+- Tablet layout begins collapsing before controls become cramped
 
 ## Typography
 
-### Display
+Body and UI: Inter  
+Display: Inter Tight
 
-Inter Tight, 500 to 700 weight.
+Visible text never goes below 14px.
 
-Used for:
+Display hierarchy:
 
-- page titles
-- entry titles
-- section titles
-- archive row titles
+- Home title: 46px to 72px
+- Page title: 42px to 72px
+- Entry title: 42px to 68px
+- Section title: 26px to 38px
+- Card title: 18px to 19px
+- UI and metadata: 14px minimum
 
-Tracking is tight on large display text.
+Large headings are compact enough to leave room for useful content in the initial viewport.
 
-### Body and UI
+## Colour
 
-Inter, 400 to 700 weight.
+Canvas: #0c0f0d  
+Surface: #131713  
+Raised surface: #191e19  
+High surface: #202620  
+Primary text: #f4f2ec  
+Secondary text: #c8cbc4  
+Muted text: #969d94  
+Faint text: #737b72  
+Bronze: #c99558  
+Light bronze: #e0b579
 
-Used for:
+Bronze is used selectively for:
 
-- body copy
-- metadata
-- navigation
-- controls
-- labels
-- technical reference
+- brand mark
+- section labels
+- reference icons
+- selected emphasis
+- focus states
 
-Nothing may render below 14px.
+Do not use coloured card borders, glowing edges, or large decorative gold gradients.
 
-## Global header
+## Radius system
 
-Desktop contains:
+The site uses a restrained concentric radius system.
 
-- Tomb Atlas identity
-- Archive
+- Shell: 28px
+- Content card: 20px
+- Control: 14px
+- Small nested control: 10px
+
+Do not round ordinary article sections, tables, or list rows.
+
+## Surfaces
+
+Cards are used only for content objects or self-contained controls.
+
+Good uses:
+
+- game or media card
+- home index link
+- guide category
+- compact fact group
+- entry metadata rail
+
+Do not place cards inside cards unless the child is an actual interactive control.
+
+Article sections use spacing and dividers instead of another rounded container.
+
+## Images
+
+Generic stock photography is not part of the visual language.
+
+Use:
+
+- official franchise artwork where a stable source is available
+- a designed Tomb Atlas fallback treatment for entries without art
+
+The fallback treatment is intentional and changes subtly by franchise branch:
+
+- Classic
+- Legend
+- Survivor
+- Remastered
+- Lara Croft spin-offs
+- Mobile
+- Upcoming
+- Screen
+- Print
+
+Official artwork and fallback art use the exact same image frame proportions.
+
+## Home
+
+The homepage has four clear layers.
+
+### Hero
+
+Two columns on desktop:
+
+- useful archive introduction and actions
+- Tomb Raider 30th anniversary artwork
+
+The hero is a contained surface, not a full-screen marketing splash.
+
+### Archive index
+
+Four consistent destination controls:
+
 - Games
 - Screen
 - Print
 - Guides
-- global search
 
-Desktop navigation uses quiet text buttons rather than large pills.
+### Current and upcoming
 
-Search is a single 40px control aligned to the right.
+Uses the universal media-card component.
 
-On tablet the primary navigation collapses before the search becomes cramped.
+### Series map
 
-On mobile:
+Shows representative entries from major franchise branches using the same media-card component.
 
-- identity remains at the top
-- search moves to its own full-width row
-- four destination bottom navigation appears
+### Reference library
 
-## Archive home
+Explains the site's practical reference categories and links into guide search.
 
-The home page uses a two-column editorial masthead.
+## Universal media card
 
-Left:
-
-- archive descriptor
-- large title
-- concise explanation
-- primary actions
-
-Right:
-
-- one large atmospheric image
-- minimal archival metadata
-
-Below the masthead is a four-part archive index separated by rules, not cards.
-
-Featured entries use the universal archive row pattern.
-
-## Universal archive row
-
-Games, films, books, search results, and featured entries all use the same row.
+Games, films, series, books, comics, search results, and featured items use one card system.
 
 Structure:
 
-1. image
-2. type / year / era metadata
+1. artwork
+2. type and year
 3. title
-4. description
-5. restrained directional affordance
-
-Rows are separated by horizontal rules.
-
-Desktop rows are spacious and image-led.
-
-Mobile rows become compact image-and-title records. Descriptions and secondary affordances can disappear before type size is reduced.
-
-## Category pages
-
-Games, Screen, and Print share the same skeleton.
-
-1. category masthead
-2. count
-3. filter row
-4. archive rows
-5. global footer
-
-Filters use one shared segmented pattern with the same spacing, radius, and selected state everywhere.
-
-No page gets a unique visual treatment just because it is a different media type.
-
-## Entry pages
-
-Every game and media entry shares the same page architecture.
-
-### Entry masthead
-
-Two-column layout:
-
-- title, type, year, summary, creator, era, platform
-- one large image
-
-The image is not used as a full-page background.
-
-### Body
+4. short description
+5. branch and directional affordance
 
 Desktop:
-
-- main editorial column
-- narrow sticky reference rail
+- four columns at large sizes
+- three columns before tablet
+- two columns on smaller tablets
 
 Mobile:
+- one compact horizontal card
+- image on the left
+- description removed before text is reduced
 
-- reference rail collapses above the article
-- on-page navigation disappears
-- content becomes one column
+## Category hubs
 
-### Main sections
+Games, Screen, and Print all use:
 
-- overview
-- progression or structure
-- reference index
-- characters or cast
-- archive note
+1. shared page heading
+2. total count
+3. one shared filter control
+4. universal media-card grid
+5. shared footer
 
-Sections are separated by rules and spacing, not independent cards.
+Games filters currently support:
 
-## Reference data patterns
+- All
+- Classic
+- Legend
+- Survivor
+- Lara Croft
+- Mobile
+- Remastered
+- Upcoming
 
-Overview data uses a two-column ruled grid.
+No category may invent its own card, filter, spacing, or title system.
 
-Progression uses numbered rows.
+## Entry page
 
-Reference categories use a two-column ruled index.
+Every game or media item uses one page template.
 
-Characters use table-like rows.
+### Detail hero
 
-Archive notes use a simple bronze left rule.
+Two columns:
 
-These patterns should be reused rather than redesigned per page.
+- title, type, year, description, branch, creator, platform
+- artwork or Tomb Atlas fallback art
+
+### Sticky section navigation
+
+The same control style as filters.
+
+Sections:
+
+- Overview
+- Levels / Episodes / Contents
+- Reference
+- Characters / Cast
+- Notes
+
+### Main content
+
+Flat article sections separated by subtle rules.
+
+Overview:
+- two-column fact grid
+
+Progression:
+- numbered rows
+
+Reference:
+- two-column reference grid
+
+People:
+- simple rows
+
+Notes:
+- restrained highlighted editor note
+
+### Metadata rail
+
+Desktop and tablet use a compact metadata rail.
+
+On narrow screens it moves above the article and becomes a multi-column summary.
 
 ## Guides
 
-Guide categories use the same ruled-row language as the archive.
+Guide categories use one shared component.
 
-No large icon tiles or dashboard-style cards.
+Current guide families:
 
-Guide categories must connect back to games and releases rather than becoming a separate design system.
+- Walkthroughs
+- Secrets & collectibles
+- Controls & moves
+- Cheats & useful tricks
+- Achievements & trophies
+- Save files
+- Patches & known issues
+- Galleries
+
+Every guide belongs to a game or release context. Guides should not become a parallel disconnected site.
 
 ## Search
 
-Search results reuse universal archive rows.
+Search stays visible in the global header on desktop and mobile.
 
-Search does not introduce special result cards.
+Search matches:
 
-Search should match:
-
-- titles
-- years
+- title
+- year
+- era
+- platform
+- developer or creator
+- setting
 - characters
-- locations
 - artifacts
-- developers
-- studios
-- platforms
-- levels
+- level names
 - guide categories
 
-## Tomb Raider character
+Results use the universal media-card component.
 
-The site should feel slightly Tomb Raider through:
+## Mobile navigation
 
-- dark natural tones
-- aged bronze accent
-- archaeological and landscape imagery
-- expedition-oriented wording
-- compass and map-adjacent iconography
-- editorial archive language
+Mobile has four bottom destinations:
 
-Do not use:
+- Archive
+- Games
+- Screen
+- Guides
 
-- fake stone textures
-- grunge overlays
-- faux parchment
-- glowing game UI
-- gold luxury styling
-- random adventure symbols
-- oversized themed ornamentation
+Print remains reachable from the Archive index and search.
 
-## Responsive rules
+The bottom navigation uses Lucide icons and 14px labels.
 
-### Large screens
+## Iconography
 
-- full desktop navigation
-- two-column mastheads
-- sticky entry rail
-- generous whitespace
-- 1440px maximum page width
+Lucide only.
 
-### Tablet
+Default stroke: 1.8px.
 
-- top navigation collapses before layouts become crowded
-- mastheads may remain two-column until roughly 820px
-- entry sidebar remains until it stops being useful
+Do not mix icon libraries and never use emoji as UI icons.
 
-### Mobile
+## Motion
 
-- 14px minimum visible text
-- no horizontal overflow
-- bottom navigation
-- full-width search
-- one-column article flow
-- compact archive rows
-- no unnecessary card stacking
-- touch targets remain comfortable
+Motion is quiet and functional.
 
-## Consistency test
+Allowed:
 
-Before merging a visual change, check:
+- subtle card lift
+- slight image scale
+- hover state transitions
+- smooth in-page navigation
 
-- Does it use an existing pattern before inventing a new one?
-- Does it align to the same page grid?
-- Does it use the same spacing rhythm?
-- Does it rely on typography and rules before adding another surface?
-- Are the radii appropriate and concentric?
+Avoid:
+
+- pulsing
+- bouncing
+- decorative particles
+- constant movement
+- glow animation
+
+Respect reduced motion.
+
+## Review checklist
+
+Before merging:
+
 - Is every visible text size at least 14px?
-- Are all icons Lucide?
-- Does the mobile layout feel intentionally redesigned?
-- Would the component still make sense on another media page?
-- Does it feel like an archive rather than a dashboard?
-- Does the Tomb Raider influence remain restrained?
-
-If a component needs a new visual language to work, the component is probably wrong.
+- Does the page use the 1360px grid?
+- Is the spacing rhythm consistent?
+- Are radii concentric?
+- Are Lucide icons used everywhere?
+- Are content objects using the universal card rather than a one-off design?
+- Are article sections flat instead of nested in extra cards?
+- Is real Tomb Raider artwork used instead of generic stock photography?
+- Is the mobile version intentionally laid out?
+- Does the page expose useful information in the initial viewport?
+- Are reference categories in the same order as comparable pages?
+- Is community material secondary to factual reference content?
+- Does it feel modern without becoming sterile?
+- Does it feel like Tomb Raider without costume UI?
