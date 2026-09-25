@@ -1398,8 +1398,16 @@ function renderProjectDialog() {
           ${item.artistId !== 'me' ? `<button class="button button-small ${following ? 'button-quiet' : 'button-primary'}" id="project-follow">${following ? 'Following' : 'Follow'}</button>` : ''}
         </div>
 
-        <h2>${escapeHTML(item.title)}</h2>
-        <p class="project-description">${escapeHTML(item.description || 'A new project shared with the Margin community.')}</p>
+        <div class="project-title-block">
+          <p class="project-index">${escapeHTML(item.field)} / ${escapeHTML(item.year || '2026')}</p>
+          <h2>${escapeHTML(item.title)}</h2>
+          <p class="project-description">${escapeHTML(item.description || 'A new project shared with the Margin community.')}</p>
+        </div>
+
+        <div class="project-facts-line">
+          ${item.process !== false ? `<span><small>Made with</small>${escapeHTML(item.tools || 'Mixed media')}</span>` : ''}
+          <span><small>Project</small>${images.length} image${images.length === 1 ? '' : 's'}</span>
+        </div>
 
         <div class="tag-list">${(item.tags || []).map(tag => `<button class="tag" data-project-tag="${escapeAttr(tag)}">#${escapeHTML(tag)}</button>`).join('')}</div>
 
@@ -1409,18 +1417,12 @@ function renderProjectDialog() {
         </div>
 
         <div class="project-secondary-actions">
-          <button class="text-action" id="add-to-collection">${icon('folder-plus',15)} Add to collection</button>
+          <button class="text-action" id="add-to-collection">${icon('folder-plus',15)} Collection</button>
           <button class="text-action" id="share-project">${icon('share-2',15)} Share</button>
           ${item.artistId === 'me' && String(item.id).startsWith('local-') ? `<button class="text-action" id="edit-project-dialog">${icon('pencil',15)} Edit</button>` : ''}
         </div>
 
-        <div class="project-details">
-          <div class="detail-row"><span>Creative field</span><span>${escapeHTML(item.field)}</span></div>
-          <div class="detail-row"><span>Created</span><span>${escapeHTML(item.year || '2026')}</span></div>
-          ${item.process !== false ? `<div class="detail-row"><span>Tools / materials</span><span>${escapeHTML(item.tools || 'Mixed media')}</span></div>` : ''}
-          <div class="detail-row"><span>Images</span><span>${images.length}</span></div>
-          <div class="detail-row"><span>Rights</span><span>${escapeHTML(item.rights || '© ' + item.artist + '. All rights reserved.')}</span></div>
-        </div>
+        <p class="project-rights">${escapeHTML(item.rights || '© ' + item.artist + '. All rights reserved.')}</p>
 
         ${item.comments !== false ? `
           <section class="comments">
