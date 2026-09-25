@@ -460,22 +460,23 @@ function creatorCard(artist) {
   </button>`;
 }
 
-function artCard(item) {
+function artCard(item, index = 0, context = '') {
   const liked = state.likes.has(item.id);
   const saved = state.saves.has(item.id);
   const image = coverImage(item);
-  return `<article class="art-card">
+  const galleryClass = context === 'gallery' ? ` art-card--gallery gallery-shape-${index % 8}` : '';
+  return `<article class="art-card${galleryClass}">
     <button class="art-thumb" data-open-art="${item.id}" aria-label="Open ${escapeAttr(item.title)} by ${escapeAttr(item.artist)}">
       <img src="${image}" alt="${escapeAttr(item.title)} by ${escapeAttr(item.artist)}" loading="lazy">
       <span class="art-overlay" aria-hidden="true">
         <span class="mini-action">${icon(saved ? 'bookmark-check' : 'bookmark',15)}</span>
-        <span class="mini-action">${icon(liked ? 'heart' : 'heart',15)}</span>
+        <span class="mini-action">${icon('heart',15)}</span>
       </span>
     </button>
     <div class="art-meta">
       <div>
         <h3 class="art-title">${escapeHTML(item.title)}</h3>
-        <div class="art-byline">${escapeHTML(item.artist)} · ${escapeHTML(item.field)}</div>
+        <div class="art-byline"><button class="artist-inline" data-creator="${item.artistId}">${escapeHTML(item.artist)}</button><span>${escapeHTML(item.field)}</span></div>
       </div>
       <button class="art-stat ${liked ? 'is-liked' : ''}" data-like="${item.id}" aria-label="Appreciate ${escapeAttr(item.title)}">
         ${liked ? '♥' : '♡'} ${formatNumber((item.likes || 0) + (liked ? 1 : 0))}
@@ -522,13 +523,17 @@ function renderExplore() {
     ? artists.filter(a => [a.name,a.handle,a.field,a.location].join(' ').toLowerCase().includes(query))
     : [];
 
+  const selected = query ? [] : items.slice(0, 3);
+  const browseItems = query ? items : items.slice(3);
+
   main.innerHTML = `
-    <div class="page">
+    <div class="page explore-page">
       ${query ? `
-        <section class="search-summary">
+        <section class="search-summary search-summary--editorial">
           <div>
-            <h1>Search</h1>
-            <p>${items.length} work${items.length === 1 ? '' : 's'} for “${escapeHTML(state.search)}”</p>
+            <p class="archive-index">Search / Margin</p>
+            <h1>“${escapeHTML(state.search)}”</h1>
+            <p>${items.length} work${items.length === 1 ? '' : 's'} found</p>
           </div>
           <button class="button button-quiet button-small" id="clear-search">${icon('x',14)} Clear</button>
         </section>
@@ -540,25 +545,53 @@ function renderExplore() {
             </button>`).join('')}
           </div>` : ''}
       ` : `
-        <section class="explore-intro" aria-labelledby="explore-title">
-          <h1 id="explore-title">A place for the <em>work</em> itself.</h1>
-          <div class="intro-note">
-            <strong>Discover portfolios, process, and people.</strong>
-            Publish finished work and the thinking behind it. Build a portfolio without losing the community around it.
+        <header class="archive-opening">
+          <div>
+            <p class="archive-index">01 / Explore</p>
+            <h1>Explore</h1>
           </div>
+          <p class="archive-note">New work, ongoing practices, and things worth returning to. Selected loosely across disciplines rather than ranked into a single feed.</p>
+        </header>
+
+        <section class="selected-stage" aria-label="Selected work">
+          ${selected.map((item,index) => `
+            <article class="selected-work selected-work--${index + 1}">
+              <button class="selected-image" data-open-art="${item.id}">
+                <img src="${coverImage(item)}" alt="${escapeAttr(item.title)} by ${escapeAttr(item.artist)}">
+              </button>
+              <div class="selected-caption">
+                <span class="selected-number">0${index + 1}</span>
+                <div>
+                  <strong>${escapeHTML(item.title)}</strong>
+                  <button data-creator="${item.artistId}">${escapeHTML(item.artist)}</button>
+                </div>
+              </div>
+            </article>`).join('')}
         </section>
 
-        <div class="section-head">
-          <h2>Artists to know</h2>
-          <p>Selected across disciplines</p>
-        </div>
-
-        <section class="creator-strip" aria-label="Featured artists">
-          ${artists.map(creatorCard).join('')}
+        <section class="artist-ribbon" aria-label="Artists to know">
+          <div class="artist-ribbon-copy">
+            <span>Artists to know</span>
+            <small>Across illustration, image making, design, 3D, and painting</small>
+          </div>
+          <div class="artist-ribbon-list">
+            ${artists.map(a => `<button class="artist-ribbon-item" data-creator="${a.id}">
+              <span class="avatar"><img src="${a.avatar}" alt=""></span>
+              <span><strong>${escapeHTML(a.name)}</strong><small>${escapeHTML(a.field)}</small></span>
+            </button>`).join('')}
+          </div>
         </section>
       `}
 
-      <div class="feed-toolbar">
+      <section class="browse-intro">
+        <div>
+          <p class="archive-index">${query ? 'Results' : '02 / Browse'}</p>
+          <h2>${query ? 'Work' : 'The archive'}</h2>
+        </div>
+        <p>${query ? 'Refine by discipline or change the sort.' : 'A changing mix of recent projects and older work resurfacing through the community.'}</p>
+      </section>
+
+      <div class="feed-toolbar feed-toolbar--soft">
         <div class="filter-scroll" aria-label="Filter artwork">
           ${fields.map(field => `<button class="filter-chip ${state.filter === field ? 'is-active' : ''}" data-filter="${field}">${field}</button>`).join('')}
         </div>
@@ -570,7 +603,7 @@ function renderExplore() {
         </select>
       </div>
 
-      ${items.length ? `<section class="masonry" aria-label="Artwork">${items.map(artCard).join('')}</section>` : `
+      ${browseItems.length ? `<section class="gallery-grid" aria-label="Artwork">${browseItems.map((item,index) => artCard(item,index,'gallery')).join('')}</section>` : `
         <div class="empty-state">
           ${icon('search-x',30)}
           <strong>No work matched that search.</strong>
