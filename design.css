@@ -1598,7 +1598,7 @@ form select:focus {
   }
 
   .art-grid {
-    column-count: min(var(--feed-columns,4), 3);
+    column-count: 3;
   }
 
   .profile-authored {
@@ -1656,6 +1656,30 @@ form select:focus {
 
   .search input,
   .search kbd {
+    display: none;
+  }
+
+  .search.is-mobile-open {
+    position: fixed;
+    z-index: 120;
+    top: 7px;
+    left: 8px;
+    right: 8px;
+    width: auto;
+    height: 44px;
+    justify-content: flex-start;
+    padding: 0 12px;
+    border: 1px solid var(--line-strong);
+    background: #fff;
+    box-shadow: 0 10px 34px rgba(0,0,0,.16);
+  }
+
+  .search.is-mobile-open input {
+    display: block;
+    min-width: 0;
+  }
+
+  .search.is-mobile-open kbd {
     display: none;
   }
 
