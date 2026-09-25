@@ -1868,3 +1868,70 @@ form select:focus {
     padding: 0 9vw;
   }
 }
+
+
+/* Catalogue style project reading */
+
+.project-title-block {
+  margin-top: 64px;
+}
+
+.project-index {
+  margin: 0 0 12px;
+  color: var(--faint);
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+}
+
+.project-title-block h2 {
+  margin: 0;
+}
+
+.project-title-block .project-description {
+  margin-top: 20px;
+}
+
+.project-facts-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 30px;
+  margin-top: 30px;
+  padding: 18px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--serif);
+  font-size: 14px;
+}
+
+.project-facts-line span {
+  display: grid;
+  gap: 3px;
+}
+
+.project-facts-line small {
+  color: var(--faint);
+  font-family: var(--sans);
+  font-size: 9px;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+
+.project-rights {
+  margin: 34px 0 0;
+  color: var(--faint);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+@media (max-width: 700px) {
+  .project-title-block {
+    margin-top: 42px;
+  }
+
+  .project-facts-line {
+    gap: 14px 22px;
+  }
+}
