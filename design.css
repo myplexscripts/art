@@ -575,19 +575,23 @@
   gap: 3px;
 }
 
-.on-this-page a {
+.on-this-page button {
+  width: 100%;
   min-height: 38px;
   display: flex;
   align-items: center;
+  border: 0;
   border-radius: 11px;
   padding: 0 9px;
+  background: transparent;
   color: var(--text-soft);
+  cursor: pointer;
   font-size: 14px;
   font-weight: 700;
-  text-decoration: none;
+  text-align: left;
 }
 
-.on-this-page a:hover {
+.on-this-page button:hover {
   background: rgba(255,255,255,.055);
   color: var(--text);
 }
@@ -698,15 +702,19 @@
 }
 
 .resource-item {
+  width: 100%;
   min-height: 72px;
   display: grid;
   grid-template-columns: 42px 1fr auto;
   align-items: center;
   gap: 11px;
+  border: 0;
   border-radius: var(--r-card);
   padding: 10px;
   background: var(--surface-2);
   color: inherit;
+  cursor: pointer;
+  text-align: left;
   text-decoration: none;
 }
 
