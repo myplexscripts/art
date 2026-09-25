@@ -1,33 +1,13 @@
 const STORAGE = {
-  likes: 'margin.likes',
-  saves: 'margin.saves',
-  follows: 'margin.follows',
-  uploads: 'margin.uploads',
-  drafts: 'margin.drafts',
-  collections: 'margin.collections',
-  comments: 'margin.comments',
-  notifications: 'margin.notifications',
-  threads: 'margin.threads',
-  jobSaves: 'margin.jobSaves',
-  applications: 'margin.applications',
-  profile: 'margin.profile'
+  state: 'tombbound.state',
+  posts: 'tombbound.posts',
+  comments: 'tombbound.comments'
 };
-
-const LEGACY_STORAGE = Object.fromEntries(
-  Object.entries(STORAGE).map(([name,key]) => [name, key.replace('margin.', 'morrow.')])
-);
-
-Object.entries(STORAGE).forEach(([name,key]) => {
-  if (localStorage.getItem(key) === null) {
-    const legacy = localStorage.getItem(LEGACY_STORAGE[name]);
-    if (legacy !== null) localStorage.setItem(key, legacy);
-  }
-});
 
 const readLocal = (key, fallback) => {
   try {
-    const value = localStorage.getItem(key);
-    return value === null ? fallback : JSON.parse(value);
+    const raw = localStorage.getItem(key);
+    return raw === null ? fallback : JSON.parse(raw);
   } catch {
     return fallback;
   }
@@ -42,349 +22,214 @@ const writeLocal = (key, value) => {
   }
 };
 
-const profileDefaults = {
-  name: 'David Vale',
-  handle: '@david',
-  location: 'London, Canada',
-  bio: 'Independent visual artist working across image making, print, and small digital experiments. Available for selected editorial and identity projects.',
-  availability: 'Available',
-  website: 'davidvale.art'
-};
+const members = [
+  {
+    id:'mara', name:'Mara Chen', handle:'@artifactmara', avatar:'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=180&q=84',
+    level:18, points:4380, title:'Relic Hunter'
+  },
+  {
+    id:'jonah', name:'Jonah Reed', handle:'@dualpisces', avatar:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=180&q=84',
+    level:12, points:2860, title:'Pathfinder'
+  },
+  {
+    id:'noor', name:'Noor Bell', handle:'@noorcroft', avatar:'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=180&q=84',
+    level:24, points:6220, title:'Master Explorer'
+  },
+  {
+    id:'sora', name:'Sora Vale', handle:'@savecrystal', avatar:'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=180&q=84',
+    level:9, points:1975, title:'Trailblazer'
+  }
+];
 
+const games = [
+  {
+    id:'tr1', title:'Tomb Raider', year:'1996', era:'Classic', location:'Peru, Greece, Egypt, Atlantis',
+    image:'https://images.unsplash.com/photo-1539650116574-75c0c6d73f6e?auto=format&fit=crop&w=1200&q=86',
+    description:'The original expedition. Isolation, platforming, impossible architecture, and the hunt for the Scion.',
+    community:18420, rating:4.7, tags:['Classic','Scion','Secrets']
+  },
+  {
+    id:'tr2', title:'Tomb Raider II', year:'1997', era:'Classic', location:'China, Venice, Tibet',
+    image:'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1200&q=86',
+    description:'A globe-spanning hunt for the Dagger of Xian, from Venice canals to the Great Wall and floating islands.',
+    community:16110, rating:4.8, tags:['Classic','Dagger of Xian','Venice']
+  },
+  {
+    id:'tr4', title:'The Last Revelation', year:'1999', era:'Classic', location:'Egypt',
+    image:'https://images.unsplash.com/photo-1539650116574-75c0c6d73f6e?auto=format&fit=crop&w=1200&q=86',
+    description:'A denser, interconnected expedition through Egypt built around ruins, mythology, and long-form puzzle solving.',
+    community:12880, rating:4.6, tags:['Classic','Egypt','Horus']
+  },
+  {
+    id:'legend', title:'Tomb Raider: Legend', year:'2006', era:'Legend', location:'Bolivia, Peru, Japan, Ghana',
+    image:'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=86',
+    description:'A fast-moving global adventure that reintroduced Lara with a stronger emphasis on cinematic traversal.',
+    community:14520, rating:4.5, tags:['Legend Era','Excalibur','Croft Manor']
+  },
+  {
+    id:'underworld', title:'Tomb Raider: Underworld', year:'2008', era:'Legend', location:'Mediterranean, Thailand, Mexico, Arctic',
+    image:'https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=1200&q=86',
+    description:'Large environments, mythic ruins, and a darker journey built around Helheim, Thor, and Natla.',
+    community:13940, rating:4.4, tags:['Legend Era','Mjolnir','Thailand']
+  },
+  {
+    id:'tr2013', title:'Tomb Raider', year:'2013', era:'Survivor', location:'Yamatai',
+    image:'https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&w=1200&q=86',
+    description:'A survival-focused origin story set across the storm-bound island of Yamatai.',
+    community:22610, rating:4.6, tags:['Survivor','Yamatai','Origins']
+  },
+  {
+    id:'rise', title:'Rise of the Tomb Raider', year:'2015', era:'Survivor', location:'Siberia, Syria',
+    image:'https://images.unsplash.com/photo-1483347756197-71ef80e95f73?auto=format&fit=crop&w=1200&q=86',
+    description:'Frozen wilderness, challenge tombs, and the search for the Divine Source in Kitezh.',
+    community:23980, rating:4.8, tags:['Survivor','Kitezh','Siberia']
+  },
+  {
+    id:'shadow', title:'Shadow of the Tomb Raider', year:'2018', era:'Survivor', location:'Mexico, Peru',
+    image:'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=1200&q=86',
+    description:'Jungle traversal, elaborate tombs, and a journey through Paititi at the end of the Survivor trilogy.',
+    community:20140, rating:4.5, tags:['Survivor','Paititi','Peru']
+  }
+];
+
+const lore = [
+  { id:'scion', title:'The Scion of Atlantis', type:'Artifact', gameId:'tr1', icon:'gem', summary:'Three pieces, three rulers, and one of the series defining artifacts.' },
+  { id:'dagger', title:'The Dagger of Xian', type:'Artifact', gameId:'tr2', icon:'swords', summary:'A legendary dagger said to grant the power of the dragon to whoever plunges it into their heart.' },
+  { id:'horus', title:'The Amulet of Horus', type:'Artifact', gameId:'tr4', icon:'sun', summary:'An ancient key to the mythology that drives Lara through The Last Revelation.' },
+  { id:'croft-manor', title:'Croft Manor', type:'Location', gameId:'legend', icon:'castle', summary:'Home, training ground, puzzle box, and one of the most loved recurring locations in the series.' },
+  { id:'mjolnir', title:'Mjolnir', type:'Artifact', gameId:'underworld', icon:'hammer', summary:'Thor’s hammer becomes both archaeological objective and overwhelming tool in Underworld.' },
+  { id:'yamatai', title:'Yamatai', type:'Location', gameId:'tr2013', icon:'map', summary:'The storm-locked island where the Survivor era begins.' },
+  { id:'kitezh', title:'Kitezh', type:'Location', gameId:'rise', icon:'mountain-snow', summary:'The lost city at the centre of Rise of the Tomb Raider and the search for immortality.' },
+  { id:'paititi', title:'Paititi', type:'Location', gameId:'shadow', icon:'landmark', summary:'A hidden city whose history anchors much of Shadow of the Tomb Raider.' }
+];
+
+const challenges = [
+  {
+    id:'classic-secrets', title:'Classic Secrets Week', icon:'key-round', points:250,
+    description:'Find and log five secrets from any Classic era game this week.', progress:3, goal:5, joined:true
+  },
+  {
+    id:'no-medpack', title:'No Medpack Run', icon:'heart-pulse', points:400,
+    description:'Finish any full level without using a medpack.', progress:0, goal:1, joined:false
+  },
+  {
+    id:'manor-quiz', title:'Croft Manor Scholar', icon:'brain', points:120,
+    description:'Complete the community Croft Manor trivia set.', progress:7, goal:10, joined:true
+  }
+];
+
+const defaultPosts = [
+  {
+    id:'p1', memberId:'mara', type:'Discovery', gameId:'tr4', title:'The Last Revelation still has the best sense of place',
+    body:'Replaying Karnak made me realize how much I miss interconnected spaces that slowly reveal how they fit together. The backtracking feels purposeful instead of padded.',
+    image:'https://images.unsplash.com/photo-1539650116574-75c0c6d73f6e?auto=format&fit=crop&w=1200&q=86',
+    tags:['replay','egypt','level design'], likes:186, comments:34, time:'18m'
+  },
+  {
+    id:'p2', memberId:'jonah', type:'Discussion', gameId:'legend', title:'Which version of Croft Manor do you return to the most?',
+    body:'Legend is still mine. It feels compact enough to know by heart, but there is always something satisfying about running the assault course and poking around the library.',
+    image:'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1200&q=86',
+    tags:['croft manor','discussion'], likes:121, comments:61, time:'42m'
+  },
+  {
+    id:'p3', memberId:'noor', type:'Discovery', gameId:'rise', title:'A tiny environmental detail I missed for years',
+    body:'The way the snow compresses around certain traversal paths in Rise subtly points you toward climbable routes. It is much easier to notice when you replay without survival instincts.',
+    image:'https://images.unsplash.com/photo-1483347756197-71ef80e95f73?auto=format&fit=crop&w=1200&q=86',
+    tags:['rise','details','siberia'], likes:274, comments:29, time:'1h'
+  },
+  {
+    id:'p4', memberId:'sora', type:'Collection', gameId:'tr2', title:'My five favourite impossible Tomb Raider spaces',
+    body:'Floating Islands is obviously here, but I also included Palace Midas because it feels like architecture designed by a dream rather than a civilization.',
+    image:'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1200&q=86',
+    tags:['classic','levels','collection'], likes:199, comments:45, time:'2h'
+  }
+];
+
+const collections = [
+  { id:'c1', title:'Tombs I never get tired of', count:12, icon:'landmark', images:[games[7].image,games[6].image,games[2].image] },
+  { id:'c2', title:'Best puzzle rooms', count:18, icon:'puzzle', images:[games[0].image,games[4].image,games[1].image] },
+  { id:'c3', title:'Favourite locations', count:24, icon:'map-pinned', images:[games[5].image,games[7].image,games[3].image] },
+  { id:'c4', title:'Classic replay list', count:5, icon:'rotate-ccw', images:[games[0].image,games[1].image,games[2].image] }
+];
+
+const initial = readLocal(STORAGE.state, {});
 const state = {
-  route: 'explore',
-  routeId: null,
-  filter: 'All',
-  sort: 'Featured',
-  feedMode: 'Discover',
-  gridDensity: Number(readLocal('margin.gridDensity', 4)) || 4,
-  search: '',
-  profileTab: 'portfolio',
-  likes: new Set(readLocal(STORAGE.likes, [])),
-  saves: new Set(readLocal(STORAGE.saves, [])),
-  follows: new Set(readLocal(STORAGE.follows, ['hana-vale', 'noor-adebayo', 'sora-lin'])),
-  uploads: readLocal(STORAGE.uploads, []),
-  drafts: readLocal(STORAGE.drafts, []),
-  collections: readLocal(STORAGE.collections, [
-    { id: 'colour-atmosphere', name: 'Colour & atmosphere', description: 'Light, colour relationships, and images worth returning to.', itemIds: ['after-rain','paper-sun','red-figure'], private: false },
-    { id: 'editorial-reference', name: 'Editorial references', description: 'Composition, pacing, type, and visual storytelling.', itemIds: ['blue-hour','field-notes','orbital-type'], private: true }
-  ]),
-  comments: readLocal(STORAGE.comments, {
-    'blue-hour': [
-      { id: 'c1', author: 'Noor Adebayo', avatar: 'noor-adebayo', body: 'The colour transition in the second study is beautiful.', time: '2h' },
-      { id: 'c2', author: 'Cass Renn', avatar: 'cass-renn', body: 'Love how much of the underdrawing you kept visible.', time: '48m' }
-    ],
-    'still-warm': [
-      { id: 'c3', author: 'Hana Vale', avatar: 'hana-vale', body: 'The surface is doing so much here without getting busy.', time: '1d' }
-    ]
-  }),
-  notifications: readLocal(STORAGE.notifications, [
-    { id: 'n1', type: 'like', actorId: 'hana-vale', text: 'Hana Vale appreciated Paper Sun', time: '12m', unread: true },
-    { id: 'n2', type: 'follow', actorId: 'noor-adebayo', text: 'Noor Adebayo followed you', time: '2h', unread: true },
-    { id: 'n3', type: 'comment', actorId: 'cass-renn', text: 'Cass Renn commented on Red Figure / Green Room', time: '1d', unread: false }
-  ]),
-  threads: readLocal(STORAGE.threads, [
-    {
-      id: 'thread-hana',
-      artistId: 'hana-vale',
-      unread: 1,
-      messages: [
-        { id: 'm1', from: 'hana-vale', body: 'Hey David, thanks for saving the new studies.', time: '10:18' },
-        { id: 'm2', from: 'me', body: 'Of course. The blue one is especially good.', time: '10:24' },
-        { id: 'm3', from: 'hana-vale', body: 'Thank you. I am putting together a process post for it too.', time: '11:02' }
-      ]
-    },
-    {
-      id: 'thread-noor',
-      artistId: 'noor-adebayo',
-      unread: 0,
-      messages: [
-        { id: 'm4', from: 'noor-adebayo', body: 'Sending the print reference we talked about.', time: 'Tue' },
-        { id: 'm5', from: 'me', body: 'Got it. Thank you.', time: 'Tue' }
-      ]
-    }
-  ]),
-  jobSaves: new Set(readLocal(STORAGE.jobSaves, [])),
-  applications: readLocal(STORAGE.applications, []),
-  profile: { ...profileDefaults, ...readLocal(STORAGE.profile, {}) },
-  jobFilters: { fulltime: true, contract: true, freelance: true, remote: true, canada: true }
+  route:'home',
+  routeId:null,
+  points:initial.points ?? 1240,
+  level:initial.level ?? 8,
+  liked:new Set(initial.liked || ['p3']),
+  saved:new Set(initial.saved || ['p1','scion']),
+  following:new Set(initial.following || ['mara','noor']),
+  completed:new Set(initial.completed || ['tr1','legend','tr2013']),
+  playing:new Set(initial.playing || ['tr4']),
+  joinedChallenges:new Set(initial.joinedChallenges || ['classic-secrets','manor-quiz']),
+  notificationsRead:initial.notificationsRead || false,
+  search:'',
+  communityFilter:'All'
 };
 
-const artists = [
-  {
-    id:'hana-vale', name:'Hana Vale', handle:'@hanavale', field:'Illustration', location:'Toronto, Canada',
-    status:'Available', avatar:'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=240&q=86',
-    bio:'Illustrator making figurative work for editorial, publishing, and cultural clients. Interested in quiet gesture, difficult colour, and hand made surfaces.',
-    website:'hanavale.studio', followers:18400, views:284000, joined:'2021'
-  },
-  {
-    id:'ivo-march', name:'Ivo March', handle:'@ivomarch', field:'3D / Motion', location:'Berlin, Germany',
-    status:'Available', avatar:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=240&q=86',
-    bio:'Independent 3D artist and motion designer building tactile digital objects, title systems, and experimental films.',
-    website:'ivomarch.com', followers:12900, views:198000, joined:'2022'
-  },
-  {
-    id:'noor-adebayo', name:'Noor Adebayo', handle:'@noorstudio', field:'Photography', location:'Montréal, Canada',
-    status:'Available', avatar:'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=240&q=86',
-    bio:'Photographer documenting cities through weather, artificial light, interiors, and the small evidence people leave behind.',
-    website:'nooradebayo.photo', followers:24100, views:511000, joined:'2020'
-  },
-  {
-    id:'sora-lin', name:'Sora Lin', handle:'@soralin', field:'Concept Art', location:'Vancouver, Canada',
-    status:'Booked', avatar:'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=240&q=86',
-    bio:'Concept artist focused on environments, world building, and cinematic visual development for games and animation.',
-    website:'soralin.art', followers:32700, views:822000, joined:'2019'
-  },
-  {
-    id:'cass-renn', name:'Cass Renn', handle:'@cassrenn', field:'Graphic Design', location:'Chicago, USA',
-    status:'Available', avatar:'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=240&q=86',
-    bio:'Graphic designer working in publishing, identity systems, type, and print. Makes a lot of things with registration errors on purpose.',
-    website:'cassrenn.design', followers:9800, views:154000, joined:'2023'
-  },
-  {
-    id:'emilia-ortiz', name:'Emilia Ortiz', handle:'@eortiz', field:'Painting', location:'Mexico City, Mexico',
-    status:'Available', avatar:'https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=240&q=86',
-    bio:'Painter working primarily in oil, wax, and linen. Recent work studies temperature, memory, and repeated sittings.',
-    website:'emiliaortiz.mx', followers:21300, views:397000, joined:'2020'
-  }
-];
-
-const artworks = [
-  {
-    id:'blue-hour', title:'Blue Hour Studies', artist:'Hana Vale', artistId:'hana-vale', field:'Illustration',
-    images:[
-      'https://images.unsplash.com/photo-1541961017774-22349e4a1262?auto=format&fit=crop&w=1500&q=88',
-      'https://images.unsplash.com/photo-1549887534-1541e9326642?auto=format&fit=crop&w=1500&q=88'
-    ],
-    likes:1284, year:'2026', tools:'Gouache, graphite', tags:['editorial','figure','gouache'],
-    description:'A sequence of quiet colour studies built around the half hour when interior light and evening light briefly match.',
-    rights:'© Hana Vale. All rights reserved.', comments:true, portfolio:true, featured:98
-  },
-  {
-    id:'soft-machinery', title:'Soft Machinery', artist:'Ivo March', artistId:'ivo-march', field:'3D',
-    images:['https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?auto=format&fit=crop&w=1500&q=88'],
-    likes:932, year:'2026', tools:'Blender, Houdini', tags:['3d','form','material'],
-    description:'Material experiments asking how industrial forms change when their surfaces behave more like fabric than metal.',
-    rights:'© Ivo March. All rights reserved.', comments:true, portfolio:true, featured:91
-  },
-  {
-    id:'after-rain', title:'After Rain, 6:42', artist:'Noor Adebayo', artistId:'noor-adebayo', field:'Photography',
-    images:[
-      'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1500&q=88',
-      'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=1500&q=88'
-    ],
-    likes:2460, year:'2026', tools:'Leica Q3', tags:['street','light','city'],
-    description:'Part of an ongoing study of wet pavement, reflected signs, and the small shifts in colour that happen after summer rain.',
-    rights:'© Noor Adebayo. All rights reserved.', comments:true, portfolio:true, featured:100
-  },
-  {
-    id:'weather-system', title:'Weather System', artist:'Sora Lin', artistId:'sora-lin', field:'Concept Art',
-    images:['https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=1500&q=88'],
-    likes:1887, year:'2026', tools:'Photoshop', tags:['environment','sky','concept'],
-    description:'Environment development for a story set above a permanent cloud shelf, where weather is treated as geography.',
-    rights:'© Sora Lin. All rights reserved.', comments:true, portfolio:true, featured:96
-  },
-  {
-    id:'field-notes', title:'Field Notes No. 14', artist:'Cass Renn', artistId:'cass-renn', field:'Graphic Design',
-    images:['https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=1500&q=88'],
-    likes:721, year:'2026', tools:'InDesign, risograph', tags:['print','type','riso'],
-    description:'A print study combining found type, registration errors, and colour separations from a larger editorial identity system.',
-    rights:'© Cass Renn. All rights reserved.', comments:true, portfolio:true, featured:86
-  },
-  {
-    id:'still-warm', title:'Still Warm', artist:'Emilia Ortiz', artistId:'emilia-ortiz', field:'Painting',
-    images:['https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=1500&q=88'],
-    likes:3410, year:'2025', tools:'Oil on linen', tags:['painting','portrait','oil'],
-    description:'Oil on linen, painted from repeated sittings over six weeks. The final pass kept the underdrawing visible at the shoulder.',
-    rights:'© Emilia Ortiz. All rights reserved.', comments:true, portfolio:true, featured:99
-  },
-  {
-    id:'signal-garden', title:'Signal Garden', artist:'Ivo March', artistId:'ivo-march', field:'Motion',
-    images:['https://images.unsplash.com/photo-1550859492-d5da9d8e45f3?auto=format&fit=crop&w=1500&q=88'],
-    likes:1112, year:'2026', tools:'Cinema 4D, Redshift', tags:['motion','abstract','colour'],
-    description:'Frames from a short motion piece built from modular signals, shifting depth, and deliberately imperfect loops.',
-    rights:'© Ivo March. All rights reserved.', comments:true, portfolio:true, featured:88
-  },
-  {
-    id:'paper-sun', title:'Paper Sun', artist:'Hana Vale', artistId:'hana-vale', field:'Illustration',
-    images:['https://images.unsplash.com/photo-1549490349-8643362247b5?auto=format&fit=crop&w=1500&q=88'],
-    likes:2019, year:'2026', tools:'Acrylic, coloured pencil', tags:['colour','editorial','acrylic'],
-    description:'An editorial image about optimism that is useful precisely because it is temporary.',
-    rights:'© Hana Vale. All rights reserved.', comments:true, portfolio:true, featured:94
-  },
-  {
-    id:'room-tone', title:'Room Tone', artist:'Noor Adebayo', artistId:'noor-adebayo', field:'Photography',
-    images:['https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1500&q=88'],
-    likes:803, year:'2025', tools:'Sony A7R V', tags:['interior','space','documentary'],
-    description:'A study of empty workspaces photographed before people arrive, with attention to traces of the previous day.',
-    rights:'© Noor Adebayo. All rights reserved.', comments:true, portfolio:true, featured:84
-  },
-  {
-    id:'orbital-type', title:'Orbital Type', artist:'Cass Renn', artistId:'cass-renn', field:'Graphic Design',
-    images:['https://images.unsplash.com/photo-1558655146-9f40138edfeb?auto=format&fit=crop&w=1500&q=88'],
-    likes:646, year:'2026', tools:'Illustrator, Glyphs', tags:['identity','typography','poster'],
-    description:'A display type experiment developed for a fictional astronomy journal and expanded into a small poster system.',
-    rights:'© Cass Renn. All rights reserved.', comments:true, portfolio:true, featured:82
-  },
-  {
-    id:'red-figure', title:'Red Figure / Green Room', artist:'Emilia Ortiz', artistId:'emilia-ortiz', field:'Painting',
-    images:['https://images.unsplash.com/photo-1577083552431-6e5fd01aa342?auto=format&fit=crop&w=1500&q=88'],
-    likes:1530, year:'2026', tools:'Oil, wax', tags:['figure','painting','colour'],
-    description:'A figure study focused on temperature rather than likeness, with wax added between oil layers to flatten the surface.',
-    rights:'© Emilia Ortiz. All rights reserved.', comments:true, portfolio:true, featured:92
-  },
-  {
-    id:'monument-valley', title:'Monument Study 03', artist:'Sora Lin', artistId:'sora-lin', field:'Concept Art',
-    images:['https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1500&q=88'],
-    likes:2771, year:'2026', tools:'Photoshop, Blender', tags:['landscape','environment','concept'],
-    description:'Shape language exploration for a monumental desert structure designed to read clearly from extreme distance.',
-    rights:'© Sora Lin. All rights reserved.', comments:true, portfolio:true, featured:97
-  },
-  {
-    id:'david-quiet-shift', title:'Quiet Shift', artist:'David Vale', artistId:'me', field:'Photography',
-    images:['https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?auto=format&fit=crop&w=1500&q=88'],
-    likes:417, year:'2026', tools:'Digital photography', tags:['interior','light','study'],
-    description:'An ongoing set of interior studies about late afternoon light and objects left slightly out of place.',
-    rights:'© David Vale. All rights reserved.', comments:true, portfolio:true, featured:80
-  },
-  {
-    id:'david-interval', title:'Interval Forms', artist:'David Vale', artistId:'me', field:'Graphic Design',
-    images:['https://images.unsplash.com/photo-1557683316-973673baf926?auto=format&fit=crop&w=1500&q=88'],
-    likes:682, year:'2026', tools:'Illustrator, InDesign', tags:['graphic','shape','poster'],
-    description:'Poster studies made from a limited set of forms, repeated until the gaps became more important than the objects.',
-    rights:'© David Vale. All rights reserved.', comments:true, portfolio:true, featured:85
-  },
-  {
-    id:'david-garden-index', title:'Garden Index', artist:'David Vale', artistId:'me', field:'Illustration',
-    images:['https://images.unsplash.com/photo-1547891654-e66ed7ebb968?auto=format&fit=crop&w=1500&q=88'],
-    likes:355, year:'2025', tools:'Ink, digital colour', tags:['botanical','ink','editorial'],
-    description:'A small visual index of imagined plant forms, drawn in ink and assembled digitally.',
-    rights:'© David Vale. All rights reserved.', comments:true, portfolio:true, featured:77
-  }
-];
-
-const jobs = [
-  {
-    id:'northline-environment', company:'Northline Games', role:'Senior Environment Artist', location:'Toronto, Canada', mode:'Hybrid',
-    type:'Full time', field:'3D / Concept', salary:'CAD $105k to $132k', posted:'2 days ago',
-    description:'Build visual direction and production ready environments for an unannounced narrative game. You will work across blockout, paintover, material direction, and final world building.',
-    requirements:['5+ years in environment art or adjacent production work','Strong portfolio showing composition, lighting, and spatial storytelling','Comfort moving between 2D paintover and 3D workflows'],
-    portfolioRequired:true
-  },
-  {
-    id:'mica-editorial', company:'Mica Studio', role:'Editorial Illustrator', location:'Remote', mode:'Remote',
-    type:'Contract', field:'Illustration', salary:'Per project', posted:'3 days ago',
-    description:'Create editorial illustration for long form journalism and cultural reporting. Assignments range from fast turnaround spot art to larger feature packages.',
-    requirements:['Editorial portfolio with strong conceptual thinking','Reliable communication across short production cycles','Ability to deliver layered source files when required'],
-    portfolioRequired:true
-  },
-  {
-    id:'soft-brand', company:'Soft Assembly', role:'Brand Designer', location:'Montréal, Canada', mode:'Hybrid',
-    type:'Full time', field:'Graphic Design', salary:'CAD $82k to $98k', posted:'4 days ago',
-    description:'Develop identity systems, campaign language, and digital brand components for cultural and technology clients.',
-    requirements:['Strong identity and typography work','Comfort presenting rationale to clients','Experience producing systems across print and digital'],
-    portfolioRequired:true
-  },
-  {
-    id:'paper-cover', company:'Paper House Press', role:'Book Cover Artist', location:'Remote', mode:'Remote',
-    type:'Freelance', field:'Painting / Illustration', salary:'CAD $2.5k to $5k', posted:'5 days ago',
-    description:'Create original cover art for literary fiction and essay collections. Projects may involve painting, illustration, collage, or mixed media.',
-    requirements:['Published or publication ready portfolio','Ability to work from manuscript themes without literalizing them','Final artwork suitable for print reproduction'],
-    portfolioRequired:true
-  },
-  {
-    id:'lumen-lookdev', company:'Lumen Pictures', role:'Look Development Artist', location:'Vancouver, Canada', mode:'On site',
-    type:'Full time', field:'3D', salary:'CAD $96k to $120k', posted:'1 week ago',
-    description:'Develop materials, lighting references, and final surface language for stylized animated features.',
-    requirements:['Production experience with modern shading workflows','Strong material observation and colour judgment','Ability to collaborate closely with lighting and modelling'],
-    portfolioRequired:true
-  }
-];
-
-const fields = ['All','Illustration','Digital Art','Photography','3D','Graphic Design','Painting','Concept Art','Motion'];
+let posts = [...readLocal(STORAGE.posts, []), ...defaultPosts];
+const comments = readLocal(STORAGE.comments, {
+  p1:[
+    { id:'cm1', name:'Noor Bell', body:'Karnak is exactly the level I use when I explain this to people.', time:'8m' },
+    { id:'cm2', name:'Sora Vale', body:'The spatial memory it asks from you is so different from the newer games.', time:'4m' }
+  ],
+  p2:[
+    { id:'cm3', name:'Mara Chen', body:'Anniversary manor for me. The music alone gets me.', time:'22m' }
+  ]
+});
 
 const main = document.querySelector('#main');
-const drawer = document.querySelector('#upload-drawer');
-const sidePanel = document.querySelector('#side-panel');
-const sidePanelContent = document.querySelector('#side-panel-content');
+const createModal = document.querySelector('#create-modal');
+const detailModal = document.querySelector('#detail-modal');
+const notificationsSheet = document.querySelector('#notifications-sheet');
+const notificationsContent = document.querySelector('#notifications-content');
 const scrim = document.querySelector('#scrim');
 const toast = document.querySelector('#toast');
-const artDialog = document.querySelector('#art-dialog');
-const artDialogContent = document.querySelector('#art-dialog-content');
-const modal = document.querySelector('#modal');
-const modalContent = document.querySelector('#modal-content');
 const searchInput = document.querySelector('#global-search');
-const notificationBadge = document.querySelector('#notification-badge');
-const messageBadge = document.querySelector('#message-badge');
+const headerPoints = document.querySelector('#header-points');
 
+let currentPostType = 'Discovery';
 let toastTimer;
-let uploadMedia = [];
-let uploadCover = 0;
-let editingProjectId = null;
-let currentProjectId = null;
-let currentProjectMedia = 0;
-let activeThreadId = null;
 
-function allArt() {
-  const uploads = state.uploads.map(item => ({ ...item, artist:state.profile.name, artistId:'me' }));
-  const seeded = artworks.map(item => item.artistId === 'me' ? { ...item, artist:state.profile.name } : item);
-  return [...uploads, ...seeded];
+function persist() {
+  writeLocal(STORAGE.state, {
+    points:state.points,
+    level:state.level,
+    liked:[...state.liked],
+    saved:[...state.saved],
+    following:[...state.following],
+    completed:[...state.completed],
+    playing:[...state.playing],
+    joinedChallenges:[...state.joinedChallenges],
+    notificationsRead:state.notificationsRead
+  });
+  writeLocal(STORAGE.posts, posts.filter(post => post.memberId === 'self'));
+  writeLocal(STORAGE.comments, comments);
+  updateHeader();
 }
 
-function artById(id) {
-  return allArt().find(item => item.id === id);
+function updateHeader() {
+  headerPoints.textContent = state.points.toLocaleString();
+  document.querySelector('#notification-dot').hidden = state.notificationsRead;
 }
 
-function artistById(id) {
-  if (id === 'me') {
-    return {
-      id:'me',
-      name:state.profile.name,
-      handle:state.profile.handle,
-      field:'Visual Artist',
-      location:state.profile.location,
-      status:state.profile.availability,
-      avatar:'',
-      bio:state.profile.bio,
-      website:state.profile.website,
-      followers:1800,
-      views:42600,
-      joined:'2026'
-    };
-  }
-  return artists.find(a => a.id === id);
+function addPoints(amount, reason) {
+  state.points += amount;
+  state.level = Math.max(state.level, Math.floor(state.points / 500) + 1);
+  persist();
+  showToast(`+${amount} XP · ${reason}`);
 }
 
-function projectImages(item) {
-  if (!item) return [];
-  if (Array.isArray(item.images) && item.images.length) return item.images;
-  return item.image ? [item.image] : [];
+function showToast(message) {
+  clearTimeout(toastTimer);
+  toast.textContent = message;
+  toast.classList.add('show');
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 2100);
 }
 
-function coverImage(item) {
-  const images = projectImages(item);
-  const index = Math.min(item.coverIndex || 0, Math.max(images.length - 1, 0));
-  return images[index] || '';
-}
-
-function escapeHTML(value = '') {
-  return String(value).replace(/[&<>"']/g, char => ({
-    '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#039;'
-  }[char]));
-}
-
-function escapeAttr(value = '') {
-  return escapeHTML(value).replace(/\n/g, ' ');
-}
-
-function formatNumber(number) {
-  const n = Number(number) || 0;
-  if (n >= 1000000) return (n / 1000000).toFixed(n >= 10000000 ? 0 : 1).replace('.0','') + 'm';
-  if (n >= 1000) return (n / 1000).toFixed(n >= 10000 ? 0 : 1).replace('.0','') + 'k';
-  return String(n);
-}
-
-function icon(name, size = 16) {
+function icon(name, size=18) {
   return `<i data-lucide="${name}" style="width:${size}px;height:${size}px" aria-hidden="true"></i>`;
 }
 
@@ -392,1736 +237,907 @@ function refreshIcons() {
   if (window.lucide) window.lucide.createIcons();
 }
 
-function showToast(message) {
-  clearTimeout(toastTimer);
-  toast.textContent = message;
-  toast.classList.add('show');
-  toastTimer = setTimeout(() => toast.classList.remove('show'), 1900);
+function escapeHTML(value='') {
+  return String(value).replace(/[&<>"']/g, char => ({
+    '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#039;'
+  }[char]));
 }
 
-function persist() {
-  writeLocal(STORAGE.likes, [...state.likes]);
-  writeLocal(STORAGE.saves, [...state.saves]);
-  writeLocal(STORAGE.follows, [...state.follows]);
-  writeLocal(STORAGE.uploads, state.uploads.slice(0, 20));
-  writeLocal(STORAGE.drafts, state.drafts.slice(0, 20));
-  writeLocal(STORAGE.collections, state.collections);
-  writeLocal(STORAGE.comments, state.comments);
-  writeLocal(STORAGE.notifications, state.notifications.slice(0, 60));
-  writeLocal(STORAGE.threads, state.threads);
-  writeLocal(STORAGE.jobSaves, [...state.jobSaves]);
-  writeLocal(STORAGE.applications, state.applications);
-  writeLocal(STORAGE.profile, state.profile);
-  updateBadges();
+function memberById(id) {
+  if (id === 'self') return { id:'self', name:'David Vale', handle:'@davidraids', avatar:'', level:state.level, points:state.points, title:'Pathfinder' };
+  return members.find(member => member.id === id);
 }
 
-function updateBadges() {
-  const unreadNotifications = state.notifications.filter(item => item.unread).length;
-  const unreadMessages = state.threads.reduce((sum, thread) => sum + (thread.unread || 0), 0);
-  notificationBadge.hidden = unreadNotifications === 0;
-  messageBadge.hidden = unreadMessages === 0;
+function gameById(id) {
+  return games.find(game => game.id === id);
 }
 
 function parseRoute() {
-  const raw = location.hash.replace(/^#/, '') || 'explore';
-  const [route, id] = raw.split('/');
-  state.route = ['explore','following','collections','jobs','profile','artist'].includes(route) ? route : 'explore';
+  const raw = location.hash.replace(/^#/,'') || 'home';
+  const [route,id] = raw.split('/');
+  const valid = ['home','games','lore','community','collections','profile'];
+  state.route = valid.includes(route) ? route : 'home';
   state.routeId = id || null;
 }
 
 function syncNavigation() {
-  document.querySelectorAll('[data-nav]').forEach(el => {
-    const activeRoute = state.route === 'artist' ? 'explore' : state.route;
-    el.classList.toggle('is-active', el.dataset.nav === activeRoute);
-  });
-  document.querySelectorAll('[data-mobile-nav]').forEach(el => {
-    const activeRoute = state.route === 'artist' ? 'explore' : state.route;
-    el.classList.toggle('is-active', el.dataset.mobileNav === activeRoute);
-  });
+  document.querySelectorAll('[data-nav]').forEach(link => link.classList.toggle('is-active', link.dataset.nav === state.route));
+  document.querySelectorAll('[data-mobile-nav]').forEach(link => link.classList.toggle('is-active', link.dataset.mobileNav === state.route));
 }
 
 function renderRoute() {
   parseRoute();
   syncNavigation();
-  if (state.route === 'explore') renderExplore();
-  if (state.route === 'following') renderFollowing();
-  if (state.route === 'collections') renderCollections(state.routeId);
-  if (state.route === 'jobs') renderJobs();
+  if (state.route === 'home') renderHome();
+  if (state.route === 'games') renderGames();
+  if (state.route === 'lore') renderLore();
+  if (state.route === 'community') renderCommunity();
+  if (state.route === 'collections') renderCollections();
   if (state.route === 'profile') renderProfile();
-  if (state.route === 'artist') renderArtist(state.routeId);
-  refreshIcons();
-  main.focus({ preventScroll:true });
-}
-
-function creatorCard(artist) {
-  return `<button class="creator-card" data-creator="${artist.id}">
-    <span class="avatar"><img src="${artist.avatar}" alt="" loading="lazy"></span>
-    <span class="creator-name">${escapeHTML(artist.name)}</span>
-    <span class="creator-field">${escapeHTML(artist.field)}</span>
-    <span class="creator-status ${artist.status === 'Available' ? '' : 'is-busy'}"><i></i>${escapeHTML(artist.status)}</span>
-  </button>`;
-}
-
-function artCard(item, index = 0, context = '') {
-  const liked = state.likes.has(item.id);
-  const saved = state.saves.has(item.id);
-  const image = coverImage(item);
-  const contextClass = context === 'portfolio' ? ' art-card--portfolio' : '';
-  return `<article class="art-card${contextClass}">
-    <div class="art-thumb-wrap">
-      <button class="art-thumb" data-open-art="${item.id}" aria-label="Open ${escapeAttr(item.title)} by ${escapeAttr(item.artist)}">
-        <img src="${image}" alt="${escapeAttr(item.title)} by ${escapeAttr(item.artist)}" loading="lazy">
-      </button>
-      <div class="art-overlay" aria-label="Project actions">
-        <button class="mini-action ${saved ? 'is-active' : ''}" data-save="${item.id}" aria-label="${saved ? 'Remove from saved' : 'Save'}">${icon(saved ? 'bookmark-check' : 'bookmark',16)}</button>
-        <button class="mini-action ${liked ? 'is-active' : ''}" data-like="${item.id}" aria-label="Appreciate">${icon('heart',16)}</button>
-      </div>
-    </div>
-    <div class="art-meta">
-      <div class="art-meta-main">
-        <h3 class="art-title">${escapeHTML(item.title)}</h3>
-        <div class="art-byline">
-          <button class="artist-inline" data-creator="${item.artistId}">${escapeHTML(item.artist)}</button>
-          <span>${escapeHTML(item.field)}</span>
-        </div>
-      </div>
-      <button class="art-stat ${liked ? 'is-liked' : ''}" data-like="${item.id}" aria-label="Appreciate ${escapeAttr(item.title)}">
-        ${icon('heart',13)} ${formatNumber((item.likes || 0) + (liked ? 1 : 0))}
-      </button>
-    </div>
-  </article>`;
-}
-function bindArtworkEvents(scope = document) {
-  scope.querySelectorAll('[data-open-art]').forEach(el => el.addEventListener('click', () => openArtwork(el.dataset.openArt)));
-  scope.querySelectorAll('[data-like]').forEach(el => el.addEventListener('click', event => {
-    event.stopPropagation();
-    toggleLike(el.dataset.like);
-  }));
-  scope.querySelectorAll('[data-save]').forEach(el => el.addEventListener('click', event => {
-    event.stopPropagation();
-    toggleSave(el.dataset.save);
-  }));
-}
-
-function bindCreatorEvents(scope = document) {
-  scope.querySelectorAll('[data-creator]').forEach(el => el.addEventListener('click', () => {
-    location.hash = 'artist/' + el.dataset.creator;
-  }));
-}
-
-function renderExplore() {
-  const query = state.search.trim().toLowerCase();
-  let items = allArt().filter(item => {
-    if (state.filter === 'All') return true;
-    if (state.filter === 'Digital Art') return ['3D','Motion','Concept Art','Digital Art'].includes(item.field);
-    return item.field === state.filter;
-  });
-
-  if (query) {
-    items = items.filter(item => [item.title,item.artist,item.field,...(item.tags || [])].join(' ').toLowerCase().includes(query));
-  }
-
-  if (!query && state.feedMode === 'Following') {
-    items = items.filter(item => state.follows.has(item.artistId));
-  }
-
-  if (state.feedMode === 'Recent') {
-    items.sort((a,b) => String(b.year || '').localeCompare(String(a.year || '')) || (b.featured || 0) - (a.featured || 0));
-  } else if (state.feedMode === 'Popular') {
-    items.sort((a,b) => (b.likes || 0) - (a.likes || 0));
-  } else if (state.sort === 'Most appreciated') {
-    items.sort((a,b) => (b.likes || 0) - (a.likes || 0));
-  } else if (state.sort === 'Newest') {
-    items.sort((a,b) => String(b.year || '').localeCompare(String(a.year || '')));
-  } else {
-    items.sort((a,b) => (b.featured || 50) - (a.featured || 50));
-  }
-
-  const matchedArtists = query
-    ? artists.filter(a => [a.name,a.handle,a.field,a.location].join(' ').toLowerCase().includes(query))
-    : [];
-
-  const spotlight = !query && state.feedMode === 'Discover' && state.filter === 'All' ? items.slice(0,5) : [];
-  const feedItems = spotlight.length ? items.slice(5) : items;
-
-  const sidebarModes = [
-    ['Discover','compass'],
-    ['Recent','clock-3'],
-    ['Popular','flame'],
-    ['Following','users']
-  ];
-
-  main.innerHTML = `
-    <div class="explore-shell">
-      <aside class="discovery-sidebar" aria-label="Explore navigation">
-        <div class="sidebar-group">
-          <span class="sidebar-label">Browse</span>
-          ${sidebarModes.map(([mode,iconName]) => `<button class="sidebar-link ${state.feedMode === mode ? 'is-active' : ''}" data-feed-mode="${mode}">${icon(iconName,16)}<span>${mode}</span></button>`).join('')}
-        </div>
-        <div class="sidebar-group">
-          <span class="sidebar-label">Creative fields</span>
-          ${fields.slice(1).map(field => `<button class="sidebar-link ${state.filter === field ? 'is-active' : ''}" data-sidebar-filter="${field}"><span>${field}</span></button>`).join('')}
-        </div>
-        <div class="sidebar-group sidebar-links-bottom">
-          <a class="sidebar-link" href="#collections">${icon('bookmark',16)}<span>Saved work</span></a>
-          <a class="sidebar-link" href="#jobs">${icon('briefcase-business',16)}<span>Creative jobs</span></a>
-        </div>
-      </aside>
-
-      <div class="page explore-page">
-        ${query ? `
-          <header class="search-page-head">
-            <div>
-              <span class="section-kicker">Search results</span>
-              <h1>“${escapeHTML(state.search)}”</h1>
-              <p>${items.length} project${items.length === 1 ? '' : 's'} found</p>
-            </div>
-            <button class="button button-quiet button-small" id="clear-search">${icon('x',14)} Clear</button>
-          </header>
-          ${matchedArtists.length ? `
-            <section class="people-results">
-              <div class="compact-section-head"><h2>Artists</h2></div>
-              <div class="artist-scroll">
-                ${matchedArtists.map(a => artistDiscoveryCard(a)).join('')}
-              </div>
-            </section>
-          ` : ''}
-        ` : `
-          <header class="home-head">
-            <div>
-              <span class="section-kicker">${state.feedMode}</span>
-              <h1>${state.feedMode === 'Discover' ? 'Find work that sticks with you.' : state.feedMode}</h1>
-            </div>
-            <p>${state.feedMode === 'Discover'
-              ? 'Projects, process, and artists across illustration, design, photography, 3D, painting, and more.'
-              : state.feedMode === 'Following'
-                ? 'A feed made only from artists you follow.'
-                : state.feedMode === 'Recent'
-                  ? 'Recently published work across the community.'
-                  : 'Projects getting the most appreciation right now.'}</p>
-          </header>
-
-          ${spotlight.length ? `
-            <section class="spotlight-section">
-              <div class="compact-section-head">
-                <h2>Featured today</h2>
-                <span>Curated from the community</span>
-              </div>
-              <div class="spotlight-grid">
-                ${spotlight.map((item,index) => spotlightCard(item,index)).join('')}
-              </div>
-            </section>
-
-            <section class="artists-section">
-              <div class="compact-section-head">
-                <h2>Artists to follow</h2>
-                <span>Fresh work across disciplines</span>
-              </div>
-              <div class="artist-scroll">
-                ${artists.map(a => artistDiscoveryCard(a)).join('')}
-              </div>
-            </section>
-          ` : ''}
-        `}
-
-        <section class="feed-section">
-          <div class="feed-heading">
-            <div>
-              <h2>${query ? 'Projects' : state.filter === 'All' ? (state.feedMode === 'Discover' ? 'More to explore' : state.feedMode) : state.filter}</h2>
-              <span>${feedItems.length} project${feedItems.length === 1 ? '' : 's'}</span>
-            </div>
-            <div class="feed-controls">
-              <div class="filter-scroll mobile-field-filters" aria-label="Filter artwork">
-                <button class="filter-chip ${state.filter === 'All' ? 'is-active' : ''}" data-filter="All">All</button>
-                ${fields.slice(1).map(field => `<button class="filter-chip ${state.filter === field ? 'is-active' : ''}" data-filter="${field}">${field}</button>`).join('')}
-              </div>
-              <select class="sort-select" id="sort-select" aria-label="Sort projects">
-                <option ${state.sort === 'Featured' ? 'selected' : ''}>Featured</option>
-                <option ${state.sort === 'Newest' ? 'selected' : ''}>Newest</option>
-                <option ${state.sort === 'Most appreciated' ? 'selected' : ''}>Most appreciated</option>
-              </select>
-              <div class="density-control" aria-label="Artwork size">
-                <button class="icon-button density-button" data-density-change="-1" aria-label="Larger artwork">${icon('minus',15)}</button>
-                <button class="icon-button density-button" data-density-change="1" aria-label="Smaller artwork">${icon('plus',15)}</button>
-              </div>
-            </div>
-          </div>
-
-          ${feedItems.length ? `
-            <div class="art-grid density-${state.gridDensity}" style="--feed-columns:${state.gridDensity}">
-              ${feedItems.map((item,index) => artCard(item,index,'feed')).join('')}
-            </div>
-          ` : `
-            <div class="empty-state">
-              ${icon(state.feedMode === 'Following' ? 'users' : 'search-x',30)}
-              <strong>${state.feedMode === 'Following' ? 'Your following feed is quiet.' : 'No work matched this view.'}</strong>
-              ${state.feedMode === 'Following' ? 'Follow artists from Discover and their new projects will appear here.' : 'Try another creative field or search.'}
-            </div>
-          `}
-        </section>
-      </div>
-    </div>
-  `;
-
-  document.querySelector('#clear-search')?.addEventListener('click', () => {
-    state.search = '';
-    searchInput.value = '';
-    renderExplore();
-  });
-
-  document.querySelectorAll('[data-feed-mode]').forEach(btn => btn.addEventListener('click', () => {
-    state.feedMode = btn.dataset.feedMode;
-    state.filter = 'All';
-    renderExplore();
-  }));
-
-  document.querySelectorAll('[data-sidebar-filter]').forEach(btn => btn.addEventListener('click', () => {
-    state.filter = btn.dataset.sidebarFilter;
-    state.feedMode = 'Discover';
-    renderExplore();
-  }));
-
-  document.querySelectorAll('[data-filter]').forEach(btn => btn.addEventListener('click', () => {
-    state.filter = btn.dataset.filter;
-    renderExplore();
-  }));
-
-  document.querySelector('#sort-select')?.addEventListener('change', event => {
-    state.sort = event.target.value;
-    renderExplore();
-  });
-
-  document.querySelectorAll('[data-density-change]').forEach(btn => btn.addEventListener('click', () => {
-    const change = Number(btn.dataset.densityChange);
-    state.gridDensity = Math.max(3, Math.min(5, state.gridDensity + change));
-    writeLocal('margin.gridDensity', state.gridDensity);
-    renderExplore();
-  }));
-
-  document.querySelectorAll('[data-quick-follow]').forEach(btn => btn.addEventListener('click', event => {
-    event.stopPropagation();
-    const id = btn.dataset.quickFollow;
-    if (state.follows.has(id)) state.follows.delete(id);
-    else state.follows.add(id);
-    persist();
-    renderExplore();
-  }));
-
-  bindArtworkEvents(main);
-  bindCreatorEvents(main);
   refreshIcons();
 }
 
-function spotlightCard(item, index) {
-  return `<article class="spotlight-card spotlight-card--${index + 1}">
-    <button class="spotlight-image" data-open-art="${item.id}" aria-label="Open ${escapeAttr(item.title)}">
-      <img src="${coverImage(item)}" alt="${escapeAttr(item.title)} by ${escapeAttr(item.artist)}">
-      <span class="spotlight-scrim"></span>
-      <span class="spotlight-copy">
-        <strong>${escapeHTML(item.title)}</strong>
-        <span>${escapeHTML(item.artist)} · ${escapeHTML(item.field)}</span>
-      </span>
-    </button>
-  </article>`;
-}
-
-function artistDiscoveryCard(artist) {
-  const following = state.follows.has(artist.id);
-  const artistWork = allArt().filter(item => item.artistId === artist.id).slice(0,2);
-  return `<article class="artist-discovery-card">
-    <button class="artist-discovery-main" data-creator="${artist.id}">
-      <span class="avatar avatar-lg"><img src="${artist.avatar}" alt=""></span>
-      <span class="artist-discovery-copy">
-        <strong>${escapeHTML(artist.name)}</strong>
-        <small>${escapeHTML(artist.field)} · ${escapeHTML(artist.location)}</small>
-      </span>
-    </button>
-    <button class="follow-mini ${following ? 'is-following' : ''}" data-quick-follow="${artist.id}">${following ? 'Following' : 'Follow'}</button>
-    ${artistWork.length ? `<div class="artist-mini-work">${artistWork.map(item => `<img src="${coverImage(item)}" alt="">`).join('')}</div>` : ''}
-  </article>`;
-}
-function renderFollowing() {
-  const followed = allArt().filter(item => state.follows.has(item.artistId));
+function renderHome() {
+  const feed = filteredPosts().slice(0,3);
+  const current = gameById('tr4');
 
   main.innerHTML = `
-    <div class="page page-narrow">
-      <header class="subpage-head">
-        <h1>Following</h1>
-        <p>A chronological stream from the artists you chose. No recommended work is mixed into it.</p>
-      </header>
-
-      ${followed.length ? `
-        <section class="following-feed">
-          ${followed.map(item => {
-            const artist = artistById(item.artistId);
-            return `<article class="timeline-item">
-              <span class="avatar"><img src="${artist.avatar}" alt=""></span>
-              <div>
-                <div class="timeline-head">
-                  <button data-creator="${artist.id}">${escapeHTML(artist.name)}</button>
-                  <span>${escapeHTML(artist.handle)} · recently</span>
-                </div>
-                <button class="art-thumb" data-open-art="${item.id}">
-                  <img class="timeline-image" src="${coverImage(item)}" alt="${escapeAttr(item.title)}">
-                </button>
-                <p class="timeline-copy"><strong>${escapeHTML(item.title)}</strong> · ${escapeHTML(item.description)}</p>
-                <div class="timeline-actions">
-                  <button class="text-action ${state.likes.has(item.id) ? 'is-active' : ''}" data-like="${item.id}">${icon('heart',15)} Appreciate</button>
-                  <button class="text-action ${state.saves.has(item.id) ? 'is-active' : ''}" data-save="${item.id}">${icon('bookmark',15)} Save</button>
-                  <button class="text-action" data-comment-open="${item.id}">${icon('message-circle',15)} Comment</button>
-                </div>
-              </div>
-            </article>`;
-          }).join('')}
-        </section>
-      ` : `
-        <div class="empty-state">
-          ${icon('users',30)}
-          <strong>Your following feed is quiet.</strong>
-          Follow artists from Explore to build a chronological feed.
-          <br><a href="#explore" class="button button-primary">Find artists</a>
-        </div>
-      `}
-    </div>
-  `;
-
-  bindArtworkEvents(main);
-  bindCreatorEvents(main);
-  main.querySelectorAll('[data-comment-open]').forEach(btn => btn.addEventListener('click', () => openArtwork(btn.dataset.commentOpen, true)));
-  refreshIcons();
-}
-
-function collectionCard(collection, index = 0) {
-  const items = collection.itemIds.map(artById).filter(Boolean);
-  const preview = items.slice(0,3);
-  return `<article class="collection-card collection-mood-${index % 3}" data-open-collection="${collection.id}" tabindex="0" role="button" aria-label="Open ${escapeAttr(collection.name)}">
-    ${preview.length ? `
-      <div class="collection-stack">
-        ${preview.map(item => `<img src="${coverImage(item)}" alt="">`).join('')}
-      </div>
-    ` : `<div class="collection-placeholder">${icon('images',38)}</div>`}
-    <div class="collection-label">
-      <strong>${escapeHTML(collection.name)} ${collection.private ? icon('lock',12) : ''}</strong>
-      <span>${items.length} work${items.length === 1 ? '' : 's'} · ${collection.private ? 'Private' : 'Public'}</span>
-    </div>
-  </article>`;
-}
-
-function renderCollections(collectionId) {
-  if (collectionId) {
-    const collection = state.collections.find(item => item.id === collectionId);
-    if (!collection) {
-      location.hash = 'collections';
-      return;
-    }
-    const items = collection.itemIds.map(artById).filter(Boolean);
-    main.innerHTML = `
-      <div class="page">
-        <header class="collection-detail-head">
-          <div>
-            <a href="#collections" class="text-action">${icon('arrow-left',15)} All collections</a>
-            <h1>${escapeHTML(collection.name)}</h1>
-            <p>${escapeHTML(collection.description || 'A collection of saved work.')}</p>
-          </div>
-          <div class="head-actions">
-            <button class="button button-quiet" id="edit-collection">${icon('pencil',15)} Edit</button>
-            <button class="button button-danger" id="delete-collection">${icon('trash-2',15)} Delete</button>
-          </div>
-        </header>
-        ${items.length ? `<section class="masonry" style="margin-top:24px">${items.map(artCard).join('')}</section>` : `
-          <div class="empty-state">${icon('bookmark',30)}<strong>This collection is empty.</strong>Save a project, then add it to this collection from the project view.</div>
-        `}
-      </div>
-    `;
-    bindArtworkEvents(main);
-    document.querySelector('#edit-collection').addEventListener('click', () => openCollectionEditor(collection));
-    document.querySelector('#delete-collection').addEventListener('click', () => confirmDeleteCollection(collection));
-    refreshIcons();
-    return;
-  }
-
-  const saved = allArt().filter(item => state.saves.has(item.id));
-
-  main.innerHTML = `
-    <div class="page">
-      <header class="subpage-head">
-        <div>
-          <h1>Collections</h1>
-        </div>
-        <div>
-          <p>Keep references, favourites, and research private or group them into shareable boards.</p>
-          <div class="head-actions" style="margin-top:16px;justify-content:flex-end">
-            <button class="button button-primary" id="new-collection">${icon('plus',15)} New collection</button>
+    <div class="page home-page">
+      <section class="hero-panel panel">
+        <img class="hero-image" src="https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=1800&q=88" alt="">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <span class="hero-kicker">${icon('compass',17)} Community expedition</span>
+          <h1>Raid. Remember. Rediscover.</h1>
+          <p>A social home for Tomb Raider fans to replay the series, compare discoveries, collect lore, and keep the old secrets alive.</p>
+          <div class="hero-actions">
+            <a class="primary-button" href="#community">${icon('users',17)} <span>Enter community</span></a>
+            <a class="glass-button" href="#games">${icon('gamepad-2',17)} <span>Explore the series</span></a>
           </div>
         </div>
-      </header>
-
-      <section class="collection-grid">
-        <article class="collection-card" id="saved-work-card" tabindex="0" role="button">
-          ${saved.length ? `
-            <div class="collection-stack">
-              ${saved.slice(0,3).map(item => `<img src="${coverImage(item)}" alt="">`).join('')}
-            </div>
-          ` : `<div class="collection-placeholder">${icon('bookmark',38)}</div>`}
-          <div class="collection-label">
-            <strong>Saved work</strong>
-            <span>${saved.length} saved · Private</span>
+        <div class="hero-status glass-card">
+          <span class="section-label">Your expedition</span>
+          <div class="hero-status-title">
+            <span class="game-mini-cover"><img src="${current.image}" alt=""></span>
+            <div><strong>${current.title}</strong><span>Classic era replay</span></div>
           </div>
-        </article>
-        ${state.collections.map((collection,index) => collectionCard(collection,index + 1)).join('')}
+          <div class="progress-row"><span>Secrets logged</span><strong>12 / 70</strong></div>
+          <div class="progress-track"><span style="width:17%"></span></div>
+          <button class="glass-button compact" data-open-game="${current.id}">${icon('arrow-right',16)} <span>Continue</span></button>
+        </div>
       </section>
 
-      <div class="section-head">
-        <h2>Recently saved</h2>
-        <p>${saved.length ? saved.length + ' works' : 'Start saving work from Explore'}</p>
-      </div>
-      ${saved.length ? `<section class="masonry">${saved.map(artCard).join('')}</section>` : `
-        <div class="empty-state">${icon('bookmark',30)}<strong>Your saved work will land here.</strong>Use Save on a project to keep it close.</div>
-      `}
+      <section class="dashboard-grid">
+        <div class="dashboard-main">
+          <div class="section-heading">
+            <div><span class="section-label">Community</span><h2>From the expedition log</h2></div>
+            <a href="#community">See all ${icon('arrow-right',16)}</a>
+          </div>
+          <div class="post-stack">
+            ${feed.map(postCard).join('')}
+          </div>
+        </div>
+
+        <aside class="dashboard-side">
+          <section class="side-panel-card panel">
+            <div class="section-heading compact-heading">
+              <div><span class="section-label">Challenge</span><h2>Earn XP</h2></div>
+            </div>
+            ${challengeCard(challenges[0], true)}
+          </section>
+
+          <section class="side-panel-card panel">
+            <div class="section-heading compact-heading">
+              <div><span class="section-label">Trending</span><h2>Discussions</h2></div>
+            </div>
+            <div class="discussion-list">
+              ${posts.filter(p => p.type === 'Discussion').concat(posts).slice(0,3).map((post,index) => `
+                <button class="discussion-row" data-open-post="${post.id}">
+                  <span class="rank">${String(index+1).padStart(2,'0')}</span>
+                  <span><strong>${escapeHTML(post.title)}</strong><small>${post.comments} replies</small></span>
+                  ${icon('chevron-right',17)}
+                </button>`).join('')}
+            </div>
+          </section>
+        </aside>
+      </section>
+
+      <section class="series-section">
+        <div class="section-heading">
+          <div><span class="section-label">Series</span><h2>Choose an era</h2></div>
+          <a href="#games">All games ${icon('arrow-right',16)}</a>
+        </div>
+        <div class="game-scroll">
+          ${games.slice(0,6).map(gameCard).join('')}
+        </div>
+      </section>
+
+      <section class="members-panel panel">
+        <div class="members-copy">
+          <span class="section-label">People to follow</span>
+          <h2>Find your kind of raider.</h2>
+          <p>Follow people whose replays, theories, collections, and impossible level opinions you want in your feed.</p>
+        </div>
+        <div class="member-grid">
+          ${members.map(memberCard).join('')}
+        </div>
+      </section>
     </div>
   `;
 
-  document.querySelector('#new-collection').addEventListener('click', () => openCollectionEditor());
-  document.querySelector('#saved-work-card').addEventListener('click', () => openSavedWorkModal());
-  document.querySelectorAll('[data-open-collection]').forEach(card => {
-    const open = () => location.hash = 'collections/' + card.dataset.openCollection;
-    card.addEventListener('click', open);
-    card.addEventListener('keydown', event => {
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-        open();
-      }
-    });
-  });
-  bindArtworkEvents(main);
-  refreshIcons();
+  bindCommonEvents();
 }
 
-function openSavedWorkModal() {
-  const saved = allArt().filter(item => state.saves.has(item.id));
-  openModal({
-    eyebrow:'Saved work',
-    title:'Your quick saves',
-    html: saved.length ? `
-      <div class="modal-list">
-        ${saved.map(item => `<div class="modal-list-row">
-          <span>${escapeHTML(item.title)} <small style="color:var(--muted)">by ${escapeHTML(item.artist)}</small></span>
-          <button class="button button-small button-quiet" data-modal-open-art="${item.id}">Open</button>
-        </div>`).join('')}
-      </div>
-    ` : '<div class="panel-empty">Nothing saved yet.</div>',
-    onMount: () => {
-      modalContent.querySelectorAll('[data-modal-open-art]').forEach(btn => btn.addEventListener('click', () => {
-        closeModal();
-        openArtwork(btn.dataset.modalOpenArt);
-      }));
-    }
-  });
-}
-
-function openCollectionEditor(collection = null) {
-  openModal({
-    eyebrow: collection ? 'Edit collection' : 'New collection',
-    title: collection ? 'Collection details' : 'Create a collection',
-    html: `
-      <form id="collection-form" class="modal-body">
-        <label><span>Name</span><input id="collection-name" required maxlength="60" value="${escapeAttr(collection?.name || '')}" placeholder="Lighting references"></label>
-        <label><span>Description</span><textarea id="collection-description" rows="3" maxlength="220" placeholder="What belongs here?">${escapeHTML(collection?.description || '')}</textarea></label>
-        <div class="toggle-row">
-          <div><strong>Private collection</strong><small>Only visible to you.</small></div>
-          <label class="switch"><input id="collection-private" type="checkbox" ${collection?.private ? 'checked' : ''}><span></span></label>
-        </div>
-        <div class="modal-actions">
-          <button type="button" class="button button-quiet" data-close-modal>Cancel</button>
-          <button type="submit" class="button button-primary">${collection ? 'Save changes' : 'Create collection'}</button>
-        </div>
-      </form>
-    `,
-    onMount: () => {
-      document.querySelector('#collection-form').addEventListener('submit', event => {
-        event.preventDefault();
-        const name = document.querySelector('#collection-name').value.trim();
-        const description = document.querySelector('#collection-description').value.trim();
-        const isPrivate = document.querySelector('#collection-private').checked;
-        if (collection) {
-          collection.name = name;
-          collection.description = description;
-          collection.private = isPrivate;
-        } else {
-          state.collections.unshift({
-            id:'collection-' + Date.now(),
-            name,
-            description,
-            private:isPrivate,
-            itemIds:[]
-          });
-        }
-        persist();
-        closeModal();
-        renderRoute();
-        showToast(collection ? 'Collection updated' : 'Collection created');
-      });
-      bindCloseModalButtons();
-    }
-  });
-}
-
-function confirmDeleteCollection(collection) {
-  openModal({
-    eyebrow:'Collection',
-    title:'Delete this collection?',
-    html:`
-      <div class="modal-body">
-        <p>The artworks themselves will not be deleted. Only “${escapeHTML(collection.name)}” and its organization will be removed.</p>
-        <div class="modal-actions">
-          <button class="button button-quiet" data-close-modal>Cancel</button>
-          <button class="button button-danger" id="confirm-delete-collection">Delete collection</button>
-        </div>
-      </div>
-    `,
-    onMount:() => {
-      bindCloseModalButtons();
-      document.querySelector('#confirm-delete-collection').addEventListener('click', () => {
-        state.collections = state.collections.filter(item => item.id !== collection.id);
-        persist();
-        closeModal();
-        location.hash = 'collections';
-        showToast('Collection deleted');
-      });
-    }
-  });
-}
-
-function renderJobs() {
-  const filtered = jobs.filter(job => {
-    const typeKey = job.type === 'Full time' ? 'fulltime' : job.type.toLowerCase();
-    const typeMatch = state.jobFilters[typeKey] !== false;
-    const locationMatch = (job.mode === 'Remote' && state.jobFilters.remote) || (job.location.includes('Canada') && state.jobFilters.canada);
-    return typeMatch && locationMatch;
-  });
-
+function renderGames() {
   main.innerHTML = `
     <div class="page">
-      <header class="subpage-head">
-        <h1>Creative jobs</h1>
-        <p>Roles for working artists and designers, with discipline, location, and compensation visible before you click.</p>
+      <header class="page-header">
+        <div>
+          <span class="section-label">Series archive</span>
+          <h1 class="page-title">Games</h1>
+          <p class="page-subtitle">Track what you are playing, mark completions, revisit locations, and jump into community discussion for each era.</p>
+        </div>
+        <div class="segmented-control" id="era-filter">
+          <button class="is-active" data-era="All">All</button>
+          <button data-era="Classic">Classic</button>
+          <button data-era="Legend">Legend</button>
+          <button data-era="Survivor">Survivor</button>
+        </div>
       </header>
-
-      <div class="jobs-layout">
-        <aside class="job-filters">
-          <div class="job-filter-group">
-            <h3>Work type</h3>
-            <label class="check-row"><input type="checkbox" data-job-filter="fulltime" ${state.jobFilters.fulltime ? 'checked' : ''}> Full time</label>
-            <label class="check-row"><input type="checkbox" data-job-filter="contract" ${state.jobFilters.contract ? 'checked' : ''}> Contract</label>
-            <label class="check-row"><input type="checkbox" data-job-filter="freelance" ${state.jobFilters.freelance ? 'checked' : ''}> Freelance</label>
-          </div>
-          <div class="job-filter-group">
-            <h3>Location</h3>
-            <label class="check-row"><input type="checkbox" data-job-filter="remote" ${state.jobFilters.remote ? 'checked' : ''}> Remote</label>
-            <label class="check-row"><input type="checkbox" data-job-filter="canada" ${state.jobFilters.canada ? 'checked' : ''}> Canada</label>
-          </div>
-        </aside>
-
-        <section class="job-list">
-          ${filtered.map(job => `<article class="job-card">
-            <button class="job-main" data-job="${job.id}">
-              <div class="job-company">${escapeHTML(job.company)}</div>
-              <h3>${escapeHTML(job.role)}</h3>
-              <p>${escapeHTML(job.field)}</p>
-              <div class="job-meta"><span>${escapeHTML(job.location)} · ${escapeHTML(job.mode)}</span><span>${escapeHTML(job.type)}</span><span>${escapeHTML(job.posted)}</span></div>
-            </button>
-            <div class="job-side">
-              <div class="job-salary">${escapeHTML(job.salary)}</div>
-              <button class="save-job ${state.jobSaves.has(job.id) ? 'is-active' : ''}" data-save-job="${job.id}" aria-label="Save job">${icon('bookmark',16)}</button>
-            </div>
-          </article>`).join('')}
-        </section>
+      <div class="game-library" id="game-library">
+        ${games.map(gameLibraryCard).join('')}
       </div>
     </div>
   `;
 
-  document.querySelectorAll('[data-job]').forEach(btn => btn.addEventListener('click', () => openJob(btn.dataset.job)));
-  document.querySelectorAll('[data-save-job]').forEach(btn => btn.addEventListener('click', () => {
-    const id = btn.dataset.saveJob;
-    state.jobSaves.has(id) ? state.jobSaves.delete(id) : state.jobSaves.add(id);
-    persist();
-    renderJobs();
-    showToast(state.jobSaves.has(id) ? 'Job saved' : 'Job removed');
+  document.querySelectorAll('[data-era]').forEach(button => button.addEventListener('click', () => {
+    document.querySelectorAll('[data-era]').forEach(btn => btn.classList.remove('is-active'));
+    button.classList.add('is-active');
+    const era = button.dataset.era;
+    document.querySelectorAll('[data-game-era]').forEach(card => {
+      card.hidden = era !== 'All' && card.dataset.gameEra !== era;
+    });
   }));
-  document.querySelectorAll('[data-job-filter]').forEach(input => input.addEventListener('change', () => {
-    state.jobFilters[input.dataset.jobFilter] = input.checked;
-    renderJobs();
-  }));
-  refreshIcons();
+
+  bindCommonEvents();
 }
 
-function openJob(id) {
-  const job = jobs.find(item => item.id === id);
-  if (!job) return;
-  const applied = state.applications.some(item => item.jobId === id);
-  openModal({
-    eyebrow:job.company,
-    title:job.role,
-    html:`
-      <div class="modal-body job-detail">
-        <div class="job-detail-meta">
-          <span class="meta-pill">${escapeHTML(job.location)} · ${escapeHTML(job.mode)}</span>
-          <span class="meta-pill">${escapeHTML(job.type)}</span>
-          <span class="meta-pill">${escapeHTML(job.salary)}</span>
+function renderLore() {
+  main.innerHTML = `
+    <div class="page">
+      <header class="page-header split-header">
+        <div>
+          <span class="section-label">Field notes</span>
+          <h1 class="page-title">Lore & relics</h1>
+          <p class="page-subtitle">Artifacts, places, myths, and recurring pieces of Tomb Raider history collected into one community reference.</p>
         </div>
-        <p>${escapeHTML(job.description)}</p>
-        <h3>What they are looking for</h3>
-        <ul>${job.requirements.map(item => `<li>${escapeHTML(item)}</li>`).join('')}</ul>
-        <h3>Portfolio</h3>
-        <p>A Margin portfolio can be attached directly to the application. The employer receives a public link, not access to private collections or drafts.</p>
-        <div class="modal-actions">
-          <button class="button button-quiet ${state.jobSaves.has(job.id) ? 'is-active' : ''}" id="modal-save-job">${icon('bookmark',15)} ${state.jobSaves.has(job.id) ? 'Saved' : 'Save job'}</button>
-          <button class="button button-primary" id="apply-job" ${applied ? 'disabled' : ''}>${applied ? 'Application sent' : 'Apply'}</button>
+        <div class="lore-stat panel">
+          ${icon('book-open',22)}
+          <div><strong>${lore.length}</strong><span>community entries</span></div>
         </div>
+      </header>
+
+      <section class="lore-feature panel">
+        <div class="lore-feature-copy">
+          <span class="section-label">Featured entry</span>
+          <h2>The Scion of Atlantis</h2>
+          <p>Few objects define Tomb Raider as clearly as the Scion. Trace its pieces, guardians, locations, and the community theories that still orbit it.</p>
+          <button class="primary-button" data-open-lore="scion">${icon('book-open',17)} <span>Open entry</span></button>
+        </div>
+        <div class="artifact-orbit" aria-hidden="true">
+          <div class="artifact-core">${icon('gem',48)}</div>
+          <span class="orbit orbit-one"></span>
+          <span class="orbit orbit-two"></span>
+        </div>
+      </section>
+
+      <div class="section-heading">
+        <div><span class="section-label">Browse</span><h2>Community archive</h2></div>
       </div>
-    `,
-    onMount:() => {
-      document.querySelector('#modal-save-job').addEventListener('click', () => {
-        state.jobSaves.has(id) ? state.jobSaves.delete(id) : state.jobSaves.add(id);
-        persist();
-        openJob(id);
-      });
-      document.querySelector('#apply-job').addEventListener('click', () => openApplication(job));
-    }
-  });
+
+      <div class="lore-grid">
+        ${lore.map(loreCard).join('')}
+      </div>
+    </div>
+  `;
+
+  bindCommonEvents();
 }
 
-function openApplication(job) {
-  const portfolioUrl = 'margin.art/' + state.profile.handle.replace('@','');
-  openModal({
-    eyebrow:'Application',
-    title:job.role,
-    html:`
-      <form id="application-form" class="modal-body">
-        <label><span>Name</span><input value="${escapeAttr(state.profile.name)}" required></label>
-        <label><span>Email</span><input type="email" value="david@example.com" required></label>
-        <label><span>Portfolio</span><input type="url" value="https://${escapeAttr(portfolioUrl)}" required></label>
-        <label><span>Short note</span><textarea id="application-note" rows="5" maxlength="900" placeholder="Introduce yourself and why this role is relevant to your work."></textarea></label>
-        <div class="modal-actions">
-          <button type="button" class="button button-quiet" data-close-modal>Cancel</button>
-          <button type="submit" class="button button-primary">Send application</button>
+function renderCommunity() {
+  const filters = ['All','Discovery','Discussion','Collection'];
+  const feed = filteredPosts();
+
+  main.innerHTML = `
+    <div class="page community-page">
+      <header class="page-header community-header">
+        <div>
+          <span class="section-label">Social</span>
+          <h1 class="page-title">Community</h1>
+          <p class="page-subtitle">Discoveries, replay notes, theories, collections, and conversations from people still combing every corner of the series.</p>
         </div>
-      </form>
-    `,
-    onMount:() => {
-      bindCloseModalButtons();
-      document.querySelector('#application-form').addEventListener('submit', event => {
-        event.preventDefault();
-        state.applications.push({ id:'application-' + Date.now(), jobId:job.id, sentAt:new Date().toISOString(), note:document.querySelector('#application-note').value.trim() });
-        persist();
-        modalContent.innerHTML = `
-          <div class="application-confirm">
-            ${icon('circle-check-big',42)}
-            <h3>Application sent</h3>
-            <p>Your profile and portfolio link were included with the application to ${escapeHTML(job.company)}.</p>
-            <button class="button button-primary" data-close-modal>Done</button>
-          </div>`;
-        bindCloseModalButtons();
-        refreshIcons();
-      });
-    }
-  });
+        <button class="primary-button" id="community-create">${icon('plus',17)} <span>New post</span></button>
+      </header>
+
+      <div class="community-layout">
+        <section class="community-feed">
+          <div class="feed-toolbar panel">
+            <div class="segmented-control">
+              ${filters.map(filter => `<button class="${state.communityFilter===filter?'is-active':''}" data-community-filter="${filter}">${filter}</button>`).join('')}
+            </div>
+            <span>${feed.length} posts</span>
+          </div>
+          <div class="post-stack">
+            ${feed.map(postCard).join('')}
+          </div>
+        </section>
+
+        <aside class="community-rail">
+          <section class="rail-card panel">
+            <span class="section-label">Your standing</span>
+            <div class="rank-card">
+              <div class="rank-icon">${icon('shield',26)}</div>
+              <div><strong>Level ${state.level}</strong><span>Pathfinder · ${state.points.toLocaleString()} XP</span></div>
+            </div>
+            <div class="progress-row"><span>Next level</span><strong>${state.points % 500} / 500 XP</strong></div>
+            <div class="progress-track"><span style="width:${Math.min(100,(state.points%500)/5)}%"></span></div>
+          </section>
+
+          <section class="rail-card panel">
+            <div class="section-heading compact-heading">
+              <div><span class="section-label">Challenges</span><h2>Active</h2></div>
+            </div>
+            <div class="challenge-list">
+              ${challenges.slice(0,3).map(ch => challengeCard(ch,false)).join('')}
+            </div>
+          </section>
+
+          <section class="rail-card panel">
+            <span class="section-label">Members</span>
+            <div class="mini-members">
+              ${members.map(member => `<button data-member="${member.id}"><span class="avatar"><img src="${member.avatar}" alt=""></span><span><strong>${member.name}</strong><small>Level ${member.level} · ${member.title}</small></span></button>`).join('')}
+            </div>
+          </section>
+        </aside>
+      </div>
+    </div>
+  `;
+
+  document.querySelector('#community-create').addEventListener('click', openComposer);
+  document.querySelectorAll('[data-community-filter]').forEach(button => button.addEventListener('click', () => {
+    state.communityFilter = button.dataset.communityFilter;
+    renderCommunity();
+  }));
+
+  bindCommonEvents();
 }
 
-function profilePortfolio() {
-  const seeded = artworks.filter(item => item.artistId === 'me');
-  const user = state.uploads.filter(item => item.portfolio !== false);
-  return [...user, ...seeded];
+function renderCollections() {
+  main.innerHTML = `
+    <div class="page">
+      <header class="page-header">
+        <div>
+          <span class="section-label">Your archive</span>
+          <h1 class="page-title">Collections</h1>
+          <p class="page-subtitle">Keep favourite levels, lore entries, places, posts, and replay ideas together without turning the site into a spreadsheet.</p>
+        </div>
+        <button class="primary-button" id="new-collection">${icon('plus',17)} <span>New collection</span></button>
+      </header>
+
+      <div class="collection-grid">
+        ${collections.map(collectionCard).join('')}
+      </div>
+
+      <div class="section-heading collection-saved-head">
+        <div><span class="section-label">Quick saves</span><h2>Saved for later</h2></div>
+      </div>
+      <div class="saved-grid">
+        ${savedItemsHTML()}
+      </div>
+    </div>
+  `;
+
+  document.querySelector('#new-collection').addEventListener('click', () => showToast('Collection creation is ready for the backend layer'));
+  bindCommonEvents();
 }
 
 function renderProfile() {
-  const portfolio = profilePortfolio();
-  const totalLikes = portfolio.reduce((sum,item) => sum + (item.likes || 0),0) + state.likes.size;
-  const tab = state.profileTab;
-  const featured = portfolio[0];
+  const self = memberById('self');
+  const ownPosts = posts.filter(post => post.memberId === 'self');
+  const completed = games.filter(game => state.completed.has(game.id));
 
   main.innerHTML = `
     <div class="page profile-page">
-      <section class="profile-authored">
-        <div class="profile-authored-copy">
-          <div class="profile-kicker">
-            <span class="avatar avatar-me">DV</span>
-            <span>${escapeHTML(state.profile.handle)}</span>
-            <span>${icon('map-pin',13)} ${escapeHTML(state.profile.location)}</span>
-          </div>
-          <h1>${escapeHTML(state.profile.name)}</h1>
-          <p class="profile-statement">${escapeHTML(state.profile.bio)}</p>
-          <div class="profile-actions profile-actions--authored">
-            <button class="button button-quiet" id="edit-profile">${icon('pencil',15)} Edit profile</button>
-            <button class="button button-primary" id="profile-upload">${icon('plus',15)} Add project</button>
-          </div>
-          <div class="profile-facts">
-            <span><strong>${portfolio.length}</strong> projects</span>
-            <span><strong>1.8k</strong> followers</span>
-            <span><strong>${formatNumber(totalLikes)}</strong> appreciations</span>
-            <span class="availability-mark"><i></i>${escapeHTML(state.profile.availability)} for work</span>
+      <section class="profile-hero panel">
+        <div class="profile-identity">
+          <span class="avatar avatar-profile avatar-self">DV</span>
+          <div>
+            <span class="section-label">Member profile</span>
+            <h1>David Vale</h1>
+            <p>@davidraids · Pathfinder</p>
           </div>
         </div>
-
-        ${featured ? `
-          <button class="profile-feature" data-open-art="${featured.id}">
-            <img src="${coverImage(featured)}" alt="${escapeAttr(featured.title)}">
-            <span class="profile-feature-caption">
-              <small>Featured work</small>
-              <strong>${escapeHTML(featured.title)}</strong>
-              <span>${escapeHTML(featured.field)} · ${escapeHTML(featured.year)}</span>
-            </span>
-          </button>
-        ` : ''}
+        <p class="profile-bio">Classic-era puzzle enjoyer, Croft Manor tourist, and habitual secret-room checker. Currently replaying The Last Revelation.</p>
+        <div class="profile-actions-row">
+          <button class="secondary-button">${icon('pencil',16)} <span>Edit profile</span></button>
+          <button class="primary-button" id="profile-post">${icon('plus',16)} <span>Post</span></button>
+        </div>
+        <div class="profile-metrics">
+          <div><strong>${state.points.toLocaleString()}</strong><span>Expedition XP</span></div>
+          <div><strong>${state.level}</strong><span>Level</span></div>
+          <div><strong>${completed.length}</strong><span>Games completed</span></div>
+          <div><strong>${state.saved.size}</strong><span>Saved</span></div>
+        </div>
       </section>
 
-      <nav class="profile-tabs profile-tabs--authored" aria-label="Profile sections">
-        ${['portfolio','timeline','about','studio'].map(name => `<button class="profile-tab ${tab === name ? 'is-active' : ''}" data-profile-tab="${name}">${name[0].toUpperCase() + name.slice(1)}</button>`).join('')}
-      </nav>
+      <div class="profile-layout">
+        <section>
+          <div class="section-heading">
+            <div><span class="section-label">Shelf</span><h2>Completed games</h2></div>
+          </div>
+          <div class="profile-game-grid">
+            ${completed.length ? completed.map(game => `<button class="profile-game card" data-open-game="${game.id}"><img src="${game.image}" alt=""><span><strong>${game.title}</strong><small>${game.year}</small></span>${icon('circle-check',20)}</button>`).join('') : '<div class="empty-state">No completed games yet.</div>'}
+          </div>
 
-      <div id="profile-tab-content">
-        ${profileTabHTML(tab, portfolio)}
+          <div class="section-heading">
+            <div><span class="section-label">Activity</span><h2>Your posts</h2></div>
+          </div>
+          <div class="post-stack">
+            ${ownPosts.length ? ownPosts.map(postCard).join('') : `<div class="empty-state panel"><strong>No posts yet</strong><span>Your discoveries and discussions will appear here.</span><button class="primary-button" id="empty-post">${icon('plus',16)} <span>Share something</span></button></div>`}
+          </div>
+        </section>
+
+        <aside class="profile-rail">
+          <section class="rail-card panel">
+            <span class="section-label">Badges</span>
+            <div class="badge-grid">
+              ${badge('First Steps','footprints','Completed your first game')}
+              ${badge('Secret Keeper','key-round','Logged 10 secrets')}
+              ${badge('Manor Guest','castle','Completed a Croft Manor challenge')}
+              ${badge('Pathfinder','compass','Reached level 8')}
+            </div>
+          </section>
+
+          <section class="rail-card panel">
+            <span class="section-label">Following</span>
+            <div class="mini-members">
+              ${members.filter(m => state.following.has(m.id)).map(member => `<button data-member="${member.id}"><span class="avatar"><img src="${member.avatar}" alt=""></span><span><strong>${member.name}</strong><small>${member.handle}</small></span></button>`).join('')}
+            </div>
+          </section>
+        </aside>
       </div>
     </div>
   `;
 
-  document.querySelector('#profile-upload').addEventListener('click', () => openUpload());
-  document.querySelector('#edit-profile').addEventListener('click', openProfileEditor);
-  document.querySelectorAll('[data-profile-tab]').forEach(btn => btn.addEventListener('click', () => {
-    state.profileTab = btn.dataset.profileTab;
-    renderProfile();
-  }));
-  bindArtworkEvents(main);
-  bindStudioEvents();
-  refreshIcons();
+  document.querySelector('#profile-post')?.addEventListener('click', openComposer);
+  document.querySelector('#empty-post')?.addEventListener('click', openComposer);
+  bindCommonEvents();
 }
 
-function profileTabHTML(tab, portfolio) {
-  if (tab === 'portfolio') {
-    return portfolio.length
-      ? `<section class="portfolio-grid">${portfolio.map((item,index) => artCard(item,index,'portfolio')).join('')}</section>`
-      : `<div class="empty-state">${icon('images',30)}<strong>Your portfolio is empty.</strong>Publish a project and choose “Add to portfolio”.</div>`;
+function filteredPosts() {
+  let result = [...posts];
+  if (state.communityFilter !== 'All') result = result.filter(post => post.type === state.communityFilter);
+  if (state.search.trim()) {
+    const q = state.search.trim().toLowerCase();
+    result = result.filter(post => [post.title,post.body,...(post.tags||[])].join(' ').toLowerCase().includes(q));
   }
-
-  if (tab === 'timeline') {
-    const timeline = [...state.uploads, ...artworks.filter(item => item.artistId === 'me')];
-    return timeline.length
-      ? `<section class="following-feed">${timeline.map(item => `
-          <article class="timeline-item">
-            <span class="avatar avatar-me">DV</span>
-            <div>
-              <div class="timeline-head"><strong>${escapeHTML(state.profile.name)}</strong><span>published a project</span></div>
-              <button class="art-thumb" data-open-art="${item.id}"><img class="timeline-image" src="${coverImage(item)}" alt="${escapeAttr(item.title)}"></button>
-              <p class="timeline-copy"><strong>${escapeHTML(item.title)}</strong> · ${escapeHTML(item.description)}</p>
-            </div>
-          </article>`).join('')}</section>`
-      : '';
-  }
-
-  if (tab === 'about') {
-    return `
-      <section class="profile-about">
-        <div>
-          <h2>About</h2>
-          <p>${escapeHTML(state.profile.bio)}</p>
-          <h2>Practice</h2>
-          <p>Visual work spanning image making, illustration, print, and digital experiments. This profile keeps finished portfolio work separate from process and timeline posts.</p>
-        </div>
-        <div class="info-list">
-          <div class="info-row"><span>Location</span><span>${escapeHTML(state.profile.location)}</span></div>
-          <div class="info-row"><span>Availability</span><span>${escapeHTML(state.profile.availability)}</span></div>
-          <div class="info-row"><span>Website</span><span>${escapeHTML(state.profile.website)}</span></div>
-          <div class="info-row"><span>Member since</span><span>2026</span></div>
-        </div>
-      </section>`;
-  }
-
-  const managed = state.uploads;
-  const drafts = state.drafts;
-  return `
-    <section class="studio-grid">
-      <div>
-        <div class="section-head"><h2>Published projects</h2><p>${managed.length} you can manage</p></div>
-        <div class="studio-section">
-          ${managed.length ? managed.map(item => studioRow(item,'project')).join('') : '<div class="panel-empty">Your locally published projects will appear here.</div>'}
-        </div>
-        <div class="section-head"><h2>Drafts</h2><p>${drafts.length} saved</p></div>
-        <div class="studio-section">
-          ${drafts.length ? drafts.map(item => studioRow(item,'draft')).join('') : '<div class="panel-empty">No drafts saved.</div>'}
-        </div>
-      </div>
-      <aside>
-        <div class="section-head"><h2>Portfolio pulse</h2><p>Last 30 days</p></div>
-        <div class="metric-grid">
-          <div class="metric"><strong>8.4k</strong><span>Project views</span></div>
-          <div class="metric"><strong>612</strong><span>Profile visits</span></div>
-          <div class="metric"><strong>184</strong><span>Appreciations</span></div>
-          <div class="metric"><strong>39</strong><span>New followers</span></div>
-        </div>
-        <div class="section-head"><h2>Job activity</h2><p>Private</p></div>
-        <div class="info-list">
-          <div class="info-row"><span>Saved jobs</span><span>${state.jobSaves.size}</span></div>
-          <div class="info-row"><span>Applications</span><span>${state.applications.length}</span></div>
-          <div class="info-row"><span>Availability</span><span>${escapeHTML(state.profile.availability)}</span></div>
-        </div>
-      </aside>
-    </section>`;
+  return result;
 }
 
-function studioRow(item, type) {
-  const image = coverImage(item);
-  return `<div class="studio-row">
-    <div>${image ? `<img src="${image}" alt="">` : '<div style="width:74px;height:54px;background:var(--surface)"></div>'}</div>
-    <div><h3>${escapeHTML(item.title || 'Untitled draft')}</h3><p>${escapeHTML(item.field || 'Uncategorized')} · ${type === 'draft' ? 'Draft' : item.portfolio === false ? 'Timeline only' : 'Portfolio'}</p></div>
-    <div class="row-actions">
-      <button class="button button-small button-quiet" data-edit-${type}="${item.id}">${icon('pencil',14)} Edit</button>
-      <button class="button button-small button-danger" data-delete-${type}="${item.id}">${icon('trash-2',14)}</button>
+function postCard(post) {
+  const member = memberById(post.memberId);
+  const game = gameById(post.gameId);
+  const liked = state.liked.has(post.id);
+  const saved = state.saved.has(post.id);
+
+  return `<article class="social-post panel">
+    <div class="post-header">
+      <button class="member-chip" data-member="${member.id}">
+        <span class="avatar">${member.avatar ? `<img src="${member.avatar}" alt="">` : 'DV'}</span>
+        <span><strong>${member.name}</strong><small>${member.handle} · ${post.time || 'now'}</small></span>
+      </button>
+      <span class="post-type">${icon(post.type==='Discussion'?'message-circle':post.type==='Collection'?'archive':'compass',15)} ${post.type}</span>
     </div>
+    <button class="post-body" data-open-post="${post.id}">
+      <span class="post-copy">
+        <strong>${escapeHTML(post.title)}</strong>
+        <span>${escapeHTML(post.body)}</span>
+      </span>
+      ${post.image ? `<img src="${post.image}" alt="">` : ''}
+    </button>
+    <div class="post-context">
+      <span>${icon('gamepad-2',15)} ${escapeHTML(game?.title || 'General')}</span>
+      ${(post.tags||[]).slice(0,3).map(tag => `<span>#${escapeHTML(tag)}</span>`).join('')}
+    </div>
+    <div class="post-actions">
+      <button class="${liked?'is-active':''}" data-like-post="${post.id}">${icon('heart',17)} <span>${post.likes + (liked?1:0)}</span></button>
+      <button data-open-post="${post.id}">${icon('message-circle',17)} <span>${post.comments}</span></button>
+      <button class="${saved?'is-active':''}" data-save-post="${post.id}">${icon(saved?'bookmark-check':'bookmark',17)} <span>${saved?'Saved':'Save'}</span></button>
+    </div>
+  </article>`;
+}
+
+function gameCard(game) {
+  return `<button class="game-card" data-open-game="${game.id}">
+    <img src="${game.image}" alt="">
+    <span class="game-card-overlay"></span>
+    <span class="game-card-copy"><small>${game.era} · ${game.year}</small><strong>${game.title}</strong><span>${icon('users',15)} ${game.community.toLocaleString()}</span></span>
+  </button>`;
+}
+
+function gameLibraryCard(game) {
+  const completed = state.completed.has(game.id);
+  const playing = state.playing.has(game.id);
+  return `<article class="library-card panel" data-game-era="${game.era}">
+    <button class="library-cover" data-open-game="${game.id}"><img src="${game.image}" alt=""></button>
+    <div class="library-copy">
+      <div class="library-title-row"><div><span class="section-label">${game.era} · ${game.year}</span><h2>${game.title}</h2></div><span class="rating">${icon('star',16)} ${game.rating}</span></div>
+      <p>${game.description}</p>
+      <div class="tag-row">${game.tags.map(tag=>`<span>${tag}</span>`).join('')}</div>
+      <div class="library-footer">
+        <span>${icon('map-pin',16)} ${game.location}</span>
+        <span>${icon('users',16)} ${game.community.toLocaleString()} members</span>
+      </div>
+      <div class="library-actions">
+        <button class="secondary-button ${playing?'is-selected':''}" data-toggle-playing="${game.id}">${icon('play',16)} <span>${playing?'Playing':'Play next'}</span></button>
+        <button class="secondary-button ${completed?'is-selected':''}" data-toggle-completed="${game.id}">${icon('circle-check',16)} <span>${completed?'Completed':'Mark complete'}</span></button>
+        <button class="icon-button" data-open-game="${game.id}" aria-label="More about ${game.title}">${icon('chevron-right',18)}</button>
+      </div>
+    </div>
+  </article>`;
+}
+
+function loreCard(entry) {
+  const game = gameById(entry.gameId);
+  const saved = state.saved.has(entry.id);
+  return `<article class="lore-card panel">
+    <div class="lore-icon">${icon(entry.icon,25)}</div>
+    <span class="section-label">${entry.type}</span>
+    <h3>${entry.title}</h3>
+    <p>${entry.summary}</p>
+    <div class="lore-footer">
+      <span>${game?.title || ''}</span>
+      <div>
+        <button class="icon-button ${saved?'is-selected':''}" data-save-lore="${entry.id}" aria-label="Save entry">${icon(saved?'bookmark-check':'bookmark',17)}</button>
+        <button class="icon-button" data-open-lore="${entry.id}" aria-label="Open entry">${icon('arrow-up-right',17)}</button>
+      </div>
+    </div>
+  </article>`;
+}
+
+function challengeCard(challenge, large=false) {
+  const joined = state.joinedChallenges.has(challenge.id);
+  return `<div class="challenge-card ${large?'challenge-large':''}">
+    <div class="challenge-top">
+      <span class="challenge-icon">${icon(challenge.icon,20)}</span>
+      <span class="xp-chip">+${challenge.points} XP</span>
+    </div>
+    <strong>${challenge.title}</strong>
+    <p>${challenge.description}</p>
+    ${joined ? `<div class="progress-row"><span>Progress</span><strong>${challenge.progress} / ${challenge.goal}</strong></div><div class="progress-track"><span style="width:${Math.min(100,(challenge.progress/challenge.goal)*100)}%"></span></div>` : ''}
+    <button class="${joined?'secondary-button':'primary-button'} compact" data-toggle-challenge="${challenge.id}">${icon(joined?'circle-check':'plus',16)} <span>${joined?'Joined':'Join challenge'}</span></button>
   </div>`;
 }
 
-function bindStudioEvents() {
-  document.querySelectorAll('[data-edit-project]').forEach(btn => btn.addEventListener('click', () => openUpload(artById(btn.dataset.editProject))));
-  document.querySelectorAll('[data-edit-draft]').forEach(btn => btn.addEventListener('click', () => {
-    const draft = state.drafts.find(item => item.id === btn.dataset.editDraft);
-    openUpload(draft, true);
-  }));
-  document.querySelectorAll('[data-delete-project]').forEach(btn => btn.addEventListener('click', () => {
-    state.uploads = state.uploads.filter(item => item.id !== btn.dataset.deleteProject);
-    persist();
-    renderProfile();
-    showToast('Project deleted');
-  }));
-  document.querySelectorAll('[data-delete-draft]').forEach(btn => btn.addEventListener('click', () => {
-    state.drafts = state.drafts.filter(item => item.id !== btn.dataset.deleteDraft);
-    persist();
-    renderProfile();
-    showToast('Draft deleted');
-  }));
+function memberCard(member) {
+  const following = state.following.has(member.id);
+  return `<article class="member-card">
+    <button class="member-card-main" data-member="${member.id}">
+      <span class="avatar avatar-large"><img src="${member.avatar}" alt=""></span>
+      <span><strong>${member.name}</strong><small>${member.handle}</small><small>Level ${member.level} · ${member.title}</small></span>
+    </button>
+    <button class="follow-button ${following?'is-following':''}" data-follow="${member.id}">${following?'Following':'Follow'}</button>
+  </article>`;
 }
 
-function openProfileEditor() {
-  openModal({
-    eyebrow:'Profile',
-    title:'Edit profile',
-    html:`
-      <form id="profile-form" class="modal-body">
-        <div class="form-grid">
-          <label><span>Name</span><input id="profile-name" required value="${escapeAttr(state.profile.name)}"></label>
-          <label><span>Handle</span><input id="profile-handle" required value="${escapeAttr(state.profile.handle)}"></label>
-        </div>
-        <label><span>Location</span><input id="profile-location" value="${escapeAttr(state.profile.location)}"></label>
-        <label><span>Bio</span><textarea id="profile-bio" rows="4" maxlength="420">${escapeHTML(state.profile.bio)}</textarea></label>
-        <div class="form-grid">
-          <label><span>Website</span><input id="profile-website" value="${escapeAttr(state.profile.website)}"></label>
-          <label><span>Availability</span>
-            <select id="profile-availability">
-              <option ${state.profile.availability === 'Available' ? 'selected' : ''}>Available</option>
-              <option ${state.profile.availability === 'Limited' ? 'selected' : ''}>Limited</option>
-              <option ${state.profile.availability === 'Booked' ? 'selected' : ''}>Booked</option>
-            </select>
-          </label>
-        </div>
-        <div class="modal-actions">
-          <button type="button" class="button button-quiet" data-close-modal>Cancel</button>
-          <button type="submit" class="button button-primary">Save profile</button>
-        </div>
-      </form>
-    `,
-    onMount:() => {
-      bindCloseModalButtons();
-      document.querySelector('#profile-form').addEventListener('submit', event => {
-        event.preventDefault();
-        state.profile = {
-          name:document.querySelector('#profile-name').value.trim(),
-          handle:document.querySelector('#profile-handle').value.trim().replace(/^([^@])/, '@$1'),
-          location:document.querySelector('#profile-location').value.trim(),
-          bio:document.querySelector('#profile-bio').value.trim(),
-          website:document.querySelector('#profile-website').value.trim(),
-          availability:document.querySelector('#profile-availability').value
-        };
-        persist();
-        closeModal();
-        renderProfile();
-        showToast('Profile updated');
-      });
+function collectionCard(collection) {
+  return `<article class="collection-card panel">
+    <button class="collection-preview">
+      <img src="${collection.images[0]}" alt="">
+      <div class="collection-side-images"><img src="${collection.images[1]}" alt=""><img src="${collection.images[2]}" alt=""></div>
+    </button>
+    <div class="collection-info">
+      <span class="collection-icon">${icon(collection.icon,18)}</span>
+      <div><strong>${collection.title}</strong><small>${collection.count} items</small></div>
+      ${icon('chevron-right',18)}
+    </div>
+  </article>`;
+}
+
+function badge(title, iconName, description) {
+  return `<div class="badge-card"><span>${icon(iconName,21)}</span><strong>${title}</strong><small>${description}</small></div>`;
+}
+
+function savedItemsHTML() {
+  const savedLore = lore.filter(item => state.saved.has(item.id)).slice(0,3);
+  const savedPosts = posts.filter(item => state.saved.has(item.id)).slice(0,3);
+  const items = [
+    ...savedLore.map(item => ({title:item.title, meta:item.type, icon:item.icon, id:item.id, kind:'lore'})),
+    ...savedPosts.map(item => ({title:item.title, meta:item.type, icon:'message-square-text', id:item.id, kind:'post'}))
+  ];
+  if (!items.length) return `<div class="empty-state panel"><strong>Nothing saved yet</strong><span>Use the bookmark button on posts and lore entries.</span></div>`;
+  return items.map(item => `<button class="saved-item card" data-open-${item.kind}="${item.id}"><span class="saved-icon">${icon(item.icon,21)}</span><span><strong>${item.title}</strong><small>${item.meta}</small></span>${icon('chevron-right',18)}</button>`).join('');
+}
+
+function bindCommonEvents() {
+  document.querySelectorAll('[data-open-game]').forEach(button => button.addEventListener('click', () => openGame(button.dataset.openGame)));
+  document.querySelectorAll('[data-open-post]').forEach(button => button.addEventListener('click', () => openPost(button.dataset.openPost)));
+  document.querySelectorAll('[data-open-lore]').forEach(button => button.addEventListener('click', () => openLore(button.dataset.openLore)));
+
+  document.querySelectorAll('[data-like-post]').forEach(button => button.addEventListener('click', event => {
+    event.stopPropagation();
+    const id = button.dataset.likePost;
+    if (state.liked.has(id)) {
+      state.liked.delete(id);
+      persist();
+      renderRoute();
+    } else {
+      state.liked.add(id);
+      addPoints(5,'Community appreciation');
+      renderRoute();
     }
-  });
-}
+  }));
 
-function renderArtist(id) {
-  const artist = artistById(id);
-  if (!artist || id === 'me') {
-    location.hash = 'profile';
-    return;
-  }
-  const portfolio = allArt().filter(item => item.artistId === id && item.portfolio !== false);
-  const following = state.follows.has(id);
-  const featured = portfolio[0];
-
-  main.innerHTML = `
-    <div class="page profile-page">
-      <section class="profile-authored">
-        <div class="profile-authored-copy">
-          <div class="profile-kicker">
-            <span class="avatar"><img src="${artist.avatar}" alt=""></span>
-            <span>${escapeHTML(artist.handle)}</span>
-            <span>${icon('map-pin',13)} ${escapeHTML(artist.location)}</span>
-          </div>
-          <h1>${escapeHTML(artist.name)}</h1>
-          <p class="profile-statement">${escapeHTML(artist.bio)}</p>
-          <div class="profile-actions profile-actions--authored">
-            <button class="button button-quiet" id="message-artist">${icon('mail',15)} Message</button>
-            <button class="button ${following ? 'button-quiet' : 'button-primary'}" id="follow-artist">${following ? 'Following' : 'Follow'}</button>
-          </div>
-          <div class="profile-facts">
-            <span><strong>${portfolio.length}</strong> projects</span>
-            <span><strong>${formatNumber(artist.followers)}</strong> followers</span>
-            <span><strong>${formatNumber(artist.views)}</strong> project views</span>
-            <span class="availability-mark ${artist.status === 'Available' ? '' : 'is-busy'}"><i></i>${escapeHTML(artist.status)} for work</span>
-          </div>
-        </div>
-
-        ${featured ? `
-          <button class="profile-feature" data-open-art="${featured.id}">
-            <img src="${coverImage(featured)}" alt="${escapeAttr(featured.title)}">
-            <span class="profile-feature-caption">
-              <small>Featured work</small>
-              <strong>${escapeHTML(featured.title)}</strong>
-              <span>${escapeHTML(featured.field)} · ${escapeHTML(featured.year)}</span>
-            </span>
-          </button>
-        ` : ''}
-      </section>
-
-      <nav class="profile-tabs profile-tabs--authored">
-        <button class="profile-tab is-active" id="artist-portfolio-tab">Portfolio</button>
-        <button class="profile-tab" id="artist-about-tab">About</button>
-      </nav>
-
-      <div id="artist-content">
-        <section class="portfolio-grid">${portfolio.map((item,index) => artCard(item,index,'portfolio')).join('')}</section>
-      </div>
-    </div>
-  `;
-
-  document.querySelector('#follow-artist').addEventListener('click', () => toggleFollow(id));
-  document.querySelector('#message-artist').addEventListener('click', () => openMessages(id));
-  document.querySelector('#artist-portfolio-tab').addEventListener('click', () => renderArtist(id));
-  document.querySelector('#artist-about-tab').addEventListener('click', event => {
-    document.querySelectorAll('.profile-tab').forEach(btn => btn.classList.remove('is-active'));
-    event.currentTarget.classList.add('is-active');
-    document.querySelector('#artist-content').innerHTML = `
-      <section class="profile-about">
-        <div><h2>About</h2><p>${escapeHTML(artist.bio)}</p></div>
-        <div class="info-list">
-          <div class="info-row"><span>Practice</span><span>${escapeHTML(artist.field)}</span></div>
-          <div class="info-row"><span>Location</span><span>${escapeHTML(artist.location)}</span></div>
-          <div class="info-row"><span>Availability</span><span>${escapeHTML(artist.status)}</span></div>
-          <div class="info-row"><span>Website</span><span>${escapeHTML(artist.website)}</span></div>
-          <div class="info-row"><span>Member since</span><span>${escapeHTML(artist.joined)}</span></div>
-        </div>
-      </section>`;
-  });
-  bindArtworkEvents(main);
-  refreshIcons();
-}
-
-function toggleLike(id) {
-  if (state.likes.has(id)) state.likes.delete(id);
-  else state.likes.add(id);
-  persist();
-  if (currentProjectId === id && artDialog.open) renderProjectDialog();
-  else renderRoute();
-  showToast(state.likes.has(id) ? 'Added appreciation' : 'Appreciation removed');
-}
-
-function toggleSave(id) {
-  if (state.saves.has(id)) state.saves.delete(id);
-  else state.saves.add(id);
-  persist();
-  if (currentProjectId === id && artDialog.open) renderProjectDialog();
-  else renderRoute();
-  showToast(state.saves.has(id) ? 'Saved' : 'Removed from saved work');
-}
-
-function toggleFollow(id) {
-  if (state.follows.has(id)) state.follows.delete(id);
-  else state.follows.add(id);
-  persist();
-  renderRoute();
-  showToast(state.follows.has(id) ? 'Following artist' : 'Unfollowed artist');
-}
-
-function openArtwork(id, focusComments = false) {
-  const item = artById(id);
-  if (!item) return;
-  currentProjectId = id;
-  currentProjectMedia = 0;
-  renderProjectDialog();
-  if (!artDialog.open) artDialog.showModal();
-  document.body.classList.add('no-scroll');
-  if (focusComments) {
-    setTimeout(() => document.querySelector('#project-comment-input')?.focus(), 60);
-  }
-}
-
-function renderProjectDialog() {
-  const item = artById(currentProjectId);
-  if (!item) return;
-  const artist = artistById(item.artistId);
-  const liked = state.likes.has(item.id);
-  const saved = state.saves.has(item.id);
-  const following = item.artistId !== 'me' && state.follows.has(item.artistId);
-  const images = projectImages(item);
-  const comments = state.comments[item.id] || [];
-  const currentImage = images[currentProjectMedia] || images[0];
-
-  artDialogContent.innerHTML = `
-    <div class="project-layout">
-      <div class="project-media-column">
-        <div class="project-media">
-          <img src="${currentImage}" alt="${escapeAttr(item.title)} by ${escapeAttr(item.artist)}">
-          ${images.length > 1 ? `
-            <div class="media-nav">
-              <button data-media-prev aria-label="Previous image">${icon('chevron-left',20)}</button>
-              <button data-media-next aria-label="Next image">${icon('chevron-right',20)}</button>
-            </div>
-          ` : ''}
-        </div>
-        ${images.length > 1 ? `<div class="media-dots">${images.map((_,index) => `<button class="media-dot ${index === currentProjectMedia ? 'is-active' : ''}" data-media-index="${index}" aria-label="Show image ${index + 1}"></button>`).join('')}</div>` : ''}
-      </div>
-
-      <section class="project-info">
-        <div class="project-author">
-          <span class="avatar">${artist?.avatar ? `<img src="${artist.avatar}" alt="">` : 'DV'}</span>
-          <div class="project-author-copy">
-            <button data-project-author="${item.artistId}">${escapeHTML(item.artist)}</button>
-            <small>${escapeHTML(artist?.handle || state.profile.handle)} · ${escapeHTML(item.field)}</small>
-          </div>
-          ${item.artistId !== 'me' ? `<button class="button button-small ${following ? 'button-quiet' : 'button-primary'}" id="project-follow">${following ? 'Following' : 'Follow'}</button>` : ''}
-        </div>
-
-        <div class="project-title-block">
-          <p class="project-index">${escapeHTML(item.field)} / ${escapeHTML(item.year || '2026')}</p>
-          <h2>${escapeHTML(item.title)}</h2>
-          <p class="project-description">${escapeHTML(item.description || 'A new project shared with the Margin community.')}</p>
-        </div>
-
-        <div class="project-facts-line">
-          ${item.process !== false ? `<span><small>Made with</small>${escapeHTML(item.tools || 'Mixed media')}</span>` : ''}
-          <span><small>Project</small>${images.length} image${images.length === 1 ? '' : 's'}</span>
-        </div>
-
-        <div class="tag-list">${(item.tags || []).map(tag => `<button class="tag" data-project-tag="${escapeAttr(tag)}">#${escapeHTML(tag)}</button>`).join('')}</div>
-
-        <div class="project-actions">
-          <button class="button ${liked ? 'button-primary' : 'button-quiet'}" id="project-like">${icon('heart',16)} ${liked ? 'Appreciated' : 'Appreciate'}</button>
-          <button class="button ${saved ? 'button-primary' : 'button-quiet'}" id="project-save">${icon('bookmark',16)} ${saved ? 'Saved' : 'Save'}</button>
-        </div>
-
-        <div class="project-secondary-actions">
-          <button class="text-action" id="add-to-collection">${icon('folder-plus',15)} Collection</button>
-          <button class="text-action" id="share-project">${icon('share-2',15)} Share</button>
-          ${item.artistId === 'me' && String(item.id).startsWith('local-') ? `<button class="text-action" id="edit-project-dialog">${icon('pencil',15)} Edit</button>` : ''}
-        </div>
-
-        <p class="project-rights">${escapeHTML(item.rights || '© ' + item.artist + '. All rights reserved.')}</p>
-
-        ${item.comments !== false ? `
-          <section class="comments">
-            <h3>Comments · ${comments.length}</h3>
-            <div id="comment-list">
-              ${comments.length ? comments.map(commentHTML).join('') : '<p style="color:var(--faint)">No comments yet.</p>'}
-            </div>
-            <form class="comment-form" id="comment-form">
-              <input id="project-comment-input" maxlength="500" placeholder="Leave a thoughtful comment" aria-label="Comment">
-              <button class="button button-small button-primary" type="submit">Post</button>
-            </form>
-          </section>
-        ` : ''}
-      </section>
-    </div>
-  `;
-
-  document.querySelector('#project-like').addEventListener('click', () => toggleLike(item.id));
-  document.querySelector('#project-save').addEventListener('click', () => toggleSave(item.id));
-  document.querySelector('#project-follow')?.addEventListener('click', () => {
-    if (state.follows.has(item.artistId)) state.follows.delete(item.artistId);
-    else state.follows.add(item.artistId);
+  document.querySelectorAll('[data-save-post]').forEach(button => button.addEventListener('click', event => {
+    event.stopPropagation();
+    const id = button.dataset.savePost;
+    state.saved.has(id) ? state.saved.delete(id) : state.saved.add(id);
     persist();
-    renderProjectDialog();
-  });
-  document.querySelector('[data-project-author]').addEventListener('click', () => {
-    closeArtwork();
-    location.hash = item.artistId === 'me' ? 'profile' : 'artist/' + item.artistId;
-  });
-  document.querySelectorAll('[data-project-tag]').forEach(btn => btn.addEventListener('click', () => {
-    state.search = btn.dataset.projectTag;
-    searchInput.value = state.search;
-    closeArtwork();
-    location.hash = 'explore';
+    renderRoute();
+    showToast(state.saved.has(id) ? 'Saved to your archive' : 'Removed from saved');
+  }));
+
+  document.querySelectorAll('[data-save-lore]').forEach(button => button.addEventListener('click', () => {
+    const id = button.dataset.saveLore;
+    state.saved.has(id) ? state.saved.delete(id) : state.saved.add(id);
+    persist();
+    renderRoute();
+    showToast(state.saved.has(id) ? 'Lore entry saved' : 'Removed from saved');
+  }));
+
+  document.querySelectorAll('[data-follow]').forEach(button => button.addEventListener('click', () => {
+    const id = button.dataset.follow;
+    if (state.following.has(id)) {
+      state.following.delete(id);
+      persist();
+      renderRoute();
+    } else {
+      state.following.add(id);
+      addPoints(10,'Connected with a raider');
+      renderRoute();
+    }
+  }));
+
+  document.querySelectorAll('[data-toggle-playing]').forEach(button => button.addEventListener('click', () => {
+    const id = button.dataset.togglePlaying;
+    state.playing.has(id) ? state.playing.delete(id) : state.playing.add(id);
+    persist();
     renderRoute();
   }));
-  document.querySelector('#add-to-collection').addEventListener('click', () => openAddToCollection(item.id));
-  document.querySelector('#share-project').addEventListener('click', () => shareProject(item));
-  document.querySelector('#edit-project-dialog')?.addEventListener('click', () => {
-    closeArtwork();
-    openUpload(item);
-  });
-  document.querySelector('[data-media-prev]')?.addEventListener('click', () => {
-    currentProjectMedia = (currentProjectMedia - 1 + images.length) % images.length;
-    renderProjectDialog();
-  });
-  document.querySelector('[data-media-next]')?.addEventListener('click', () => {
-    currentProjectMedia = (currentProjectMedia + 1) % images.length;
-    renderProjectDialog();
-  });
-  document.querySelectorAll('[data-media-index]').forEach(btn => btn.addEventListener('click', () => {
-    currentProjectMedia = Number(btn.dataset.mediaIndex);
-    renderProjectDialog();
+
+  document.querySelectorAll('[data-toggle-completed]').forEach(button => button.addEventListener('click', () => {
+    const id = button.dataset.toggleCompleted;
+    if (state.completed.has(id)) {
+      state.completed.delete(id);
+      persist();
+      renderRoute();
+    } else {
+      state.completed.add(id);
+      addPoints(75,'Game completed');
+      renderRoute();
+    }
   }));
-  document.querySelector('#comment-form')?.addEventListener('submit', event => {
+
+  document.querySelectorAll('[data-toggle-challenge]').forEach(button => button.addEventListener('click', () => {
+    const id = button.dataset.toggleChallenge;
+    if (state.joinedChallenges.has(id)) {
+      state.joinedChallenges.delete(id);
+      persist();
+      renderRoute();
+    } else {
+      state.joinedChallenges.add(id);
+      addPoints(20,'Challenge joined');
+      renderRoute();
+    }
+  }));
+
+  document.querySelectorAll('[data-member]').forEach(button => button.addEventListener('click', () => {
+    const member = memberById(button.dataset.member);
+    if (member) showToast(`${member.name} · Level ${member.level} ${member.title}`);
+  }));
+}
+
+function openGame(id) {
+  const game = gameById(id);
+  if (!game) return;
+  const completed = state.completed.has(id);
+  const playing = state.playing.has(id);
+  const gameLore = lore.filter(entry => entry.gameId === id);
+  const gamePosts = posts.filter(post => post.gameId === id).slice(0,3);
+
+  openDetail('Game archive', game.title, `
+    <div class="game-detail">
+      <img class="detail-hero-image" src="${game.image}" alt="">
+      <div class="detail-meta-row"><span>${game.era}</span><span>${game.year}</span><span>${icon('star',15)} ${game.rating}</span><span>${icon('users',15)} ${game.community.toLocaleString()}</span></div>
+      <p class="detail-lead">${game.description}</p>
+      <div class="detail-info-grid">
+        <div><span>Locations</span><strong>${game.location}</strong></div>
+        <div><span>Community tags</span><strong>${game.tags.join(' · ')}</strong></div>
+      </div>
+      <div class="detail-action-row">
+        <button class="secondary-button ${playing?'is-selected':''}" data-detail-playing="${game.id}">${icon('play',16)} <span>${playing?'Playing':'Play next'}</span></button>
+        <button class="secondary-button ${completed?'is-selected':''}" data-detail-completed="${game.id}">${icon('circle-check',16)} <span>${completed?'Completed':'Mark complete'}</span></button>
+      </div>
+      ${gameLore.length ? `<div class="detail-section"><div class="section-heading compact-heading"><div><span class="section-label">Lore</span><h2>Related entries</h2></div></div><div class="related-list">${gameLore.map(item=>`<button data-detail-lore="${item.id}">${icon(item.icon,18)}<span><strong>${item.title}</strong><small>${item.type}</small></span>${icon('chevron-right',17)}</button>`).join('')}</div></div>` : ''}
+      ${gamePosts.length ? `<div class="detail-section"><div class="section-heading compact-heading"><div><span class="section-label">Community</span><h2>Recent posts</h2></div></div><div class="related-list">${gamePosts.map(item=>`<button data-detail-post="${item.id}">${icon(item.type==='Discussion'?'message-circle':'compass',18)}<span><strong>${item.title}</strong><small>${item.comments} replies</small></span>${icon('chevron-right',17)}</button>`).join('')}</div></div>` : ''}
+    </div>
+  `);
+
+  document.querySelector('[data-detail-playing]')?.addEventListener('click', () => {
+    state.playing.has(id) ? state.playing.delete(id) : state.playing.add(id);
+    persist(); closeDetail(); openGame(id);
+  });
+  document.querySelector('[data-detail-completed]')?.addEventListener('click', () => {
+    if (state.completed.has(id)) state.completed.delete(id);
+    else { state.completed.add(id); addPoints(75,'Game completed'); }
+    persist(); closeDetail(); openGame(id);
+  });
+  document.querySelectorAll('[data-detail-lore]').forEach(btn => btn.addEventListener('click', () => { closeDetail(); openLore(btn.dataset.detailLore); }));
+  document.querySelectorAll('[data-detail-post]').forEach(btn => btn.addEventListener('click', () => { closeDetail(); openPost(btn.dataset.detailPost); }));
+}
+
+function openLore(id) {
+  const entry = lore.find(item => item.id === id);
+  if (!entry) return;
+  const game = gameById(entry.gameId);
+  const saved = state.saved.has(id);
+
+  openDetail(entry.type, entry.title, `
+    <div class="lore-detail">
+      <div class="detail-symbol">${icon(entry.icon,46)}</div>
+      <p class="detail-lead">${entry.summary}</p>
+      <div class="detail-info-grid">
+        <div><span>Appears in</span><strong>${game?.title || 'Series archive'}</strong></div>
+        <div><span>Classification</span><strong>${entry.type}</strong></div>
+      </div>
+      <div class="lore-note panel">
+        <span class="section-label">Community note</span>
+        <p>This entry is designed to grow with member notes, screenshots, references, theories, and linked discoveries once the backend layer is connected.</p>
+      </div>
+      <div class="detail-action-row">
+        <button class="secondary-button ${saved?'is-selected':''}" id="detail-save-lore">${icon(saved?'bookmark-check':'bookmark',16)} <span>${saved?'Saved':'Save entry'}</span></button>
+        <button class="secondary-button" id="detail-open-game">${icon('gamepad-2',16)} <span>Open game</span></button>
+      </div>
+    </div>
+  `);
+
+  document.querySelector('#detail-save-lore').addEventListener('click', () => {
+    state.saved.has(id) ? state.saved.delete(id) : state.saved.add(id);
+    persist(); closeDetail(); openLore(id);
+  });
+  document.querySelector('#detail-open-game').addEventListener('click', () => { closeDetail(); openGame(entry.gameId); });
+}
+
+function openPost(id) {
+  const post = posts.find(item => item.id === id);
+  if (!post) return;
+  const member = memberById(post.memberId);
+  const game = gameById(post.gameId);
+  const postComments = comments[id] || [];
+
+  openDetail(post.type, post.title, `
+    <article class="post-detail">
+      <div class="post-detail-author">
+        <span class="avatar">${member.avatar ? `<img src="${member.avatar}" alt="">` : 'DV'}</span>
+        <span><strong>${member.name}</strong><small>${member.handle} · ${post.time || 'now'}</small></span>
+      </div>
+      ${post.image ? `<img class="detail-hero-image" src="${post.image}" alt="">` : ''}
+      <p class="detail-lead">${escapeHTML(post.body)}</p>
+      <div class="post-context"><span>${icon('gamepad-2',15)} ${game?.title || 'General'}</span>${(post.tags||[]).map(tag=>`<span>#${escapeHTML(tag)}</span>`).join('')}</div>
+      <div class="detail-action-row">
+        <button class="secondary-button ${state.liked.has(id)?'is-selected':''}" id="detail-like-post">${icon('heart',16)} <span>${post.likes + (state.liked.has(id)?1:0)}</span></button>
+        <button class="secondary-button ${state.saved.has(id)?'is-selected':''}" id="detail-save-post">${icon(state.saved.has(id)?'bookmark-check':'bookmark',16)} <span>${state.saved.has(id)?'Saved':'Save'}</span></button>
+      </div>
+      <div class="comments-section">
+        <div class="section-heading compact-heading"><div><span class="section-label">Discussion</span><h2>${postComments.length} replies</h2></div></div>
+        <div class="comment-list">
+          ${postComments.length ? postComments.map(comment => `<div class="comment"><span class="avatar avatar-self">DV</span><div><strong>${escapeHTML(comment.name)}</strong><p>${escapeHTML(comment.body)}</p><small>${comment.time}</small></div></div>`).join('') : '<div class="empty-comments">No replies yet. Start the conversation.</div>'}
+        </div>
+        <form class="comment-form" id="comment-form">
+          <input id="comment-input" maxlength="500" placeholder="Write a reply" aria-label="Reply">
+          <button class="primary-button" type="submit">${icon('send',16)} <span>Reply</span></button>
+        </form>
+      </div>
+    </article>
+  `);
+
+  document.querySelector('#detail-like-post').addEventListener('click', () => {
+    if (state.liked.has(id)) state.liked.delete(id);
+    else { state.liked.add(id); addPoints(5,'Community appreciation'); }
+    persist(); closeDetail(); openPost(id);
+  });
+
+  document.querySelector('#detail-save-post').addEventListener('click', () => {
+    state.saved.has(id) ? state.saved.delete(id) : state.saved.add(id);
+    persist(); closeDetail(); openPost(id);
+  });
+
+  document.querySelector('#comment-form').addEventListener('submit', event => {
     event.preventDefault();
-    const input = document.querySelector('#project-comment-input');
+    const input = document.querySelector('#comment-input');
     const body = input.value.trim();
     if (!body) return;
-    if (!state.comments[item.id]) state.comments[item.id] = [];
-    state.comments[item.id].push({ id:'comment-' + Date.now(), author:state.profile.name, avatar:'me', body, time:'now' });
-    persist();
-    renderProjectDialog();
-    setTimeout(() => document.querySelector('#project-comment-input')?.focus(), 20);
+    if (!comments[id]) comments[id] = [];
+    comments[id].push({ id:'cm-'+Date.now(), name:'David Vale', body, time:'now' });
+    post.comments += 1;
+    writeLocal(STORAGE.comments, comments);
+    addPoints(15,'Added to the discussion');
+    closeDetail();
+    openPost(id);
   });
+}
+
+function openDetail(label, title, html) {
+  document.querySelector('#detail-label').textContent = label;
+  document.querySelector('#detail-title').textContent = title;
+  document.querySelector('#detail-content').innerHTML = html;
+  if (!detailModal.open) detailModal.showModal();
   refreshIcons();
 }
 
-function commentHTML(comment) {
-  const artist = artistById(comment.avatar);
-  return `<div class="comment">
-    <span class="avatar">${artist?.avatar ? `<img src="${artist.avatar}" alt="">` : 'DV'}</span>
-    <div><p><strong>${escapeHTML(comment.author)}</strong> ${escapeHTML(comment.body)}</p><small>${escapeHTML(comment.time)}</small></div>
-  </div>`;
+function closeDetail() {
+  if (detailModal.open) detailModal.close();
 }
 
-function closeArtwork() {
-  if (artDialog.open) artDialog.close();
-  currentProjectId = null;
-  document.body.classList.remove('no-scroll');
+function openComposer() {
+  currentPostType = 'Discovery';
+  document.querySelectorAll('[data-post-type]').forEach((btn,index) => btn.classList.toggle('is-active', index===0));
+  document.querySelector('#create-form').reset();
+  populateGameSelect();
+  createModal.showModal();
+  refreshIcons();
 }
 
-function shareProject(item) {
-  const url = location.origin + location.pathname + '#project/' + item.id;
-  if (navigator.share) {
-    navigator.share({ title:item.title, text:item.title + ' by ' + item.artist, url }).catch(() => {});
-  } else if (navigator.clipboard) {
-    navigator.clipboard.writeText(url).then(() => showToast('Project link copied'));
-  } else {
-    showToast('Project link ready to copy');
-  }
+function populateGameSelect() {
+  document.querySelector('#post-game').innerHTML = '<option value="">General Tomb Raider</option>' + games.map(game => `<option value="${game.id}">${game.title}</option>`).join('');
 }
 
-function openAddToCollection(projectId) {
-  openModal({
-    eyebrow:'Collections',
-    title:'Add project',
-    html:`
-      <div class="modal-body">
-        <p>Choose where this project belongs. A project can be in more than one collection.</p>
-        <div class="modal-list">
-          ${state.collections.map(collection => `
-            <div class="modal-list-row">
-              <label><input type="checkbox" data-collection-check="${collection.id}" ${collection.itemIds.includes(projectId) ? 'checked' : ''}> <span>${escapeHTML(collection.name)}</span></label>
-              <small style="color:var(--muted)">${collection.itemIds.length} works</small>
-            </div>
-          `).join('')}
-        </div>
-        <div class="modal-actions">
-          <button class="button button-quiet" id="quick-new-collection">${icon('plus',15)} New collection</button>
-          <button class="button button-primary" id="save-collection-membership">Done</button>
-        </div>
-      </div>
-    `,
-    onMount:() => {
-      document.querySelector('#save-collection-membership').addEventListener('click', () => {
-        state.collections.forEach(collection => {
-          const checked = document.querySelector(`[data-collection-check="${collection.id}"]`)?.checked;
-          const hasItem = collection.itemIds.includes(projectId);
-          if (checked && !hasItem) collection.itemIds.unshift(projectId);
-          if (!checked && hasItem) collection.itemIds = collection.itemIds.filter(id => id !== projectId);
-        });
-        persist();
-        closeModal();
-        showToast('Collections updated');
-      });
-      document.querySelector('#quick-new-collection').addEventListener('click', () => {
-        closeModal();
-        openCollectionEditor();
-      });
-    }
+function publishPost(event) {
+  event.preventDefault();
+  const title = document.querySelector('#post-title').value.trim();
+  const body = document.querySelector('#post-body').value.trim();
+  const gameId = document.querySelector('#post-game').value || '';
+  const tags = document.querySelector('#post-tags').value.split(',').map(t => t.trim()).filter(Boolean).slice(0,5);
+  if (!title || !body) return;
+
+  posts.unshift({
+    id:'local-'+Date.now(),
+    memberId:'self',
+    type:currentPostType,
+    gameId,
+    title,
+    body,
+    image:'',
+    tags,
+    likes:0,
+    comments:0,
+    time:'now'
   });
+  writeLocal(STORAGE.posts, posts.filter(post => post.memberId === 'self'));
+  createModal.close();
+  addPoints(30,'Published to the community');
+  location.hash = 'community';
+  renderRoute();
+}
+
+function renderNotifications() {
+  const items = [
+    { icon:'heart', text:'Noor Bell appreciated your replay note.', time:'12m' },
+    { icon:'message-circle', text:'Mara Chen replied to a discussion you saved.', time:'38m' },
+    { icon:'sparkles', text:'You earned 75 XP for completing Tomb Raider.', time:'2h' },
+    { icon:'users', text:'Sora Vale followed your expedition log.', time:'1d' }
+  ];
+
+  notificationsContent.innerHTML = `
+    <button class="mark-read" id="mark-read">${icon('check-check',16)} Mark all read</button>
+    <div class="notification-list">
+      ${items.map(item => `<div class="notification-item"><span class="notification-icon">${icon(item.icon,18)}</span><div><strong>${item.text}</strong><small>${item.time}</small></div></div>`).join('')}
+    </div>`;
+
+  document.querySelector('#mark-read').addEventListener('click', () => {
+    state.notificationsRead = true;
+    persist();
+    showToast('Notifications marked read');
+    closeNotifications();
+  });
+  refreshIcons();
 }
 
 function openNotifications() {
-  closeUpload();
-  sidePanel.classList.add('is-open');
-  sidePanel.setAttribute('aria-hidden','false');
-  scrim.hidden = false;
-  document.querySelector('#side-panel-eyebrow').textContent = 'Activity';
-  document.querySelector('#side-panel-title').textContent = 'Notifications';
-
-  sidePanelContent.innerHTML = `
-    <div class="panel-actions">
-      <button class="text-action" id="mark-notifications-read">Mark all read</button>
-    </div>
-    <div class="notification-list">
-      ${state.notifications.length ? state.notifications.map(notification => {
-        const artist = artistById(notification.actorId);
-        return `<div class="notification ${notification.unread ? 'is-unread' : ''}">
-          <span class="avatar">${artist?.avatar ? `<img src="${artist.avatar}" alt="">` : 'DV'}</span>
-          <div><p>${escapeHTML(notification.text)}</p><small>${escapeHTML(notification.time)}</small></div>
-        </div>`;
-      }).join('') : '<div class="panel-empty">No notifications yet.</div>'}
-    </div>
-  `;
-
-  document.querySelector('#mark-notifications-read')?.addEventListener('click', () => {
-    state.notifications.forEach(item => item.unread = false);
-    persist();
-    openNotifications();
-  });
-  refreshIcons();
-}
-
-function openMessages(artistId = null) {
-  closeUpload();
-  sidePanel.classList.add('is-open');
-  sidePanel.setAttribute('aria-hidden','false');
-  scrim.hidden = false;
-  document.querySelector('#side-panel-eyebrow').textContent = 'Inbox';
-  document.querySelector('#side-panel-title').textContent = 'Messages';
-
-  if (artistId) {
-    let thread = state.threads.find(item => item.artistId === artistId);
-    if (!thread) {
-      thread = { id:'thread-' + artistId, artistId, unread:0, messages:[] };
-      state.threads.unshift(thread);
-      persist();
-    }
-    activeThreadId = thread.id;
-  }
-
-  if (activeThreadId) renderThread(activeThreadId);
-  else renderThreadList();
-}
-
-function renderThreadList() {
-  activeThreadId = null;
-  sidePanelContent.innerHTML = `
-    <div class="thread-list">
-      ${state.threads.length ? state.threads.map(thread => {
-        const artist = artistById(thread.artistId);
-        const last = thread.messages[thread.messages.length - 1];
-        return `<button class="thread-row" data-thread="${thread.id}">
-          <span class="avatar"><img src="${artist.avatar}" alt=""></span>
-          <span><strong>${escapeHTML(artist.name)} ${thread.unread ? '<span style="color:var(--accent)">•</span>' : ''}</strong><p>${escapeHTML(last?.body || 'Start a conversation')}</p></span>
-          <time>${escapeHTML(last?.time || '')}</time>
-        </button>`;
-      }).join('') : '<div class="panel-empty">No messages yet.</div>'}
-    </div>
-  `;
-  sidePanelContent.querySelectorAll('[data-thread]').forEach(btn => btn.addEventListener('click', () => renderThread(btn.dataset.thread)));
-}
-
-function renderThread(id) {
-  const thread = state.threads.find(item => item.id === id);
-  if (!thread) return renderThreadList();
-  activeThreadId = id;
-  thread.unread = 0;
-  persist();
-  const artist = artistById(thread.artistId);
-
-  sidePanelContent.innerHTML = `
-    <div class="thread-view">
-      <div class="thread-top">
-        <button id="back-threads" aria-label="Back">${icon('arrow-left',18)}</button>
-        <span class="avatar"><img src="${artist.avatar}" alt=""></span>
-        <span><strong>${escapeHTML(artist.name)}</strong><small>${escapeHTML(artist.status)} for work</small></span>
-      </div>
-      <div class="messages" id="messages-scroll">
-        ${thread.messages.length ? thread.messages.map(message => `
-          <div class="message ${message.from === 'me' ? 'is-me' : ''}">
-            ${escapeHTML(message.body)}
-            <small>${escapeHTML(message.time)}</small>
-          </div>`).join('') : '<div class="panel-empty">Start the conversation.</div>'}
-      </div>
-      <form class="message-compose" id="message-form">
-        <input id="message-input" maxlength="600" placeholder="Message ${escapeAttr(artist.name)}" autocomplete="off">
-        <button class="button button-primary" type="submit">${icon('send',15)} Send</button>
-      </form>
-    </div>
-  `;
-
-  document.querySelector('#back-threads').addEventListener('click', renderThreadList);
-  document.querySelector('#message-form').addEventListener('submit', event => {
-    event.preventDefault();
-    const input = document.querySelector('#message-input');
-    const body = input.value.trim();
-    if (!body) return;
-    thread.messages.push({ id:'message-' + Date.now(), from:'me', body, time:'now' });
-    persist();
-    renderThread(id);
-    setTimeout(() => document.querySelector('#message-input')?.focus(), 20);
-  });
-  const scroll = document.querySelector('#messages-scroll');
-  if (scroll) scroll.scrollTop = scroll.scrollHeight;
-  refreshIcons();
-}
-
-function closeSidePanel() {
-  sidePanel.classList.remove('is-open');
-  sidePanel.setAttribute('aria-hidden','true');
-  activeThreadId = null;
-  if (!drawer.classList.contains('is-open')) scrim.hidden = true;
-}
-
-function openModal({ eyebrow='Margin', title='Dialog', html='', onMount=null }) {
-  document.querySelector('#modal-eyebrow').textContent = eyebrow;
-  document.querySelector('#modal-title').textContent = title;
-  modalContent.innerHTML = html;
-  if (!modal.open) modal.showModal();
-  if (onMount) onMount();
-  refreshIcons();
-}
-
-function closeModal() {
-  if (modal.open) modal.close();
-}
-
-function bindCloseModalButtons() {
-  modalContent.querySelectorAll('[data-close-modal]').forEach(btn => btn.addEventListener('click', closeModal));
-}
-
-function resetUploadForm() {
-  document.querySelector('#upload-form').reset();
-  document.querySelector('#art-year').value = '2026';
-  document.querySelector('#portfolio-toggle').checked = true;
-  document.querySelector('#comments-toggle').checked = true;
-  document.querySelector('#process-toggle').checked = true;
-  uploadMedia = [];
-  uploadCover = 0;
-  editingProjectId = null;
-  renderUploadMedia();
-}
-
-function openUpload(item = null, fromDraft = false) {
-  closeSidePanel();
-  resetUploadForm();
-
-  if (item) {
-    editingProjectId = item.id;
-    uploadMedia = projectImages(item).slice();
-    uploadCover = item.coverIndex || 0;
-    document.querySelector('#upload-eyebrow').textContent = fromDraft ? 'Draft' : 'Edit project';
-    document.querySelector('#upload-title').textContent = fromDraft ? 'Finish your draft' : 'Edit your work';
-    document.querySelector('#publish-button').textContent = fromDraft ? 'Publish project' : 'Save changes';
-    document.querySelector('#art-title').value = item.title || '';
-    document.querySelector('#art-field').value = item.field || 'Illustration';
-    document.querySelector('#art-description').value = item.description || '';
-    document.querySelector('#art-tools').value = item.tools || '';
-    document.querySelector('#art-year').value = item.year || '2026';
-    document.querySelector('#art-tags').value = (item.tags || []).join(', ');
-    document.querySelector('#art-rights').value = item.rights || '';
-    document.querySelector('#portfolio-toggle').checked = item.portfolio !== false;
-    document.querySelector('#comments-toggle').checked = item.comments !== false;
-    document.querySelector('#process-toggle').checked = item.process !== false;
-  } else {
-    document.querySelector('#upload-eyebrow').textContent = 'New project';
-    document.querySelector('#upload-title').textContent = 'Publish your work';
-    document.querySelector('#publish-button').textContent = 'Publish project';
-  }
-
-  renderUploadMedia();
-  drawer.classList.add('is-open');
-  drawer.setAttribute('aria-hidden','false');
+  renderNotifications();
+  notificationsSheet.classList.add('is-open');
+  notificationsSheet.setAttribute('aria-hidden','false');
   scrim.hidden = false;
   document.body.classList.add('no-scroll');
-  setTimeout(() => document.querySelector('#art-title')?.focus(), 90);
-  refreshIcons();
 }
 
-function closeUpload() {
-  drawer.classList.remove('is-open');
-  drawer.setAttribute('aria-hidden','true');
-  if (!sidePanel.classList.contains('is-open')) scrim.hidden = true;
+function closeNotifications() {
+  notificationsSheet.classList.remove('is-open');
+  notificationsSheet.setAttribute('aria-hidden','true');
+  scrim.hidden = true;
   document.body.classList.remove('no-scroll');
 }
 
-function renderUploadMedia() {
-  const mediaWrap = document.querySelector('#upload-media');
-  const primary = document.querySelector('#upload-primary');
-  const thumbs = document.querySelector('#upload-thumbs');
-  if (!uploadMedia.length) {
-    mediaWrap.hidden = true;
-    primary.innerHTML = '';
-    thumbs.innerHTML = '';
+function renderSearch() {
+  const q = state.search.trim().toLowerCase();
+  if (!q) {
+    renderRoute();
     return;
   }
-  uploadCover = Math.min(uploadCover, uploadMedia.length - 1);
-  mediaWrap.hidden = false;
-  primary.innerHTML = `<img src="${uploadMedia[uploadCover]}" alt="Project cover preview">`;
-  thumbs.innerHTML = uploadMedia.map((src,index) => `
-    <button type="button" class="upload-thumb ${index === uploadCover ? 'is-cover' : ''}" data-upload-cover="${index}" aria-label="Make image ${index + 1} the cover">
-      <img src="${src}" alt="">
-      <span class="remove-media" data-remove-media="${index}" aria-label="Remove image">${icon('x',11)}</span>
-    </button>`).join('');
-  thumbs.querySelectorAll('[data-upload-cover]').forEach(btn => btn.addEventListener('click', event => {
-    if (event.target.closest('[data-remove-media]')) return;
-    uploadCover = Number(btn.dataset.uploadCover);
-    renderUploadMedia();
-  }));
-  thumbs.querySelectorAll('[data-remove-media]').forEach(btn => btn.addEventListener('click', event => {
-    event.preventDefault();
-    event.stopPropagation();
-    const index = Number(btn.dataset.removeMedia);
-    uploadMedia.splice(index,1);
-    if (uploadCover >= uploadMedia.length) uploadCover = Math.max(0, uploadMedia.length - 1);
-    renderUploadMedia();
-  }));
+
+  const foundGames = games.filter(game => [game.title,game.era,game.location,...game.tags].join(' ').toLowerCase().includes(q));
+  const foundLore = lore.filter(item => [item.title,item.type,item.summary].join(' ').toLowerCase().includes(q));
+  const foundPosts = posts.filter(post => [post.title,post.body,...(post.tags||[])].join(' ').toLowerCase().includes(q));
+
+  main.innerHTML = `
+    <div class="page search-page">
+      <header class="page-header">
+        <div><span class="section-label">Search</span><h1 class="page-title">“${escapeHTML(state.search)}”</h1><p class="page-subtitle">${foundGames.length + foundLore.length + foundPosts.length} results across the Tombbound archive.</p></div>
+      </header>
+
+      ${foundGames.length ? `<section><div class="section-heading"><div><span class="section-label">Games</span><h2>${foundGames.length} matches</h2></div></div><div class="game-scroll">${foundGames.map(gameCard).join('')}</div></section>` : ''}
+      ${foundLore.length ? `<section><div class="section-heading"><div><span class="section-label">Lore</span><h2>${foundLore.length} matches</h2></div></div><div class="lore-grid">${foundLore.map(loreCard).join('')}</div></section>` : ''}
+      ${foundPosts.length ? `<section><div class="section-heading"><div><span class="section-label">Community</span><h2>${foundPosts.length} matches</h2></div></div><div class="post-stack search-posts">${foundPosts.map(postCard).join('')}</div></section>` : ''}
+      ${!foundGames.length && !foundLore.length && !foundPosts.length ? `<div class="empty-state panel"><strong>No results</strong><span>Try another game, artifact, location, or community topic.</span></div>` : ''}
+    </div>
+  `;
+
+  bindCommonEvents();
   refreshIcons();
 }
 
-async function fileToDataURL(file) {
-  if (!file.type.startsWith('image/')) throw new Error('not-image');
-  if (file.size > 12 * 1024 * 1024) throw new Error('too-large');
+function initialize() {
+  updateHeader();
+  populateGameSelect();
 
-  if (file.type === 'image/gif') {
-    return await new Promise((resolve,reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-  }
-
-  const original = await new Promise((resolve,reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-
-  return await new Promise(resolve => {
-    const image = new Image();
-    image.onload = () => {
-      const max = 1800;
-      const scale = Math.min(1, max / Math.max(image.naturalWidth, image.naturalHeight));
-      const canvas = document.createElement('canvas');
-      canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
-      canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
-      const context = canvas.getContext('2d');
-      context.drawImage(image,0,0,canvas.width,canvas.height);
-      const mime = file.type === 'image/png' ? 'image/png' : 'image/jpeg';
-      resolve(canvas.toDataURL(mime, mime === 'image/jpeg' ? .84 : undefined));
-    };
-    image.onerror = () => resolve(original);
-    image.src = original;
-  });
-}
-
-async function addUploadFiles(fileList) {
-  const existingCount = uploadMedia.length;
-  const incomingCount = fileList.length;
-  const files = [...fileList].slice(0, Math.max(0, 8 - existingCount));
-  if (!files.length) {
-    if (incomingCount) showToast('Projects can contain up to 8 images');
-    return;
-  }
-  try {
-    const encoded = [];
-    for (const file of files) encoded.push(await fileToDataURL(file));
-    uploadMedia.push(...encoded);
-    renderUploadMedia();
-    if (existingCount + incomingCount > 8) showToast('Projects can contain up to 8 images');
-  } catch (error) {
-    showToast(error.message === 'too-large' ? 'Each image must be under 12 MB' : 'Choose image files only');
-  }
-}
-
-function formProjectSnapshot() {
-  return {
-    title:document.querySelector('#art-title').value.trim() || 'Untitled',
-    field:document.querySelector('#art-field').value,
-    description:document.querySelector('#art-description').value.trim(),
-    tools:document.querySelector('#art-tools').value.trim(),
-    year:document.querySelector('#art-year').value.trim() || '2026',
-    tags:document.querySelector('#art-tags').value.split(',').map(tag => tag.trim()).filter(Boolean).slice(0,12),
-    rights:document.querySelector('#art-rights').value.trim() || '© ' + state.profile.name + '. All rights reserved.',
-    portfolio:document.querySelector('#portfolio-toggle').checked,
-    comments:document.querySelector('#comments-toggle').checked,
-    process:document.querySelector('#process-toggle').checked,
-    images:uploadMedia.slice(),
-    coverIndex:uploadCover
-  };
-}
-
-function saveDraft() {
-  const snapshot = formProjectSnapshot();
-  const existingDraftIndex = state.drafts.findIndex(item => item.id === editingProjectId);
-  const draft = {
-    ...snapshot,
-    id: existingDraftIndex >= 0 ? editingProjectId : 'draft-' + Date.now(),
-    artist:state.profile.name,
-    artistId:'me',
-    likes:0,
-    updatedAt:new Date().toISOString()
-  };
-  if (existingDraftIndex >= 0) state.drafts.splice(existingDraftIndex,1,draft);
-  else state.drafts.unshift(draft);
-  persist();
-  editingProjectId = draft.id;
-  showToast('Draft saved');
-}
-
-function publishProject(event) {
-  event.preventDefault();
-  if (!uploadMedia.length) {
-    showToast('Add at least one image first');
-    return;
-  }
-  const snapshot = formProjectSnapshot();
-  const isExistingProject = String(editingProjectId || '').startsWith('local-');
-  const isDraft = String(editingProjectId || '').startsWith('draft-');
-  const id = isExistingProject ? editingProjectId : 'local-' + Date.now();
-  const project = {
-    ...snapshot,
-    id,
-    artist:state.profile.name,
-    artistId:'me',
-    likes:isExistingProject ? (state.uploads.find(item => item.id === id)?.likes || 0) : 0,
-    featured:82,
-    publishedAt:new Date().toISOString()
-  };
-
-  if (isExistingProject) {
-    const index = state.uploads.findIndex(item => item.id === id);
-    if (index >= 0) state.uploads.splice(index,1,project);
-  } else {
-    state.uploads.unshift(project);
-  }
-  if (isDraft) state.drafts = state.drafts.filter(item => item.id !== editingProjectId);
-
-  const persisted = persist();
-  closeUpload();
-  state.profileTab = 'portfolio';
-  location.hash = 'profile';
-  renderRoute();
-  showToast(isExistingProject ? 'Project updated' : 'Project published');
-}
-
-function openCollectionFromProject() {
-  if (currentProjectId) openAddToCollection(currentProjectId);
-}
-
-function openSidePanelScrimClose() {
-  if (sidePanel.classList.contains('is-open')) closeSidePanel();
-  if (drawer.classList.contains('is-open')) closeUpload();
-}
-
-function initializeGlobalEvents() {
   window.addEventListener('hashchange', () => {
-    if (location.hash.startsWith('#project/')) {
-      const id = location.hash.split('/')[1];
-      history.replaceState(null,'',location.pathname + '#explore');
-      renderRoute();
-      openArtwork(id);
-      return;
-    }
+    state.search = '';
+    searchInput.value = '';
     renderRoute();
-    window.scrollTo({ top:0, behavior:'smooth' });
+    window.scrollTo({top:0,behavior:'smooth'});
   });
 
   searchInput.addEventListener('input', event => {
     state.search = event.target.value;
-    if (state.route !== 'explore') {
-      location.hash = 'explore';
-    } else {
-      renderExplore();
-    }
+    renderSearch();
   });
 
-  const searchBox = document.querySelector('.search');
-  searchBox.addEventListener('click', () => {
-    if (window.innerWidth <= 700) {
-      searchBox.classList.add('is-mobile-open');
-      requestAnimationFrame(() => searchInput.focus());
-    }
-  });
+  document.querySelector('#create-button').addEventListener('click', openComposer);
+  document.querySelector('#mobile-create').addEventListener('click', openComposer);
+  document.querySelector('#notifications-button').addEventListener('click', openNotifications);
+  document.querySelector('#close-notifications').addEventListener('click', closeNotifications);
+  document.querySelector('#detail-close').addEventListener('click', closeDetail);
+  document.querySelector('#create-form').addEventListener('submit', publishPost);
+  document.querySelectorAll('[data-post-type]').forEach(button => button.addEventListener('click', () => {
+    currentPostType = button.dataset.postType;
+    document.querySelectorAll('[data-post-type]').forEach(btn => btn.classList.toggle('is-active', btn===button));
+  }));
 
-  searchInput.addEventListener('blur', () => {
-    if (window.innerWidth <= 700 && !searchInput.value.trim()) {
-      setTimeout(() => searchBox.classList.remove('is-mobile-open'), 80);
-    }
-  });
+  scrim.addEventListener('click', closeNotifications);
 
   document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') {
+      closeNotifications();
+      closeDetail();
+    }
     if (event.key === '/' && !['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)) {
       event.preventDefault();
       searchInput.focus();
     }
-    if (event.key === 'Escape' && drawer.classList.contains('is-open')) closeUpload();
-    if (event.key === 'Escape' && sidePanel.classList.contains('is-open')) closeSidePanel();
-    if (event.key === 'Escape') {
-      document.querySelector('.search')?.classList.remove('is-mobile-open');
-      searchInput.blur();
-    }
   });
 
-  document.querySelector('#upload-button').addEventListener('click', () => openUpload());
-  document.querySelector('#mobile-upload').addEventListener('click', () => openUpload());
-  document.querySelector('#notifications-button').addEventListener('click', openNotifications);
-  document.querySelector('#messages-button').addEventListener('click', () => openMessages());
-  document.querySelector('#close-side-panel').addEventListener('click', closeSidePanel);
-  document.querySelector('#close-upload').addEventListener('click', closeUpload);
-  document.querySelector('#dialog-close').addEventListener('click', closeArtwork);
-  document.querySelector('#modal-close').addEventListener('click', closeModal);
-  scrim.addEventListener('click', openSidePanelScrimClose);
-
-  artDialog.addEventListener('close', () => {
-    currentProjectId = null;
-    document.body.classList.remove('no-scroll');
-  });
-  artDialog.addEventListener('click', event => {
-    if (event.target === artDialog) closeArtwork();
-  });
-  modal.addEventListener('click', event => {
-    if (event.target === modal) closeModal();
-  });
-
-  const fileInput = document.querySelector('#art-file');
-  const dropZone = document.querySelector('#drop-zone');
-  fileInput.addEventListener('change', () => addUploadFiles(fileInput.files));
-  ['dragenter','dragover'].forEach(name => dropZone.addEventListener(name, event => {
-    event.preventDefault();
-    dropZone.classList.add('is-dragging');
-  }));
-  ['dragleave','drop'].forEach(name => dropZone.addEventListener(name, event => {
-    event.preventDefault();
-    dropZone.classList.remove('is-dragging');
-  }));
-  dropZone.addEventListener('drop', event => addUploadFiles(event.dataTransfer.files));
-
-  document.querySelector('#save-draft').addEventListener('click', saveDraft);
-  document.querySelector('#upload-form').addEventListener('submit', publishProject);
+  renderRoute();
+  refreshIcons();
 }
 
-initializeGlobalEvents();
-updateBadges();
-const initialProjectMatch = location.hash.match(/^#project\/(.+)$/);
-if (initialProjectMatch) {
-  history.replaceState(null,'',location.pathname + '#explore');
-  renderRoute();
-  openArtwork(initialProjectMatch[1]);
-} else {
-  renderRoute();
-}
-refreshIcons();
+initialize();
