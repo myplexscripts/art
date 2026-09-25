@@ -1,17 +1,28 @@
 const STORAGE = {
-  likes: 'morrow.likes',
-  saves: 'morrow.saves',
-  follows: 'morrow.follows',
-  uploads: 'morrow.uploads',
-  drafts: 'morrow.drafts',
-  collections: 'morrow.collections',
-  comments: 'morrow.comments',
-  notifications: 'morrow.notifications',
-  threads: 'morrow.threads',
-  jobSaves: 'morrow.jobSaves',
-  applications: 'morrow.applications',
-  profile: 'morrow.profile'
+  likes: 'margin.likes',
+  saves: 'margin.saves',
+  follows: 'margin.follows',
+  uploads: 'margin.uploads',
+  drafts: 'margin.drafts',
+  collections: 'margin.collections',
+  comments: 'margin.comments',
+  notifications: 'margin.notifications',
+  threads: 'margin.threads',
+  jobSaves: 'margin.jobSaves',
+  applications: 'margin.applications',
+  profile: 'margin.profile'
 };
+
+const LEGACY_STORAGE = Object.fromEntries(
+  Object.entries(STORAGE).map(([name,key]) => [name, key.replace('margin.', 'morrow.')])
+);
+
+Object.entries(STORAGE).forEach(([name,key]) => {
+  if (localStorage.getItem(key) === null) {
+    const legacy = localStorage.getItem(LEGACY_STORAGE[name]);
+    if (legacy !== null) localStorage.setItem(key, legacy);
+  }
+});
 
 const readLocal = (key, fallback) => {
   try {
@@ -921,7 +932,7 @@ function openJob(id) {
         <h3>What they are looking for</h3>
         <ul>${job.requirements.map(item => `<li>${escapeHTML(item)}</li>`).join('')}</ul>
         <h3>Portfolio</h3>
-        <p>A Morrow portfolio can be attached directly to the application. The employer receives a public link, not access to private collections or drafts.</p>
+        <p>A Margin portfolio can be attached directly to the application. The employer receives a public link, not access to private collections or drafts.</p>
         <div class="modal-actions">
           <button class="button button-quiet ${state.jobSaves.has(job.id) ? 'is-active' : ''}" id="modal-save-job">${icon('bookmark',15)} ${state.jobSaves.has(job.id) ? 'Saved' : 'Save job'}</button>
           <button class="button button-primary" id="apply-job" ${applied ? 'disabled' : ''}>${applied ? 'Application sent' : 'Apply'}</button>
@@ -940,7 +951,7 @@ function openJob(id) {
 }
 
 function openApplication(job) {
-  const portfolioUrl = 'morrow.art/' + state.profile.handle.replace('@','');
+  const portfolioUrl = 'margin.art/' + state.profile.handle.replace('@','');
   openModal({
     eyebrow:'Application',
     title:job.role,
@@ -1332,7 +1343,7 @@ function renderProjectDialog() {
         </div>
 
         <h2>${escapeHTML(item.title)}</h2>
-        <p class="project-description">${escapeHTML(item.description || 'A new project shared with the Morrow community.')}</p>
+        <p class="project-description">${escapeHTML(item.description || 'A new project shared with the Margin community.')}</p>
 
         <div class="tag-list">${(item.tags || []).map(tag => `<button class="tag" data-project-tag="${escapeAttr(tag)}">#${escapeHTML(tag)}</button>`).join('')}</div>
 
@@ -1611,7 +1622,7 @@ function closeSidePanel() {
   if (!drawer.classList.contains('is-open')) scrim.hidden = true;
 }
 
-function openModal({ eyebrow='Morrow', title='Dialog', html='', onMount=null }) {
+function openModal({ eyebrow='Margin', title='Dialog', html='', onMount=null }) {
   document.querySelector('#modal-eyebrow').textContent = eyebrow;
   document.querySelector('#modal-title').textContent = title;
   modalContent.innerHTML = html;
