@@ -1,147 +1,54 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Tombbound is a community for Tomb Raider fans to explore the series, share discoveries, join challenges, and build collections." />
-  <meta name="theme-color" content="#101411" />
-  <title>Tombbound — Tomb Raider Community</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="design.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Tomb Atlas is an independent Tomb Raider reference for games, films, television, books, comics, guides, lore, and archival material.">
+  <meta name="theme-color" content="#111310">
+  <title>Tomb Atlas | Tomb Raider Reference</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Instrument+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="design.css">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
 
   <header class="site-header">
-    <a class="brand" href="#home" aria-label="Tombbound home">
-      <span class="brand-mark"><i data-lucide="mountain-snow" aria-hidden="true"></i></span>
-      <span class="brand-copy"><strong>Tombbound</strong><small>Tomb Raider Community</small></span>
+    <a class="brand" href="#archive" aria-label="Tomb Atlas home">
+      <span class="brand-mark" aria-hidden="true"><i data-lucide="compass"></i></span>
+      <span class="brand-copy">
+        <strong>Tomb Atlas</strong>
+        <small>Tomb Raider reference</small>
+      </span>
     </a>
 
-    <nav class="desktop-nav" aria-label="Primary">
-      <a href="#home" data-nav="home"><i data-lucide="house"></i><span>Home</span></a>
-      <a href="#games" data-nav="games"><i data-lucide="gamepad-2"></i><span>Games</span></a>
-      <a href="#lore" data-nav="lore"><i data-lucide="landmark"></i><span>Lore</span></a>
-      <a href="#community" data-nav="community"><i data-lucide="users"></i><span>Community</span></a>
-      <a href="#collections" data-nav="collections"><i data-lucide="archive"></i><span>Collections</span></a>
+    <nav class="desktop-nav" aria-label="Primary navigation">
+      <a href="#archive" data-nav="archive"><span>Archive</span></a>
+      <a href="#games" data-nav="games"><span>Games</span></a>
+      <a href="#screen" data-nav="screen"><span>Screen</span></a>
+      <a href="#print" data-nav="print"><span>Print</span></a>
+      <a href="#guides" data-nav="guides"><span>Guides</span></a>
     </nav>
 
-    <div class="header-actions">
-      <label class="global-search" for="global-search">
+    <div class="header-tools">
+      <label class="site-search" for="site-search">
         <i data-lucide="search" aria-hidden="true"></i>
-        <input id="global-search" type="search" placeholder="Search games, lore, posts" autocomplete="off" />
+        <input id="site-search" type="search" placeholder="Search the archive" autocomplete="off" spellcheck="false">
+        <kbd>/</kbd>
       </label>
-
-      <button class="icon-button" id="notifications-button" aria-label="Notifications">
-        <i data-lucide="bell"></i>
-        <span class="notification-dot" id="notification-dot"></span>
-      </button>
-
-      <button class="score-pill" id="score-button" aria-label="Your expedition points">
-        <i data-lucide="sparkles"></i>
-        <span><strong id="header-points">1,240</strong> XP</span>
-      </button>
-
-      <button class="primary-button" id="create-button">
-        <i data-lucide="plus"></i>
-        <span>Post</span>
-      </button>
-
-      <a class="profile-button" href="#profile" aria-label="Open profile">
-        <span class="avatar avatar-self">DV</span>
-      </a>
     </div>
   </header>
 
   <main id="main" tabindex="-1"></main>
 
   <nav class="mobile-nav" aria-label="Mobile navigation">
-    <a href="#home" data-mobile-nav="home"><i data-lucide="house"></i><span>Home</span></a>
+    <a href="#archive" data-mobile-nav="archive"><i data-lucide="layout-grid"></i><span>Archive</span></a>
     <a href="#games" data-mobile-nav="games"><i data-lucide="gamepad-2"></i><span>Games</span></a>
-    <button id="mobile-create"><span><i data-lucide="plus"></i></span><small>Post</small></button>
-    <a href="#community" data-mobile-nav="community"><i data-lucide="users"></i><span>Community</span></a>
-    <a href="#profile" data-mobile-nav="profile"><i data-lucide="user"></i><span>Profile</span></a>
+    <a href="#screen" data-mobile-nav="screen"><i data-lucide="clapperboard"></i><span>Screen</span></a>
+    <a href="#guides" data-mobile-nav="guides"><i data-lucide="map"></i><span>Guides</span></a>
   </nav>
-
-  <aside class="side-sheet" id="notifications-sheet" aria-hidden="true">
-    <div class="sheet-header">
-      <div>
-        <span class="section-label">Activity</span>
-        <h2>Notifications</h2>
-      </div>
-      <button class="icon-button" id="close-notifications" aria-label="Close notifications">
-        <i data-lucide="x"></i>
-      </button>
-    </div>
-    <div id="notifications-content"></div>
-  </aside>
-
-  <dialog class="modal" id="create-modal">
-    <form method="dialog" class="modal-shell" id="create-form">
-      <div class="modal-header">
-        <div>
-          <span class="section-label">Community</span>
-          <h2>Share something</h2>
-        </div>
-        <button class="icon-button" value="cancel" aria-label="Close">
-          <i data-lucide="x"></i>
-        </button>
-      </div>
-
-      <div class="composer-types" role="group" aria-label="Post type">
-        <button type="button" class="composer-type is-active" data-post-type="Discovery"><i data-lucide="compass"></i><span>Discovery</span></button>
-        <button type="button" class="composer-type" data-post-type="Discussion"><i data-lucide="message-circle"></i><span>Discussion</span></button>
-        <button type="button" class="composer-type" data-post-type="Collection"><i data-lucide="archive"></i><span>Collection</span></button>
-      </div>
-
-      <label class="field">
-        <span>Title</span>
-        <input id="post-title" required maxlength="100" placeholder="What did you find?" />
-      </label>
-
-      <label class="field">
-        <span>Post</span>
-        <textarea id="post-body" required rows="6" maxlength="1200" placeholder="Share the details with the community."></textarea>
-      </label>
-
-      <div class="field-grid">
-        <label class="field">
-          <span>Related game</span>
-          <select id="post-game"></select>
-        </label>
-        <label class="field">
-          <span>Tags</span>
-          <input id="post-tags" placeholder="puzzle, secret, classic" />
-        </label>
-      </div>
-
-      <div class="modal-actions">
-        <button class="secondary-button" value="cancel">Cancel</button>
-        <button class="primary-button" type="submit" value="default"><i data-lucide="send"></i><span>Publish</span></button>
-      </div>
-    </form>
-  </dialog>
-
-  <dialog class="modal detail-modal" id="detail-modal">
-    <div class="modal-shell detail-shell">
-      <div class="modal-header">
-        <div>
-          <span class="section-label" id="detail-label">Details</span>
-          <h2 id="detail-title">Title</h2>
-        </div>
-        <button class="icon-button" id="detail-close" aria-label="Close">
-          <i data-lucide="x"></i>
-        </button>
-      </div>
-      <div id="detail-content"></div>
-    </div>
-  </dialog>
-
-  <div class="scrim" id="scrim" hidden></div>
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
   <script src="app.js"></script>
