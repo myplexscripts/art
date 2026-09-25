@@ -1,168 +1,269 @@
 # Margin Design System
 
-Margin is a living archive for visual work. Public facing areas should feel closer to an art book, studio wall, or catalogue than a dashboard. Management surfaces can be more structured, but they must still use the same materials, typography, spacing, and controls.
+Margin is an artwork-first community product. The interface should feel modern, calm, and useful enough to disappear behind the work.
+
+## Product direction
+
+The discovery experience borrows proven organizational patterns from current art-sharing platforms without copying their visual identity:
+
+- strong global search
+- clear discovery modes
+- creative-field browsing
+- curated featured work
+- artist discovery
+- dense image-led project feeds
+- following, saves, collections, and jobs as adjacent product areas
+
+The product should feel like an art platform, not a portfolio template or generic SaaS dashboard.
 
 ## Core principles
 
-1. Artwork leads. Interface chrome should recede until it is needed.
-2. Rhythm is intentionally uneven. Avoid repeated equal cards and perfectly uniform rows on public pages.
-3. Hierarchy comes from scale, spacing, type, and tone before borders.
-4. Surfaces are warm and physical, not glossy, neon, or glassy.
-5. Serif type carries authored and editorial moments. Sans serif carries controls and utility.
-6. Public profiles should feel authored. Creator tools should feel organized.
-7. Motion is quiet and short. Images can shift slightly, but UI should never bounce, glow, pulse, or perform for attention.
-8. No decorative gradients, coloured edge accents, glass cards, generic bento layouts, or status decoration without functional meaning.
+1. Artwork is always the strongest visual element.
+2. Navigation is compact and functional.
+3. Use density where browsing benefits from it.
+4. Avoid oversized marketing-style hero sections inside the signed-in product.
+5. Use hierarchy, spacing, and neutral surfaces before borders.
+6. Public content should feel image-led. Management tools can be denser.
+7. Interactions should be immediate and quiet.
+8. Do not use decorative gradients, glowing accents, coloured card edges, glass cards, or nested cards without a functional reason.
+9. Pills are reserved for filters and compact states.
+10. Mobile should preserve browsing density rather than collapsing everything into oversized single cards.
 
 ## Colour
 
-Primary background: `#171512`
-Deep background: `#11100e`
-Primary surface: `#201d19`
-Raised surface: `#29251f`
-Text: `#f1ece4`
-Muted text: `#aaa198`
-Faint text: `#766f68`
-Paper: `#eee7dc`
-Ink: `#1a1713`
-Clay accent: `#d09a76`
-Danger: `#df8379`
-Availability: `#9cb690`
+Background: `#f5f5f2`
+Primary surface: `#ffffff`
+Secondary surface: `#eeeeeb`
+Raised neutral: `#e4e4df`
+Primary text: `#181817`
+Muted text: `#70706b`
+Faint text: `#9b9b95`
+Border: `#dfdfda`
+Strong border: `#c9c9c3`
+Accent: `#5b5ce2`
+Accent surface: `#ececff`
+Danger: `#c94a43`
+Success: `#2f8a55`
 
-The clay accent is a secondary functional colour. It should not dominate layouts. Primary actions use paper and ink rather than a bright brand colour.
+The accent is functional. It should appear in selected states, notifications, links that need emphasis, and discovery labels. It should not wash entire pages in colour.
 
 ## Typography
 
-Editorial type: Georgia, Times New Roman, serif fallback.
-Interface type: Inter, system sans serif fallback.
+Use the system sans stack throughout:
 
-Use serif for:
-- Page titles
-- Artist names
-- Project titles
-- Collection titles
-- Descriptive editorial copy
+`Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`
 
-Use sans serif for:
-- Navigation
-- Buttons
-- Filters
-- Metadata
-- Forms
-- Notifications
-- Management tools
+Large titles use tight tracking and strong weight rather than serif typography.
 
-Large serif headings use tight tracking and compact line height. Avoid large marketing slogans. Prefer direct page language such as Explore, Collections, Jobs, and artist names.
+Suggested roles:
 
-## Spacing
+- Product wordmark: 24px, heavy, tight tracking
+- Page title: 36 to 64px depending on viewport
+- Section heading: 17 to 20px
+- Project title: 13 to 15px in feeds
+- UI copy: 12 to 14px
+- Metadata: 10 to 12px
 
-Public layouts use generous vertical pauses and asymmetric placement.
-
-Small control gap: 5 to 10px
-Standard control gap: 12 to 18px
-Section gap: 34 to 56px
-Editorial pause: 68 to 96px
-
-Do not use dividers as the default grouping tool. Add whitespace first.
+Avoid interface text below 10px.
 
 ## Radius
 
-Compact controls: 8 to 10px
-Artwork and large surfaces: 11 to 15px
-Large dialogs: 18 to 20px
-Pills: only filters, tags, and compact status controls
+Artwork thumbnails: 8 to 10px
+Cards and larger surfaces: 12 to 14px
+Controls: 8 to 9px
+Dialogs: 16 to 18px
+Pills: fully rounded only for filters, tags, and compact status controls
 Avatars: circular
 
-Avoid making every surface rounded.
+## Borders and surfaces
 
-## Borders
+Borders should be low contrast.
 
-Borders are low contrast and rare. Use them for:
-- Section transitions
-- Dense management lists
-- Form focus
-- Table like information where spacing is insufficient
+Use borders for:
+- navigation separation
+- forms
+- dense lists
+- cards that need a clear interactive boundary
+- modal and management structure
 
-Do not use decorative borders on artwork cards.
+Do not put decorative borders around artwork.
 
-## Artwork layouts
+Most feed cards should consist of artwork plus metadata, not a white card behind both.
 
-Explore uses a 12 column irregular archive grid with changing spans and offsets.
-Profiles use a separate curated portfolio grid with a featured work.
-Collections use layered image boards with different compositions.
-Following uses a chronological reading column.
+## Global navigation
 
-Artwork should preserve its character. Avoid forced square cropping for general portfolio work. Editorial feature areas may crop previews when the full project is one click away.
+Desktop:
+- wordmark
+- large search field
+- primary sections
+- notifications
+- messages
+- Publish
+- profile
+
+Mobile:
+- compact top bar
+- expandable search
+- five-item bottom navigation
+
+Search should remain available from every screen.
+
+## Explore
+
+Desktop uses a left discovery rail with:
+- Discover
+- Recent
+- Popular
+- Following
+- creative fields
+- saved work
+- jobs
+
+The main content area can include:
+- compact page introduction
+- curated feature grid
+- artist discovery cards
+- project feed
+
+The artwork feed supports three density levels.
+
+Use natural artwork aspect ratios. Do not force a uniform card height.
+
+On mobile, the left rail disappears and creative-field filters become horizontally scrollable chips.
+
+## Artwork cards
+
+Artwork cards contain:
+- image
+- project title
+- artist
+- field
+- appreciation count
+
+Save and appreciation actions appear on hover when hover exists.
+
+Do not place persistent action bars on every card.
+
+## Profiles
+
+Profiles should feel like working artist pages, not dashboards.
+
+Use:
+- artist identity
+- short biography
+- availability
+- featured work
+- portfolio grid
+- timeline
+- about
+- creator studio for the owner
+
+Portfolio browsing should remain image dense.
+
+## Projects
+
+Project viewing uses a dark media stage with a light information column.
+
+Information order:
+1. artist
+2. field and year
+3. title
+4. description
+5. tools and project facts
+6. tags
+7. appreciate and save
+8. collection, share, edit
+9. rights
+10. comments
+
+Do not turn project information into a large settings table.
+
+## Collections
+
+Collection cards use a clean image collage rather than decorative stacked cards.
+
+Collections should communicate:
+- title
+- item count
+- privacy state
+- visual sample of contents
+
+## Following
+
+Following is chronological and should not mix recommendations into the stream.
+
+Use a readable single-column feed with strong imagery and minimal actions.
+
+## Jobs
+
+Jobs use structured list rows rather than decorative cards.
+
+Always surface:
+- company
+- role
+- discipline
+- location
+- work format
+- compensation
+- posting age
+
+## Management surfaces
+
+Publishing, Studio, messages, applications, notifications, and forms can be more structured than public discovery surfaces.
+
+They must still use the same:
+- colour tokens
+- radius system
+- typography
+- control styles
+- spacing rules
 
 ## Interaction
 
-Hover movement should be approximately 1 percent scale or a few pixels of translation.
-Use opacity and tonal changes before adding motion.
-No bouncing, glowing, pulsing, or looping decorative motion.
+Hover:
+- image scale no more than approximately 1 to 2 percent
+- subtle surface changes
+- actions may fade in
+
+Avoid:
+- bouncing
+- glowing
+- pulsing
+- looping decorative animation
+
 Respect reduced motion preferences.
-
-## Public versus management surfaces
-
-Public:
-- Explore
-- Project view
-- Artist profiles
-- Collections
-- Following
-- Jobs
-
-These should feel loose, editorial, and image led.
-
-Management:
-- Publishing drawer
-- Creator Studio
-- Forms
-- Applications
-- Messages
-- Notifications
-
-These should be clearer and more structured, with denser information where useful, while retaining the same colour and typography system.
-
-## Component rules
-
-Buttons:
-- Primary uses paper background and dark ink
-- Quiet actions use subtle warm surfaces
-- Destructive actions use muted red only when destructive
-
-Cards:
-- Do not create a card unless the boundary improves understanding
-- Artwork itself usually acts as the visual container
-- Avoid card nesting
-
-Tags and filters:
-- Compact pills are appropriate
-- Active filter uses paper and ink
-
-Metadata:
-- Small sans serif
-- Muted or faint colour
-- Never compete with project or artist titles
 
 ## Responsive behaviour
 
-Desktop can use deliberate asymmetry and offset columns.
-Tablet reduces offsets before reducing artwork size.
-Mobile uses a two column archive with occasional full width work.
-Public artwork remains visually dominant on small screens.
-Management surfaces may become full screen drawers on mobile.
+Desktop prioritizes discovery density.
 
-## Design review checklist
+Tablet:
+- hide left discovery rail
+- reduce artwork feed to three columns
+- preserve feature hierarchy
 
-Before merging a visual change, check:
-- Does the artwork remain the strongest element?
-- Did a border get added where spacing would work?
-- Is this surface too card heavy?
-- Is the radius consistent with its role?
-- Is a pill being used only where a pill makes sense?
-- Is serif reserved for authored content?
-- Does the layout have enough breathing room?
-- Does the page still feel intentional when all images are different sizes?
-- Does mobile preserve the hierarchy rather than merely stack desktop?
-- Is any decorative effect present only because it looks trendy?
+Mobile:
+- two-column artwork feed
+- horizontally scrollable feature cards
+- horizontally scrollable artist discovery
+- expandable global search
+- bottom navigation
 
-If a change makes Margin feel more like generic SaaS, remove or simplify it.
+Project viewer becomes vertically stacked.
+
+## Review checklist
+
+Before merging a UI change, ask:
+
+- Is the artwork still the strongest element?
+- Does this look like an art-sharing product rather than generic SaaS?
+- Is any card container unnecessary?
+- Is any text too small?
+- Is a pill being used for something that is not a filter or compact state?
+- Is the page denser where browsing benefits from density?
+- Is navigation immediately understandable?
+- Does mobile retain useful browsing speed?
+- Are actions hidden only when they remain discoverable?
+- Did any decorative gradient, coloured edge, glass effect, or unnecessary flourish creep in?
+
+If the UI begins competing with the artwork, simplify it.
