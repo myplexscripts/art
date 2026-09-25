@@ -691,11 +691,10 @@ function renderHub(category) {
 }
 
 function resourceItem(resource) {
-  return '<button class="resource-item" type="button" data-scroll-target="reference">' +
+  return '<div class="resource-item">' +
     '<span class="resource-icon">' + icon(resource[0], 20) + '</span>' +
     '<span><strong>' + escapeHTML(resource[1]) + '</strong><span>' + escapeHTML(resource[2]) + '</span></span>' +
-    icon("chevron-right", 17) +
-  '</button>';
+  '</div>';
 }
 
 function infoTile(iconName, title, detail) {
@@ -826,7 +825,7 @@ function renderGuides() {
     '<section class="section">' +
       '<div class="guide-grid">' +
         guideTypes.map(function(guide) {
-          return '<a class="guide-card" href="#games">' +
+          return '<a class="guide-card" href="#search/' + encodeURIComponent(guide[1]) + '">' +
             '<span class="guide-card-icon">' + icon(guide[0], 22) + '</span>' +
             '<div><h3>' + escapeHTML(guide[1]) + '</h3><p>' + escapeHTML(guide[2]) + '</p></div>' +
             '<small>Browse by game</small>' +
