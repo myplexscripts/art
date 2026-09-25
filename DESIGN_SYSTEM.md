@@ -1,269 +1,342 @@
-# Margin Design System
+# Tombbound Design System
 
-Margin is an artwork-first community product. The interface should feel modern, calm, and useful enough to disappear behind the work.
+Tombbound is a modern social home for Tomb Raider fans. The interface should feel polished, tactile, and familiar in the way a high-quality Apple app feels, while still carrying warmth, archaeology, adventure, stone, brass, forest, and expedition cues.
 
-## Product direction
+It must never feel like a themed fan forum from the 2000s, a game launcher, or generic dark SaaS.
 
-The discovery experience borrows proven organizational patterns from current art-sharing platforms without copying their visual identity:
+## Core product principles
 
-- strong global search
-- clear discovery modes
-- creative-field browsing
-- curated featured work
-- artist discovery
-- dense image-led project feeds
-- following, saves, collections, and jobs as adjacent product areas
-
-The product should feel like an art platform, not a portfolio template or generic SaaS dashboard.
-
-## Core principles
-
-1. Artwork is always the strongest visual element.
-2. Navigation is compact and functional.
-3. Use density where browsing benefits from it.
-4. Avoid oversized marketing-style hero sections inside the signed-in product.
-5. Use hierarchy, spacing, and neutral surfaces before borders.
-6. Public content should feel image-led. Management tools can be denser.
-7. Interactions should be immediate and quiet.
-8. Do not use decorative gradients, glowing accents, coloured card edges, glass cards, or nested cards without a functional reason.
-9. Pills are reserved for filters and compact states.
-10. Mobile should preserve browsing density rather than collapsing everything into oversized single cards.
-
-## Colour
-
-Background: `#f5f5f2`
-Primary surface: `#ffffff`
-Secondary surface: `#eeeeeb`
-Raised neutral: `#e4e4df`
-Primary text: `#181817`
-Muted text: `#70706b`
-Faint text: `#9b9b95`
-Border: `#dfdfda`
-Strong border: `#c9c9c3`
-Accent: `#5b5ce2`
-Accent surface: `#ececff`
-Danger: `#c94a43`
-Success: `#2f8a55`
-
-The accent is functional. It should appear in selected states, notifications, links that need emphasis, and discovery labels. It should not wash entire pages in colour.
+1. Content and community come first.
+2. The interface should feel native and calm, not decorative.
+3. Tomb Raider theming comes from material, colour, imagery, language, and iconography, not novelty textures.
+4. Every control should have an obvious purpose.
+5. Public surfaces can breathe. Management and composer surfaces can be denser.
+6. No card-on-card clutter.
+7. Avoid decorative borders and coloured edge accents.
+8. Never use glass effects everywhere. Blur is reserved for navigation, sheets, and selected hero treatments.
+9. Avoid huge empty marketing areas inside the signed-in product.
+10. Mobile is designed intentionally rather than produced by simply stacking desktop.
 
 ## Typography
 
-Use the system sans stack throughout:
+Primary body font:
+`Manrope`
 
-`Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`
+Display font:
+`Space Grotesk`
 
-Large titles use tight tracking and strong weight rather than serif typography.
+Both are sans serif.
 
-Suggested roles:
+### Minimum size
 
-- Product wordmark: 24px, heavy, tight tracking
-- Page title: 36 to 64px depending on viewport
-- Section heading: 17 to 20px
-- Project title: 13 to 15px in feeds
-- UI copy: 12 to 14px
-- Metadata: 10 to 12px
+Nothing in the product may render below **14px**.
 
-Avoid interface text below 10px.
+This includes:
+- captions
+- metadata
+- form labels
+- navigation
+- button labels
+- timestamps
+- badges
+- helper copy
+- mobile navigation labels
 
-## Radius
+If information feels too dense at 14px, reduce the amount of information rather than shrinking the type.
 
-Artwork thumbnails: 8 to 10px
-Cards and larger surfaces: 12 to 14px
-Controls: 8 to 9px
-Dialogs: 16 to 18px
-Pills: fully rounded only for filters, tags, and compact status controls
-Avatars: circular
+### Hierarchy
 
-## Borders and surfaces
+Display titles:
+- Space Grotesk
+- tight letter spacing
+- strong but not excessively heavy
 
-Borders should be low contrast.
+Body:
+- Manrope
+- 14 to 17px
+- relaxed line height
 
-Use borders for:
-- navigation separation
-- forms
-- dense lists
-- cards that need a clear interactive boundary
-- modal and management structure
+UI:
+- Manrope
+- 14px minimum
+- medium to bold weight depending on action importance
 
-Do not put decorative borders around artwork.
+## Colour
 
-Most feed cards should consist of artwork plus metadata, not a white card behind both.
+Background: `#101411`
+Soft background: `#151a16`
+Primary surface: `#191f1a`
+Secondary surface: `#202720`
+Raised surface: `#2a3229`
+Primary text: `#f4f5ef`
+Muted text: `#b4baaf`
+Faint text: `#7e877d`
+Bronze: `#c89252`
+Light bronze: `#e0b578`
+Moss: `#6f8f67`
+Success: `#80b98a`
+Danger: `#e2766c`
 
-## Global navigation
+Bronze is the primary thematic accent.
 
-Desktop:
-- wordmark
-- large search field
-- primary sections
-- notifications
-- messages
-- Publish
-- profile
+It should feel like aged hardware, artifact metal, and expedition equipment, not gold luxury branding.
 
-Mobile:
-- compact top bar
-- expandable search
-- five-item bottom navigation
+## Concentric radii
 
-Search should remain available from every screen.
+Concentric radius relationships are mandatory.
 
-## Explore
+Base tokens:
 
-Desktop uses a left discovery rail with:
-- Discover
-- Recent
-- Popular
-- Following
-- creative fields
-- saved work
-- jobs
+- Outer shell: 28px
+- Panel: 22px
+- Card: 18px
+- Control: 14px
+- Small nested element: 10px
 
-The main content area can include:
-- compact page introduction
-- curated feature grid
-- artist discovery cards
-- project feed
+When a child is inset inside a rounded parent, reduce the child radius in proportion to the inset.
 
-The artwork feed supports three density levels.
+Example:
 
-Use natural artwork aspect ratios. Do not force a uniform card height.
+- Panel: 28px
+- 6px inner inset: approximately 22px child
+- 4px additional inset: approximately 18px nested card
 
-On mobile, the left rail disappears and creative-field filters become horizontally scrollable chips.
+Do not arbitrarily mix unrelated radii.
 
-## Artwork cards
+Circular elements are limited to:
+- avatars
+- notification dots
+- progress indicators where circular geometry is semantically appropriate
 
-Artwork cards contain:
-- image
-- project title
-- artist
-- field
-- appreciation count
+## Surfaces
 
-Save and appreciation actions appear on hover when hover exists.
+Surfaces should use tonal separation before visible borders.
 
-Do not place persistent action bars on every card.
+Preferred order:
 
-## Profiles
+1. spacing
+2. tonal change
+3. subtle shadow
+4. low-contrast border only if needed
 
-Profiles should feel like working artist pages, not dashboards.
+Avoid:
+- heavy outlines
+- coloured top borders
+- glowing edges
+- bevelled game UI
+- fake stone textures
+- excessive gradients
+- nested cards where whitespace can separate content
 
-Use:
-- artist identity
-- short biography
-- availability
-- featured work
-- portfolio grid
-- timeline
-- about
-- creator studio for the owner
+## Icons
 
-Portfolio browsing should remain image dense.
+Use **Lucide icons only** for interface iconography.
 
-## Projects
+Do not mix icon libraries.
 
-Project viewing uses a dark media stage with a light information column.
+Recommended stroke:
+- 1.8px
 
-Information order:
-1. artist
-2. field and year
-3. title
-4. description
-5. tools and project facts
-6. tags
-7. appreciate and save
-8. collection, share, edit
-9. rights
-10. comments
+Typical icon sizes:
+- 16 to 18px in controls
+- 20 to 26px in feature tiles
+- larger only for intentional empty or artifact states
 
-Do not turn project information into a large settings table.
+Never substitute emoji for UI icons.
+
+## Navigation
+
+Desktop header includes:
+
+- Tombbound brand
+- Home
+- Games
+- Lore
+- Community
+- Collections
+- Search
+- Notifications
+- XP
+- Post
+- Profile
+
+The header uses restrained blur and must remain readable over all content.
+
+Mobile uses five bottom destinations:
+
+- Home
+- Games
+- Post
+- Community
+- Profile
+
+The central Post action can be visually elevated but should not become oversized.
+
+## Home
+
+Home is a personalized social destination, not a marketing landing page.
+
+It contains:
+
+- current expedition
+- community feed
+- challenge progress
+- trending discussions
+- game discovery
+- people to follow
+
+The hero can use franchise-adjacent archaeological imagery, but the content must remain functional.
+
+## Games
+
+Game pages are tracking surfaces.
+
+Users can:
+
+- browse by era
+- mark games completed
+- add games to current play
+- view community participation
+- open related lore
+- open community discussion
+
+Game cards should not imitate box art shelves.
+
+## Lore
+
+Lore is a community reference layer.
+
+Entries include:
+
+- artifacts
+- places
+- mythology
+- recurring locations
+- associated games
+- community notes
+
+Artifact presentation can be more atmospheric than ordinary UI, but must still follow the same radius and spacing system.
+
+## Community
+
+The social system supports:
+
+- discoveries
+- discussions
+- collections
+- likes
+- replies
+- saves
+- following
+- member profiles
+- XP rewards
+- challenges
+
+Community posts should feel more like thoughtful expedition notes than short-form social media status updates.
+
+## Expedition XP
+
+XP rewards participation, not popularity alone.
+
+Example actions:
+
+- publish useful post
+- reply to discussion
+- complete a game
+- join a challenge
+- participate in community activity
+
+XP should not become a gambling mechanic or manipulate users into compulsive engagement.
+
+Levels are a lightweight identity layer.
 
 ## Collections
 
-Collection cards use a clean image collage rather than decorative stacked cards.
+Collections combine:
 
-Collections should communicate:
-- title
-- item count
-- privacy state
-- visual sample of contents
+- games
+- posts
+- lore entries
+- favourite locations
+- replay lists
 
-## Following
+Preview cards use image collages rather than fake stacked paper effects.
 
-Following is chronological and should not mix recommendations into the stream.
+## Profile
 
-Use a readable single-column feed with strong imagery and minimal actions.
+Profiles show:
 
-## Jobs
+- identity
+- XP
+- level
+- completion history
+- badges
+- posts
+- followed members
 
-Jobs use structured list rows rather than decorative cards.
+Profiles should feel personal but not like a dashboard overloaded with metrics.
 
-Always surface:
-- company
-- role
-- discipline
-- location
-- work format
-- compensation
-- posting age
+## Forms and composers
 
-## Management surfaces
+Forms use:
 
-Publishing, Studio, messages, applications, notifications, and forms can be more structured than public discovery surfaces.
+- 14px minimum text
+- 14px control radius
+- tonal input backgrounds
+- strong focus states
+- generous tap targets
 
-They must still use the same:
-- colour tokens
-- radius system
-- typography
-- control styles
-- spacing rules
+Do not use tiny labels or placeholder-only forms.
 
-## Interaction
+## Motion
 
-Hover:
-- image scale no more than approximately 1 to 2 percent
-- subtle surface changes
-- actions may fade in
+Motion is quiet.
+
+Allowed:
+- short image scale on hover
+- subtle sheet transitions
+- opacity changes
+- gentle progress updates
 
 Avoid:
 - bouncing
-- glowing
 - pulsing
-- looping decorative animation
+- glowing
+- looping particles
+- constant decorative motion
 
-Respect reduced motion preferences.
+Respect reduced motion.
 
-## Responsive behaviour
+## Mobile
 
-Desktop prioritizes discovery density.
+Mobile requirements:
 
-Tablet:
-- hide left discovery rail
-- reduce artwork feed to three columns
-- preserve feature hierarchy
-
-Mobile:
-- two-column artwork feed
-- horizontally scrollable feature cards
-- horizontally scrollable artist discovery
-- expandable global search
+- 14px minimum text
+- no horizontal page overflow
 - bottom navigation
+- large tap targets
+- card radii remain concentric
+- social posts collapse gracefully
+- game cards switch to vertical layout
+- side rails move below primary content
+- modals use most of the viewport without touching screen edges unless necessary
 
-Project viewer becomes vertically stacked.
+## Design review checklist
 
-## Review checklist
+Before merging a UI change:
 
-Before merging a UI change, ask:
+- Is every visible text size at least 14px?
+- Are all icons Lucide?
+- Are nested radii concentric?
+- Did a border get added where spacing or tone could do the job?
+- Is there unnecessary card nesting?
+- Does this still feel like Tomb Raider without relying on gimmicks?
+- Does the product feel modern rather than game-launcher themed?
+- Are buttons large enough for touch?
+- Is the hierarchy obvious without explanation?
+- Does mobile feel intentionally designed?
+- Are accent colours restrained?
+- Is any decorative effect competing with the content?
+- Is the interface consistent with the rest of Tombbound?
 
-- Is the artwork still the strongest element?
-- Does this look like an art-sharing product rather than generic SaaS?
-- Is any card container unnecessary?
-- Is any text too small?
-- Is a pill being used for something that is not a filter or compact state?
-- Is the page denser where browsing benefits from density?
-- Is navigation immediately understandable?
-- Does mobile retain useful browsing speed?
-- Are actions hidden only when they remain discoverable?
-- Did any decorative gradient, coloured edge, glass effect, or unnecessary flourish creep in?
-
-If the UI begins competing with the artwork, simplify it.
+If a change feels like generic SaaS or cosplay UI, simplify it.
