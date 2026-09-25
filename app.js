@@ -686,13 +686,13 @@ function renderFollowing() {
   refreshIcons();
 }
 
-function collectionCard(collection) {
+function collectionCard(collection, index = 0) {
   const items = collection.itemIds.map(artById).filter(Boolean);
-  return `<article class="collection-card" data-open-collection="${collection.id}" tabindex="0" role="button" aria-label="Open ${escapeAttr(collection.name)}">
-    ${items.length ? `
+  const preview = items.slice(0,3);
+  return `<article class="collection-card collection-mood-${index % 3}" data-open-collection="${collection.id}" tabindex="0" role="button" aria-label="Open ${escapeAttr(collection.name)}">
+    ${preview.length ? `
       <div class="collection-stack">
-        <img src="${coverImage(items[0])}" alt="">
-        <img src="${coverImage(items[1] || items[0])}" alt="">
+        ${preview.map(item => `<img src="${coverImage(item)}" alt="">`).join('')}
       </div>
     ` : `<div class="collection-placeholder">${icon('images',38)}</div>`}
     <div class="collection-label">
@@ -755,8 +755,7 @@ function renderCollections(collectionId) {
         <article class="collection-card" id="saved-work-card" tabindex="0" role="button">
           ${saved.length ? `
             <div class="collection-stack">
-              <img src="${coverImage(saved[0])}" alt="">
-              <img src="${coverImage(saved[1] || saved[0])}" alt="">
+              ${saved.slice(0,3).map(item => `<img src="${coverImage(item)}" alt="">`).join('')}
             </div>
           ` : `<div class="collection-placeholder">${icon('bookmark',38)}</div>`}
           <div class="collection-label">
@@ -764,7 +763,7 @@ function renderCollections(collectionId) {
             <span>${saved.length} saved · Private</span>
           </div>
         </article>
-        ${state.collections.map(collectionCard).join('')}
+        ${state.collections.map((collection,index) => collectionCard(collection,index + 1)).join('')}
       </section>
 
       <div class="section-head">
