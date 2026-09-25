@@ -695,7 +695,7 @@ function resourceItem(resource) {
     '<span class="resource-icon">' + icon(resource[0], 20) + '</span>' +
     '<span><strong>' + escapeHTML(resource[1]) + '</strong><span>' + escapeHTML(resource[2]) + '</span></span>' +
     icon("chevron-right", 17) +
-  '</a>';
+  '</button>';
 }
 
 function infoTile(iconName, title, detail) {
