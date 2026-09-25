@@ -723,23 +723,24 @@ function searchableText(entry) {
 }
 
 
+
 function entryCard(entry) {
-  return '<a class="archive-entry" href="#entry/' + entry.id + '">' +
-    '<div class="archive-entry-image"><img src="' + entry.hero + '" alt="" loading="lazy"></div>' +
-    '<div>' +
-      '<div class="archive-entry-meta">' + escapeHTML(entry.type) + ' / ' + entry.year + ' / ' + escapeHTML(entry.era) + '</div>' +
+  return '<a class="media-card" href="#entry/' + entry.id + '">' +
+    entryVisual(entry, "media-card-art") +
+    '<div class="media-card-body">' +
+      '<div class="media-card-kicker">' + escapeHTML(entry.type) + ' · ' + entry.year + '</div>' +
       '<h3>' + escapeHTML(entry.title) + '</h3>' +
       '<p>' + escapeHTML(entry.blurb) + '</p>' +
+      '<div class="media-card-footer"><span>' + escapeHTML(entry.era) + '</span>' + icon("arrow-up-right", 17) + '</div>' +
     '</div>' +
-    '<span class="archive-entry-arrow">' + icon("arrow-up-right", 18) + '</span>' +
   '</a>';
 }
 
-function quickIndexItem(iconName, title, count, href) {
-  return '<a href="' + href + '">' +
-    '<span class="archive-index-icon">' + icon(iconName, 20) + '</span>' +
-    '<span><strong>' + title + '</strong><span>' + count + ' indexed entries</span></span>' +
-    icon("arrow-right", 17) +
+function quickIndexItem(iconName, title, count, href, detail) {
+  return '<a class="index-link" href="' + href + '">' +
+    '<span class="index-link-icon">' + icon(iconName, 19) + '</span>' +
+    '<span><strong>' + title + '</strong><small>' + detail + '</small></span>' +
+    '<span class="index-link-count">' + count + '</span>' +
   '</a>';
 }
 
@@ -747,51 +748,51 @@ function renderArchive() {
   var games = entriesByCategory("games");
   var screen = entriesByCategory("screen");
   var print = entriesByCategory("print");
-  var featured = ["tr1", "legend", "tr2013", "remastered123"].map(entryById);
+  var current = ["legacy", "catalyst", "remastered456", "remastered123"].map(entryById);
+  var eras = ["tr1", "legend", "tr2013", "guardian"].map(entryById);
 
   main.innerHTML = '<div class="page-shell">' +
-    '<section class="archive-masthead">' +
-      '<div class="archive-copy">' +
-        '<div class="archive-kicker"><span>Independent Tomb Raider index</span><span>1996 to present</span></div>' +
-        '<h1>Tomb Raider, properly indexed.</h1>' +
-        '<p>A clean reference for the games and the media around them: walkthroughs, levels, secrets, characters, artifacts, films, series, comics, novels, galleries, music, saves, patches, and platform notes.</p>' +
-        '<div class="archive-actions">' +
-          '<a class="primary-button" href="#games">' + icon("gamepad-2", 17) + '<span>Browse games</span></a>' +
+    '<section class="home-hero">' +
+      '<div class="home-hero-copy">' +
+        '<span class="eyebrow">30 years of Tomb Raider</span>' +
+        '<h1>The Tomb Raider archive.</h1>' +
+        '<p>Games, walkthroughs, levels, secrets, characters, artifacts, films, television, comics, novels, music, galleries, saves, patches, and platform notes in one consistent reference.</p>' +
+        '<div class="hero-actions">' +
+          '<a class="primary-button" href="#games">' + icon("gamepad-2", 17) + '<span>Explore games</span></a>' +
           '<a class="secondary-button" href="#guides">' + icon("map", 17) + '<span>Open guides</span></a>' +
         '</div>' +
+        '<div class="hero-current">' +
+          '<a href="#entry/legacy"><span>Next release</span><strong>Legacy of Atlantis</strong>' + icon("arrow-right", 16) + '</a>' +
+          '<a href="#entry/catalyst"><span>New era</span><strong>Tomb Raider: Catalyst</strong>' + icon("arrow-right", 16) + '</a>' +
+        '</div>' +
       '</div>' +
-      '<div class="archive-visual">' +
-        '<div class="archive-visual-frame"><img src="https://images.unsplash.com/photo-1539650116574-75c0c6d73f6e?auto=format&fit=crop&w=1600&q=88" alt=""></div>' +
-        '<div class="archive-visual-meta"><span>Archive / 001</span><span>Expeditions, artifacts, places</span></div>' +
-      '</div>' +
+      '<div class="home-hero-art"><img src="' + anniversaryArt + '" alt="Tomb Raider 30th anniversary artwork"></div>' +
     '</section>' +
 
-    '<nav class="archive-index" aria-label="Archive index">' +
-      quickIndexItem("gamepad-2", "Games", games.length, "#games") +
-      quickIndexItem("clapperboard", "Screen", screen.length, "#screen") +
-      quickIndexItem("book-open", "Print", print.length, "#print") +
-      quickIndexItem("map", "Guides", guideTypes.length, "#guides") +
+    '<nav class="home-index" aria-label="Browse Tomb Atlas">' +
+      quickIndexItem("gamepad-2", "Games", games.length, "#games", "Mainline, remasters, spin-offs, mobile") +
+      quickIndexItem("clapperboard", "Screen", screen.length, "#screen", "Films, animation, television") +
+      quickIndexItem("book-open", "Print", print.length, "#print", "Comics, novels, graphic novels") +
+      quickIndexItem("map", "Guides", guideTypes.length, "#guides", "Walkthroughs, secrets, saves, fixes") +
     '</nav>' +
 
     '<section class="section">' +
-      '<div class="section-head"><div><span class="eyebrow">Selected entries</span><h2>Across the series</h2><p>A cross-section of the archive showing how every title follows the same information structure.</p></div><a class="text-link" href="#games">View all games ' + icon("arrow-right", 16) + '</a></div>' +
-      '<div class="archive-entry-list">' + featured.map(entryCard).join("") + '</div>' +
+      '<div class="section-head"><div><span class="eyebrow">Current & upcoming</span><h2>What the archive is tracking now</h2><p>Recent remasters and the next Tomb Raider releases sit beside the historical catalogue rather than in a separate news feed.</p></div><a class="text-link" href="#games">All games ' + icon("arrow-right", 16) + '</a></div>' +
+      '<div class="media-grid">' + current.map(entryCard).join("") + '</div>' +
     '</section>' +
 
     '<section class="section">' +
-      '<div class="section-head"><div><span class="eyebrow">Reference</span><h2>Find the thing you came for</h2><p>Reference categories stay stable from game to game instead of changing layout on every page.</p></div></div>' +
-      '<div class="reference-columns">' +
-        '<a class="reference-column" href="#guides">' + icon("map", 22) + '<div><strong>Walkthroughs</strong><span>Levels, puzzles, bosses</span></div></a>' +
-        '<a class="reference-column" href="#guides">' + icon("key-round", 22) + '<div><strong>Secrets</strong><span>Collectibles, pickups, 100%</span></div></a>' +
-        '<a class="reference-column" href="#games">' + icon("users", 22) + '<div><strong>Characters</strong><span>Biographies and appearances</span></div></a>' +
-        '<a class="reference-column" href="#games">' + icon("gem", 22) + '<div><strong>Artifacts</strong><span>Objects, mythology, locations</span></div></a>' +
-        '<a class="reference-column" href="#guides">' + icon("wrench", 22) + '<div><strong>Technical</strong><span>Controls, saves, bugs, patches</span></div></a>' +
-      '</div>' +
+      '<div class="section-head"><div><span class="eyebrow">Series map</span><h2>Explore by branch</h2><p>Classic, Legend, Survivor, and the Lara Croft spin-offs each have their own visual identity inside the same component system.</p></div></div>' +
+      '<div class="media-grid">' + eras.map(entryCard).join("") + '</div>' +
     '</section>' +
 
-    '<section class="section archive-note">' +
-      '<div><span class="eyebrow">Editorial direction</span><h2>Reference first. Community second.</h2></div>' +
-      '<p>Tomb Atlas is structured to answer questions and help people explore the franchise. Community discoveries can attach to the relevant page later, but they do not drive the layout or compete with the archive.</p>' +
+    '<section class="section reference-panel">' +
+      '<div class="reference-panel-copy"><span class="eyebrow">Reference library</span><h2>Built around the things fans actually look for.</h2><p>Every game page reserves the same places for walkthroughs, secrets, controls, characters, gear, outfits, achievements, galleries, soundtrack, save files, patches, and known issues.</p></div>' +
+      '<div class="reference-panel-links">' +
+        guideTypes.slice(0,6).map(function(guide) {
+          return '<a href="#search/' + encodeURIComponent(guide[1]) + '"><span>' + icon(guide[0], 18) + '<strong>' + escapeHTML(guide[1]) + '</strong></span>' + icon("chevron-right", 17) + '</a>';
+        }).join("") +
+      '</div>' +
     '</section>' +
     footer() +
   '</div>';
@@ -812,6 +813,7 @@ function matchesFilter(entry, filter) {
 }
 
 
+
 function renderHub(category) {
   var info = categoryInfo[category];
   var all = entriesByCategory(category);
@@ -822,14 +824,14 @@ function renderHub(category) {
   main.innerHTML = '<div class="page-shell">' +
     '<header class="hub-header">' +
       '<div><span class="eyebrow">' + info.eyebrow + '</span><h1 class="page-heading">' + info.title + '</h1><p class="page-intro">' + info.intro + '</p></div>' +
-      '<div class="hub-summary"><strong>' + all.length + '</strong><span>indexed entries</span></div>' +
+      '<div class="hub-count"><strong>' + all.length + '</strong><span>entries</span></div>' +
     '</header>' +
     '<div class="filter-bar" role="group" aria-label="' + info.title + ' filters">' +
       filters.map(function(filter) {
         return '<button class="' + (filter === activeFilter ? "is-active" : "") + '" data-filter="' + filter + '">' + filter + '</button>';
       }).join("") +
     '</div>' +
-    '<section class="archive-entry-list">' + filtered.map(entryCard).join("") + '</section>' +
+    '<section class="media-grid hub-grid">' + filtered.map(entryCard).join("") + '</section>' +
     footer() +
   '</div>';
 
@@ -844,16 +846,16 @@ function renderHub(category) {
 }
 
 function resourceItem(resource) {
-  return '<div class="resource-item">' +
-    '<span class="resource-icon">' + icon(resource[0], 19) + '</span>' +
-    '<span><strong>' + escapeHTML(resource[1]) + '</strong><span>' + escapeHTML(resource[2]) + '</span></span>' +
+  return '<div class="reference-row">' +
+    '<span class="reference-row-icon">' + icon(resource[0], 18) + '</span>' +
+    '<span><strong>' + escapeHTML(resource[1]) + '</strong><small>' + escapeHTML(resource[2]) + '</small></span>' +
   '</div>';
 }
 
 function infoTile(iconName, title, detail) {
-  return '<div class="info-row">' +
-    icon(iconName, 19) +
-    '<div><strong>' + escapeHTML(title) + '</strong><span>' + escapeHTML(detail) + '</span></div>' +
+  return '<div class="fact-row">' +
+    '<span class="fact-row-icon">' + icon(iconName, 18) + '</span>' +
+    '<span><small>' + escapeHTML(title) + '</small><strong>' + escapeHTML(detail) + '</strong></span>' +
   '</div>';
 }
 
@@ -867,94 +869,81 @@ function renderEntry(entry) {
   var backHref = "#" + entry.category;
   var backLabel = categoryInfo[entry.category].title;
   var resources = isGame ? gameResourceLabels : mediaResourceLabels;
-  var sectionLabel = isGame ? "Levels & chapters" : (entry.type === "Series" || entry.type === "Animation" ? "Episodes & parts" : "Contents & structure");
+  var sectionLabel = isGame ? "Levels" : (entry.type === "Series" || entry.type === "Animation" ? "Episodes" : "Contents");
 
   main.innerHTML = '<div class="page-shell">' +
-    '<section class="entry-hero">' +
-      '<div class="entry-hero-copy">' +
-        '<a class="entry-back" href="' + backHref + '">' + icon("arrow-left", 16) + '<span>Back to ' + backLabel + '</span></a>' +
-        '<span class="eyebrow">' + escapeHTML(entry.type) + ' / ' + entry.year + '</span>' +
+    '<section class="detail-hero">' +
+      '<div class="detail-hero-copy">' +
+        '<a class="detail-back" href="' + backHref + '">' + icon("arrow-left", 16) + '<span>' + backLabel + '</span></a>' +
+        '<span class="eyebrow">' + escapeHTML(entry.type) + ' · ' + entry.year + '</span>' +
         '<h1>' + escapeHTML(entry.title) + '</h1>' +
         '<p>' + escapeHTML(entry.blurb) + '</p>' +
-        '<div class="entry-hero-meta"><span>' + escapeHTML(entry.era) + '</span><span>' + escapeHTML(entry.developer) + '</span><span>' + escapeHTML(entry.platforms) + '</span></div>' +
+        '<div class="detail-meta"><span>' + escapeHTML(entry.era) + '</span><span>' + escapeHTML(entry.developer) + '</span><span>' + escapeHTML(entry.platforms) + '</span></div>' +
       '</div>' +
-      '<div class="entry-hero-image"><img src="' + entry.hero + '" alt=""></div>' +
+      entryVisual(entry, "detail-hero-art") +
     '</section>' +
 
-    '<div class="entry-body">' +
-      '<article class="entry-main">' +
-        '<section class="article-section" id="overview">' +
-          '<span class="eyebrow">Overview</span>' +
-          '<h2>At a glance</h2>' +
-          '<p>' + escapeHTML(entry.blurb) + '</p>' +
-          '<div class="info-grid">' +
+    '<nav class="detail-nav" aria-label="On this page">' +
+      '<button type="button" data-scroll-target="overview">Overview</button>' +
+      '<button type="button" data-scroll-target="levels">' + sectionLabel + '</button>' +
+      '<button type="button" data-scroll-target="reference">Reference</button>' +
+      '<button type="button" data-scroll-target="characters">' + (isGame ? "Characters" : "Cast") + '</button>' +
+      '<button type="button" data-scroll-target="notes">Notes</button>' +
+    '</nav>' +
+
+    '<div class="detail-layout">' +
+      '<article class="detail-main">' +
+        '<section class="detail-section" id="overview">' +
+          '<div class="detail-section-head"><span class="eyebrow">Overview</span><h2>At a glance</h2></div>' +
+          '<div class="fact-grid">' +
             infoTile("calendar-days", "Released", String(entry.year)) +
             infoTile("building-2", isGame ? "Developer" : "Creator / studio", entry.developer) +
             infoTile("map-pin", "Primary setting", entry.location) +
-            infoTile("gem", "Key artifact / focus", entry.artifact) +
+            infoTile("gem", "Artifact / focus", entry.artifact) +
             infoTile(isGame ? "gamepad-2" : "layers-3", isGame ? "Platforms" : "Format", entry.platforms) +
-            infoTile("landmark", "Archive era", entry.era) +
+            infoTile("landmark", "Archive branch", entry.era) +
           '</div>' +
         '</section>' +
 
-        '<section class="article-section" id="levels">' +
-          '<span class="eyebrow">' + sectionLabel + '</span>' +
-          '<h2>' + (isGame ? "Progression" : "Structure") + '</h2>' +
-          '<p>' + (isGame ? "The complete route through the game, ready to connect each chapter to walkthroughs, secrets, pickups, screenshots, and completion notes." : "The release structure, ready to connect each part to credits, synopsis, continuity, and related reference material.") + '</p>' +
+        '<section class="detail-section" id="levels">' +
+          '<div class="detail-section-head"><span class="eyebrow">' + sectionLabel + '</span><h2>' + (isGame ? "Progression" : "Structure") + '</h2><p>' + (isGame ? "A clear route through the game, ready to connect each area to walkthroughs, secrets, pickups, screenshots, and completion notes." : "A structured contents index that can expand into episode, issue, chapter, or story-level reference pages.") + '</p></div>' +
           '<div class="level-list">' +
             entry.levels.map(function(level, index) {
-              return '<div class="level-row"><span class="level-number">' + String(index + 1).padStart(2, "0") + '</span><strong>' + escapeHTML(level) + '</strong><span>' + (isGame ? "Guide" : "Reference") + '</span></div>';
+              return '<div class="level-row"><span>' + String(index + 1).padStart(2, "0") + '</span><strong>' + escapeHTML(level) + '</strong><small>' + (isGame ? "Guide" : "Reference") + '</small></div>';
             }).join("") +
           '</div>' +
         '</section>' +
 
-        '<section class="article-section" id="reference">' +
-          '<span class="eyebrow">Reference index</span>' +
-          '<h2>' + (isGame ? "Everything tied to this game" : "Everything tied to this release") + '</h2>' +
-          '<p>Reference categories follow the same order across the archive so navigation stays predictable as the site grows.</p>' +
-          '<div class="resource-list">' + resources.map(resourceItem).join("") + '</div>' +
+        '<section class="detail-section" id="reference">' +
+          '<div class="detail-section-head"><span class="eyebrow">Reference index</span><h2>' + (isGame ? "Everything tied to this game" : "Everything tied to this release") + '</h2><p>The categories stay in the same order across the archive so the site remains predictable as it grows.</p></div>' +
+          '<div class="reference-grid">' + resources.map(resourceItem).join("") + '</div>' +
         '</section>' +
 
-        '<section class="article-section" id="characters">' +
-          '<span class="eyebrow">People</span>' +
-          '<h2>' + (isGame ? "Characters" : "Cast & characters") + '</h2>' +
-          '<div class="character-list">' +
+        '<section class="detail-section" id="characters">' +
+          '<div class="detail-section-head"><span class="eyebrow">People</span><h2>' + (isGame ? "Characters" : "Cast & characters") + '</h2></div>' +
+          '<div class="people-list">' +
             entry.characters.map(function(character) {
-              return '<div class="character-row"><strong>' + escapeHTML(character[0]) + '</strong><span>' + escapeHTML(character[1]) + '</span></div>';
+              return '<div class="people-row"><strong>' + escapeHTML(character[0]) + '</strong><span>' + escapeHTML(character[1]) + '</span></div>';
             }).join("") +
           '</div>' +
         '</section>' +
 
-        '<section class="article-section" id="notes">' +
-          '<span class="eyebrow">Archive note</span>' +
-          '<h2>Context that belongs here</h2>' +
-          '<p>Useful fan knowledge should sit beside the information it improves instead of living in a separate feed.</p>' +
-          '<div class="note-block"><strong>' + icon("message-square-text", 17) + '<span>Editor note</span></strong><p>' + escapeHTML(entry.note) + '</p></div>' +
+        '<section class="detail-section" id="notes">' +
+          '<div class="detail-section-head"><span class="eyebrow">Archive note</span><h2>Useful context</h2></div>' +
+          '<div class="editor-note">' + icon("message-square-text", 18) + '<p>' + escapeHTML(entry.note) + '</p></div>' +
         '</section>' +
       '</article>' +
 
-      '<aside class="entry-sidebar">' +
-        '<div class="entry-sidebar-inner">' +
-          '<section class="sidebar-block">' +
-            '<h3>Record</h3>' +
-            '<div class="fact-list">' +
-              '<div><span>Type</span><strong>' + escapeHTML(entry.type) + '</strong></div>' +
-              '<div><span>Year</span><strong>' + entry.year + '</strong></div>' +
-              '<div><span>' + (isGame ? "Publisher" : "Release") + '</span><strong>' + escapeHTML(entry.publisher) + '</strong></div>' +
-              '<div><span>Setting</span><strong>' + escapeHTML(entry.location) + '</strong></div>' +
-              '<div><span>Reference sections</span><strong>' + resources.length + '</strong></div>' +
-            '</div>' +
-          '</section>' +
-          '<section class="sidebar-block on-this-page">' +
-            '<h3>On this page</h3>' +
-            '<nav aria-label="Entry sections">' +
-              '<button type="button" data-scroll-target="overview">Overview</button>' +
-              '<button type="button" data-scroll-target="levels">' + sectionLabel + '</button>' +
-              '<button type="button" data-scroll-target="reference">Reference index</button>' +
-              '<button type="button" data-scroll-target="characters">' + (isGame ? "Characters" : "Cast & characters") + '</button>' +
-              '<button type="button" data-scroll-target="notes">Archive note</button>' +
-            '</nav>' +
-          '</section>' +
+      '<aside class="detail-rail">' +
+        '<div class="detail-rail-inner">' +
+          '<span class="rail-label">Record</span>' +
+          '<dl>' +
+            '<div><dt>Type</dt><dd>' + escapeHTML(entry.type) + '</dd></div>' +
+            '<div><dt>Year</dt><dd>' + entry.year + '</dd></div>' +
+            '<div><dt>' + (isGame ? "Publisher" : "Release") + '</dt><dd>' + escapeHTML(entry.publisher) + '</dd></div>' +
+            '<div><dt>Setting</dt><dd>' + escapeHTML(entry.location) + '</dd></div>' +
+            '<div><dt>Reference</dt><dd>' + resources.length + ' sections</dd></div>' +
+          '</dl>' +
         '</div>' +
       '</aside>' +
     '</div>' +
@@ -974,23 +963,21 @@ function renderEntry(entry) {
 function renderGuides() {
   main.innerHTML = '<div class="page-shell">' +
     '<header class="hub-header">' +
-      '<div><span class="eyebrow">Player reference</span><h1 class="page-heading">Guides</h1><p class="page-intro">Practical reference for playing, finishing, fixing, and revisiting Tomb Raider across different releases and platforms.</p></div>' +
-      '<div class="hub-summary"><strong>' + guideTypes.length + '</strong><span>guide categories</span></div>' +
+      '<div><span class="eyebrow">Player reference</span><h1 class="page-heading">Guides</h1><p class="page-intro">Practical reference for playing, completing, fixing, and revisiting Tomb Raider across different releases and platforms.</p></div>' +
+      '<div class="hub-count"><strong>' + guideTypes.length + '</strong><span>guide categories</span></div>' +
     '</header>' +
-    '<section class="section">' +
-      '<div class="guide-list">' +
-        guideTypes.map(function(guide) {
-          return '<a class="guide-row" href="#search/' + encodeURIComponent(guide[1]) + '">' +
-            '<span class="guide-row-icon">' + icon(guide[0], 20) + '</span>' +
-            '<div><h3>' + escapeHTML(guide[1]) + '</h3><p>' + escapeHTML(guide[2]) + '</p></div>' +
-            icon("arrow-up-right", 17) +
-          '</a>';
-        }).join("") +
-      '</div>' +
+    '<section class="guide-grid">' +
+      guideTypes.map(function(guide) {
+        return '<a class="guide-card" href="#search/' + encodeURIComponent(guide[1]) + '">' +
+          '<span class="guide-icon">' + icon(guide[0], 21) + '</span>' +
+          '<div><h3>' + escapeHTML(guide[1]) + '</h3><p>' + escapeHTML(guide[2]) + '</p></div>' +
+          icon("arrow-up-right", 17) +
+        '</a>';
+      }).join("") +
     '</section>' +
-    '<section class="section archive-note">' +
-      '<div><span class="eyebrow">Guide structure</span><h2>One route into every kind of help.</h2></div>' +
-      '<p>Walkthroughs, collectibles, save files, controls, patches, bugs, and achievements all connect back to the relevant game and release. No separate visual language, no duplicated navigation, and no buried utility pages.</p>' +
+    '<section class="section reference-panel">' +
+      '<div class="reference-panel-copy"><span class="eyebrow">How guides connect</span><h2>No orphan pages.</h2><p>Every walkthrough, collectible list, save file, control guide, patch note, and known issue belongs to a specific game or release and links back into its archive page.</p></div>' +
+      '<div class="guide-principles"><div><strong>Game</strong><span>Which title?</span></div><div><strong>Release</strong><span>Which version?</span></div><div><strong>Platform</strong><span>What changes?</span></div><div><strong>Progress</strong><span>Where are you?</span></div></div>' +
     '</section>' +
     footer() +
   '</div>';
@@ -1005,17 +992,16 @@ function renderSearch(query) {
   main.innerHTML = '<div class="page-shell">' +
     '<header class="search-head">' +
       '<span class="eyebrow">Search</span>' +
-      '<h1 class="page-heading">' + (q ? 'Results for <span class="search-query">"' + escapeHTML(query) + '"</span>' : "Search the archive") + '</h1>' +
-      '<p class="page-intro">' + (q ? found.length + " matching entries across the archive." : "Search titles, years, characters, locations, artifacts, studios, platforms, levels, and guide categories.") + '</p>' +
+      '<h1 class="page-heading">' + (q ? 'Results for <span class="search-query">"' + escapeHTML(query) + '"</span>' : "Search Tomb Atlas") + '</h1>' +
+      '<p class="page-intro">' + (q ? found.length + " matching entries across games, screen, and print." : "Search titles, years, characters, locations, artifacts, creators, platforms, levels, and guide categories.") + '</p>' +
     '</header>' +
-    (q && found.length ? '<section class="archive-entry-list">' + found.map(entryCard).join("") + '</section>' : "") +
-    (q && !found.length ? '<section class="empty-state">' + icon("search-x", 34) + '<strong>No matching entries</strong><span>Try a title, character, location, artifact, platform, or guide category.</span></section>' : "") +
+    (q && found.length ? '<section class="media-grid search-grid">' + found.map(entryCard).join("") + '</section>' : "") +
+    (q && !found.length ? '<section class="empty-state">' + icon("search-x", 32) + '<strong>No matching entries</strong><span>Try a title, character, location, artifact, platform, or guide category.</span></section>' : "") +
     footer() +
   '</div>';
 
   refreshIcons();
 }
-
 function renderNotFound() {
   main.innerHTML = '<div class="page-shell"><section class="empty-state">' +
     icon("map-pinned", 34) +
