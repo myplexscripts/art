@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Margin is a living archive for publishing, discovering, and collecting visual work." />
-  <meta name="theme-color" content="#171512" />
+  <meta name="theme-color" content="#f5f5f2" />
   <title>Margin — Art, portfolios, and process</title>
   <link rel="preconnect" href="https://images.unsplash.com" />
   <link rel="stylesheet" href="styles.css" />
@@ -16,6 +16,12 @@
   <header class="topbar">
     <a class="wordmark" href="#explore" aria-label="Margin home">margin</a>
 
+    <label class="search" for="global-search">
+      <i data-lucide="search" aria-hidden="true"></i>
+      <input id="global-search" type="search" placeholder="Search projects, artists, or tags" autocomplete="off" />
+      <kbd>/</kbd>
+    </label>
+
     <nav class="primary-nav" aria-label="Primary">
       <a class="nav-link" href="#explore" data-nav="explore">Explore</a>
       <a class="nav-link" href="#following" data-nav="following">Following</a>
@@ -24,12 +30,6 @@
     </nav>
 
     <div class="topbar-actions">
-      <label class="search" for="global-search">
-        <i data-lucide="search" aria-hidden="true"></i>
-        <input id="global-search" type="search" placeholder="Search work, artists, tags" autocomplete="off" />
-        <kbd>/</kbd>
-      </label>
-
       <button class="top-icon-button" id="notifications-button" aria-label="Notifications" aria-haspopup="dialog">
         <i data-lucide="bell" aria-hidden="true"></i>
         <span class="badge" id="notification-badge" hidden></span>
