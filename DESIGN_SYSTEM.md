@@ -1,342 +1,376 @@
-# Tombbound Design System
+# Tomb Atlas Design System
 
-Tombbound is a modern social home for Tomb Raider fans. The interface should feel polished, tactile, and familiar in the way a high-quality Apple app feels, while still carrying warmth, archaeology, adventure, stone, brass, forest, and expedition cues.
+Tomb Atlas is an informational Tomb Raider fan reference. The interface should feel modern, calm, durable, and easy to navigate, with restrained adventure and archival cues rather than a themed game UI.
 
-It must never feel like a themed fan forum from the 2000s, a game launcher, or generic dark SaaS.
+The product priority is reference depth: games, walkthroughs, secrets, characters, artifacts, films, television, books, comics, galleries, soundtracks, technical notes, and related media. Social material is secondary and should only add useful context to the reference content.
 
-## Core product principles
+## Product principles
 
-1. Content and community come first.
-2. The interface should feel native and calm, not decorative.
-3. Tomb Raider theming comes from material, colour, imagery, language, and iconography, not novelty textures.
-4. Every control should have an obvious purpose.
-5. Public surfaces can breathe. Management and composer surfaces can be denser.
-6. No card-on-card clutter.
-7. Avoid decorative borders and coloured edge accents.
-8. Never use glass effects everywhere. Blur is reserved for navigation, sheets, and selected hero treatments.
-9. Avoid huge empty marketing areas inside the signed-in product.
-10. Mobile is designed intentionally rather than produced by simply stacking desktop.
+1. Information comes first.
+2. Every game or media entry uses the same predictable page structure.
+3. Tomb Raider character comes from colour, imagery, language, iconography, and material tone, not fake stone, distressed textures, or novelty game UI.
+4. Mobile is designed intentionally rather than created by stacking desktop.
+5. Search must remain prominent and useful.
+6. Avoid card-on-card clutter.
+7. Avoid decorative coloured borders and edge accents.
+8. Blur is limited to navigation and selected overlays.
+9. Controls should be obvious and have generous tap targets.
+10. Nothing visible is smaller than 14px.
+11. Community content belongs beside the reference material it clarifies, not in a feed that competes with the archive.
+12. The design should remain useful when the archive grows from dozens to thousands of pages.
+
+## Brand
+
+Name: Tomb Atlas
+
+Positioning: independent Tomb Raider reference and archive.
+
+The name is short, functional, and suggests navigation, geography, exploration, and a structured body of knowledge.
+
+The brand mark uses a Lucide compass. Do not create a pseudo-official Tomb Raider logo.
 
 ## Typography
 
-Primary body font:
-`Manrope`
+Body font:
+DM Sans
 
 Display font:
-`Space Grotesk`
+Instrument Sans
 
 Both are sans serif.
 
-### Minimum size
+Minimum visible type size:
+14px
 
-Nothing in the product may render below **14px**.
+Never shrink metadata, timestamps, badges, captions, navigation, helper text, or mobile labels below 14px. Remove information or change the layout instead.
 
-This includes:
-- captions
-- metadata
-- form labels
-- navigation
-- button labels
-- timestamps
-- badges
-- helper copy
-- mobile navigation labels
-
-If information feels too dense at 14px, reduce the amount of information rather than shrinking the type.
-
-### Hierarchy
-
-Display titles:
-- Space Grotesk
-- tight letter spacing
-- strong but not excessively heavy
-
-Body:
-- Manrope
-- 14 to 17px
-- relaxed line height
-
-UI:
-- Manrope
-- 14px minimum
-- medium to bold weight depending on action importance
+Display titles use Instrument Sans with tight tracking. Body and UI text use DM Sans.
 
 ## Colour
 
-Background: `#101411`
-Soft background: `#151a16`
-Primary surface: `#191f1a`
-Secondary surface: `#202720`
-Raised surface: `#2a3229`
-Primary text: `#f4f5ef`
-Muted text: `#b4baaf`
-Faint text: `#7e877d`
-Bronze: `#c89252`
-Light bronze: `#e0b578`
-Moss: `#6f8f67`
-Success: `#80b98a`
-Danger: `#e2766c`
+Background:
+#111310
 
-Bronze is the primary thematic accent.
+Elevated background:
+#151814
 
-It should feel like aged hardware, artifact metal, and expedition equipment, not gold luxury branding.
+Primary surface:
+#1a1e19
 
-## Concentric radii
+Secondary surface:
+#20251f
 
-Concentric radius relationships are mandatory.
+Raised surface:
+#292f27
 
-Base tokens:
+Warm surface:
+#242019
 
-- Outer shell: 28px
-- Panel: 22px
-- Card: 18px
-- Control: 14px
-- Small nested element: 10px
+Primary text:
+#f2f0e9
 
-When a child is inset inside a rounded parent, reduce the child radius in proportion to the inset.
+Secondary text:
+#c6c7bf
 
-Example:
+Muted text:
+#92988e
 
-- Panel: 28px
-- 6px inner inset: approximately 22px child
-- 4px additional inset: approximately 18px nested card
+Faint text:
+#6f776d
 
-Do not arbitrarily mix unrelated radii.
+Bronze accent:
+#c99556
 
-Circular elements are limited to:
-- avatars
-- notification dots
-- progress indicators where circular geometry is semantically appropriate
+Light bronze:
+#e1b577
+
+Moss:
+#72866a
+
+Bronze should feel like aged expedition hardware, not luxury gold branding.
+
+## Radius system
+
+Concentric radii are mandatory.
+
+Shell:
+30px
+
+Panel:
+24px
+
+Card:
+18px
+
+Control:
+14px
+
+Small nested element:
+10px
+
+Nested surfaces reduce radius in proportion to their inset. Do not mix arbitrary rounded values.
+
+Circular geometry is reserved for semantic circles such as status dots. Pills are allowed for short metadata.
 
 ## Surfaces
 
-Surfaces should use tonal separation before visible borders.
+Prefer separation in this order:
 
-Preferred order:
-
-1. spacing
+1. whitespace
 2. tonal change
 3. subtle shadow
-4. low-contrast border only if needed
+4. low contrast border only when necessary
 
-Avoid:
-- heavy outlines
-- coloured top borders
-- glowing edges
-- bevelled game UI
-- fake stone textures
-- excessive gradients
-- nested cards where whitespace can separate content
+Avoid fake stone textures, noisy grunge, strong gradients, glowing edges, bevels, decorative top borders, and nested cards that exist only for decoration.
+
+Large hero photography may carry more atmosphere than utility surfaces.
 
 ## Icons
 
-Use **Lucide icons only** for interface iconography.
+Use Lucide only.
 
-Do not mix icon libraries.
+Default stroke:
+1.8px
 
-Recommended stroke:
-- 1.8px
+Typical sizes:
+16 to 18px in controls
+20 to 26px in reference tiles
 
-Typical icon sizes:
-- 16 to 18px in controls
-- 20 to 26px in feature tiles
-- larger only for intentional empty or artifact states
+Never use emoji as interface icons.
 
-Never substitute emoji for UI icons.
+## Global navigation
 
-## Navigation
+Desktop:
 
-Desktop header includes:
-
-- Tombbound brand
-- Home
+- Tomb Atlas brand
+- Archive
 - Games
-- Lore
-- Community
-- Collections
+- Screen
+- Print
+- Guides
 - Search
-- Notifications
-- XP
-- Post
-- Profile
 
-The header uses restrained blur and must remain readable over all content.
+Mobile:
 
-Mobile uses five bottom destinations:
-
-- Home
+- Archive
 - Games
-- Post
-- Community
-- Profile
+- Screen
+- Guides
 
-The central Post action can be visually elevated but should not become oversized.
+Print remains available through Archive and search on mobile. The mobile navigation stays intentionally small.
 
-## Home
+The header may use restrained blur. It must remain readable over every page.
 
-Home is a personalized social destination, not a marketing landing page.
+## Archive home
 
-It contains:
+The archive home is an index, not a marketing page or social feed.
 
-- current expedition
-- community feed
-- challenge progress
-- trending discussions
-- game discovery
-- people to follow
+It includes:
 
-The hero can use franchise-adjacent archaeological imagery, but the content must remain functional.
+- a concise archive statement
+- quick index to the major media groups
+- archive counts
+- featured entries across eras
+- reference categories
+- explanation of the archive-first model
 
-## Games
+Avoid oversized empty hero areas. The hero must immediately provide navigation.
 
-Game pages are tracking surfaces.
+## Hub pages
 
-Users can:
+Games, Screen, and Print are category hubs.
 
-- browse by era
-- mark games completed
-- add games to current play
-- view community participation
-- open related lore
-- open community discussion
+Each hub includes:
 
-Game cards should not imitate box art shelves.
+- page title and concise description
+- total entry count
+- horizontal filter control
+- consistent entry cards
+- responsive grid on desktop
+- compact list-like cards on mobile
 
-## Lore
+Filters remain at least 14px and use the same 14px control radius.
 
-Lore is a community reference layer.
+## Entry page template
 
-Entries include:
+Every individual game, film, series, comic, or novel uses the same page skeleton.
 
+1. Hero
+2. Overview
+3. Progression or content structure
+4. Reference index
+5. Characters or cast
+6. Archive note
+7. Sticky fact rail on larger screens
+
+The hero contains:
+
+- back link
+- type
+- year
+- title
+- short summary
+- era
+- creator or developer
+- platform or format
+
+Game reference index:
+
+- walkthrough
+- secrets and collectibles
+- characters
+- weapons and gear
+- outfits
+- controls
+- cheats
+- achievements and trophies
+- gallery
+- soundtrack
+- downloads and saves
+- patches and bugs
+
+Screen and print reference index:
+
+- cast and characters
+- episodes or chapters
+- production
+- locations
+- artifacts and mythology
+- gallery
+- soundtrack
+- editions and releases
+
+This consistency is more important than giving every entry a unique visual treatment.
+
+## Guides
+
+Guides are practical reference surfaces.
+
+Core guide systems:
+
+- walkthroughs
+- secrets and collectibles
+- controls and moves
+- cheats and useful tricks
+- achievements and trophies
+- save files
+- patches and known issues
+- galleries
+
+Guide pages should eventually support game, platform, release, and remaster context.
+
+## Search
+
+Search stays in the global header on desktop and mobile.
+
+It should search:
+
+- titles
+- years
+- characters
+- locations
 - artifacts
-- places
-- mythology
-- recurring locations
-- associated games
-- community notes
+- creators and developers
+- platforms
+- guide categories
+- level and chapter names
 
-Artifact presentation can be more atmospheric than ordinary UI, but must still follow the same radius and spacing system.
+The slash key may focus search on desktop.
 
-## Community
+Search results use the same entry cards as the archive rather than introducing another component family.
 
-The social system supports:
+## Community material
 
-- discoveries
-- discussions
-- collections
-- likes
-- replies
-- saves
-- following
-- member profiles
-- XP rewards
-- challenges
+There is no primary social feed.
 
-Community posts should feel more like thoughtful expedition notes than short-form social media status updates.
+Useful fan context may appear as:
 
-## Expedition XP
+- editor notes
+- community corrections
+- technical discoveries
+- version-specific observations
+- references to discussions
 
-XP rewards participation, not popularity alone.
+Community content should never displace verified reference information.
 
-Example actions:
-
-- publish useful post
-- reply to discussion
-- complete a game
-- join a challenge
-- participate in community activity
-
-XP should not become a gambling mechanic or manipulate users into compulsive engagement.
-
-Levels are a lightweight identity layer.
-
-## Collections
-
-Collections combine:
-
-- games
-- posts
-- lore entries
-- favourite locations
-- replay lists
-
-Preview cards use image collages rather than fake stacked paper effects.
-
-## Profile
-
-Profiles show:
-
-- identity
-- XP
-- level
-- completion history
-- badges
-- posts
-- followed members
-
-Profiles should feel personal but not like a dashboard overloaded with metrics.
-
-## Forms and composers
-
-Forms use:
-
-- 14px minimum text
-- 14px control radius
-- tonal input backgrounds
-- strong focus states
-- generous tap targets
-
-Do not use tiny labels or placeholder-only forms.
+Future discussion features should attach to a specific archive entry or guide.
 
 ## Motion
 
 Motion is quiet.
 
 Allowed:
-- short image scale on hover
-- subtle sheet transitions
-- opacity changes
-- gentle progress updates
+
+- short card lift
+- subtle image scale
+- opacity transitions
+- small sheet transitions
 
 Avoid:
+
+- looping decorative motion
 - bouncing
 - pulsing
-- glowing
-- looping particles
-- constant decorative motion
+- particle effects
+- glowing controls
 
 Respect reduced motion.
 
-## Mobile
+## Responsive system
 
-Mobile requirements:
+Desktop and large screens:
 
-- 14px minimum text
+- maximum content width 1540px
+- multi-column archive grids
+- sticky entry side rail
+- full header navigation
+- large photographic entry heroes
+
+Tablet:
+
+- two or three column grids depending on width
+- side rail collapses below content when necessary
+- desktop navigation may collapse
+
+Mobile:
+
+- minimum 320px width
 - no horizontal page overflow
-- bottom navigation
-- large tap targets
-- card radii remain concentric
-- social posts collapse gracefully
-- game cards switch to vertical layout
-- side rails move below primary content
-- modals use most of the viewport without touching screen edges unless necessary
+- four destination bottom navigation
+- full-width search beneath the brand
+- entry grids become compact list cards
+- entry side rail becomes a single column
+- article sections use reduced but consistent radii
+- all controls remain touch-friendly
+- no visible text below 14px
 
-## Design review checklist
+## Accessibility
+
+- visible keyboard focus
+- semantic headings
+- descriptive navigation labels
+- text remains readable over photography
+- minimum 14px visible text
+- large tap targets
+- reduced motion support
+- decorative images use empty alt text
+- meaningful imagery requires descriptive alt text when added
+
+## Review checklist
 
 Before merging a UI change:
 
 - Is every visible text size at least 14px?
-- Are all icons Lucide?
+- Are icons exclusively Lucide?
 - Are nested radii concentric?
-- Did a border get added where spacing or tone could do the job?
+- Did spacing or tone solve the problem before a border was added?
 - Is there unnecessary card nesting?
-- Does this still feel like Tomb Raider without relying on gimmicks?
-- Does the product feel modern rather than game-launcher themed?
-- Are buttons large enough for touch?
-- Is the hierarchy obvious without explanation?
-- Does mobile feel intentionally designed?
-- Are accent colours restrained?
-- Is any decorative effect competing with the content?
-- Is the interface consistent with the rest of Tombbound?
+- Does the page still feel informational first?
+- Does Tomb Raider atmosphere come through without cosplay UI?
+- Does the component behave intentionally on mobile?
+- Does search still make the content discoverable?
+- Does this page follow the same entry structure as comparable pages?
+- Is social material secondary to reference content?
+- Will the pattern still work when the archive becomes much larger?
 
-If a change feels like generic SaaS or cosplay UI, simplify it.
+If a change feels like generic SaaS, a game launcher, a social network, or a 2000s fan forum, simplify it and return to the archive model.
