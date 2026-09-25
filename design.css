@@ -32,9 +32,7 @@
 html { background: var(--bg); }
 
 body {
-  background:
-    radial-gradient(circle at 72% -20%, rgba(208, 154, 118, .055), transparent 30%),
-    var(--bg);
+  background: var(--bg);
   color: var(--text);
   letter-spacing: -.008em;
 }
@@ -1934,4 +1932,80 @@ form select:focus {
   .project-facts-line {
     gap: 14px 22px;
   }
+}
+
+
+/* Collection boards */
+
+.collection-card .collection-stack img:nth-child(3) {
+  left: 26%;
+  top: 25%;
+  width: 52%;
+  height: 58%;
+  transform: rotate(-1deg);
+  z-index: 2;
+}
+
+.collection-mood-1 .collection-stack img:nth-child(1) {
+  left: 11%;
+  top: 8%;
+  width: 58%;
+  height: 68%;
+  transform: rotate(2.5deg);
+}
+
+.collection-mood-1 .collection-stack img:nth-child(2) {
+  right: 8%;
+  top: 22%;
+  width: 48%;
+  height: 60%;
+  transform: rotate(-4deg);
+}
+
+.collection-mood-1 .collection-stack img:nth-child(3) {
+  left: 6%;
+  top: 35%;
+  width: 43%;
+  height: 50%;
+  transform: rotate(-7deg);
+}
+
+.collection-mood-2 .collection-stack img:nth-child(1) {
+  left: 5%;
+  top: 17%;
+  width: 48%;
+  height: 62%;
+  transform: rotate(-6deg);
+}
+
+.collection-mood-2 .collection-stack img:nth-child(2) {
+  right: 5%;
+  top: 8%;
+  width: 56%;
+  height: 70%;
+  transform: rotate(2deg);
+}
+
+.collection-mood-2 .collection-stack img:nth-child(3) {
+  left: 28%;
+  top: 26%;
+  width: 49%;
+  height: 55%;
+  transform: rotate(5deg);
+}
+
+.collection-card:hover .collection-stack img:nth-child(1) {
+  transform: rotate(-5deg) translateY(-2px);
+}
+
+.collection-card:hover .collection-stack img:nth-child(2) {
+  transform: rotate(5deg) translateY(-3px);
+}
+
+.collection-card:hover .collection-stack img:nth-child(3) {
+  transform: rotate(0deg) translateY(-5px);
+}
+
+.collection-card .collection-stack img {
+  transition: transform .35s cubic-bezier(.2,.7,.2,1);
 }
