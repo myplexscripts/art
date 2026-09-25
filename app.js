@@ -56,6 +56,8 @@ const state = {
   routeId: null,
   filter: 'All',
   sort: 'Featured',
+  feedMode: 'Discover',
+  gridDensity: Number(readLocal('margin.gridDensity', 4)) || 4,
   search: '',
   profileTab: 'portfolio',
   likes: new Set(readLocal(STORAGE.likes, [])),
@@ -464,31 +466,31 @@ function artCard(item, index = 0, context = '') {
   const liked = state.likes.has(item.id);
   const saved = state.saves.has(item.id);
   const image = coverImage(item);
-  const contextClass = context === 'gallery'
-    ? ` art-card--gallery gallery-shape-${index % 8}`
-    : context === 'portfolio'
-      ? ` art-card--portfolio portfolio-shape-${index % 6}`
-      : '';
+  const contextClass = context === 'portfolio' ? ' art-card--portfolio' : '';
   return `<article class="art-card${contextClass}">
-    <button class="art-thumb" data-open-art="${item.id}" aria-label="Open ${escapeAttr(item.title)} by ${escapeAttr(item.artist)}">
-      <img src="${image}" alt="${escapeAttr(item.title)} by ${escapeAttr(item.artist)}" loading="lazy">
-      <span class="art-overlay" aria-hidden="true">
-        <span class="mini-action">${icon(saved ? 'bookmark-check' : 'bookmark',15)}</span>
-        <span class="mini-action">${icon('heart',15)}</span>
-      </span>
-    </button>
+    <div class="art-thumb-wrap">
+      <button class="art-thumb" data-open-art="${item.id}" aria-label="Open ${escapeAttr(item.title)} by ${escapeAttr(item.artist)}">
+        <img src="${image}" alt="${escapeAttr(item.title)} by ${escapeAttr(item.artist)}" loading="lazy">
+      </button>
+      <div class="art-overlay" aria-label="Project actions">
+        <button class="mini-action ${saved ? 'is-active' : ''}" data-save="${item.id}" aria-label="${saved ? 'Remove from saved' : 'Save'}">${icon(saved ? 'bookmark-check' : 'bookmark',16)}</button>
+        <button class="mini-action ${liked ? 'is-active' : ''}" data-like="${item.id}" aria-label="Appreciate">${icon('heart',16)}</button>
+      </div>
+    </div>
     <div class="art-meta">
-      <div>
+      <div class="art-meta-main">
         <h3 class="art-title">${escapeHTML(item.title)}</h3>
-        <div class="art-byline"><button class="artist-inline" data-creator="${item.artistId}">${escapeHTML(item.artist)}</button><span>${escapeHTML(item.field)}</span></div>
+        <div class="art-byline">
+          <button class="artist-inline" data-creator="${item.artistId}">${escapeHTML(item.artist)}</button>
+          <span>${escapeHTML(item.field)}</span>
+        </div>
       </div>
       <button class="art-stat ${liked ? 'is-liked' : ''}" data-like="${item.id}" aria-label="Appreciate ${escapeAttr(item.title)}">
-        ${liked ? '♥' : '♡'} ${formatNumber((item.likes || 0) + (liked ? 1 : 0))}
+        ${icon('heart',13)} ${formatNumber((item.likes || 0) + (liked ? 1 : 0))}
       </button>
     </div>
   </article>`;
 }
-
 function bindArtworkEvents(scope = document) {
   scope.querySelectorAll('[data-open-art]').forEach(el => el.addEventListener('click', () => openArtwork(el.dataset.openArt)));
   scope.querySelectorAll('[data-like]').forEach(el => el.addEventListener('click', event => {
@@ -519,101 +521,145 @@ function renderExplore() {
     items = items.filter(item => [item.title,item.artist,item.field,...(item.tags || [])].join(' ').toLowerCase().includes(query));
   }
 
-  if (state.sort === 'Most appreciated') items.sort((a,b) => (b.likes || 0) - (a.likes || 0));
-  if (state.sort === 'Newest') items.sort((a,b) => String(b.year || '').localeCompare(String(a.year || '')));
-  if (state.sort === 'Featured') items.sort((a,b) => (b.featured || 50) - (a.featured || 50));
+  if (!query && state.feedMode === 'Following') {
+    items = items.filter(item => state.follows.has(item.artistId));
+  }
+
+  if (state.feedMode === 'Recent') {
+    items.sort((a,b) => String(b.year || '').localeCompare(String(a.year || '')) || (b.featured || 0) - (a.featured || 0));
+  } else if (state.feedMode === 'Popular') {
+    items.sort((a,b) => (b.likes || 0) - (a.likes || 0));
+  } else if (state.sort === 'Most appreciated') {
+    items.sort((a,b) => (b.likes || 0) - (a.likes || 0));
+  } else if (state.sort === 'Newest') {
+    items.sort((a,b) => String(b.year || '').localeCompare(String(a.year || '')));
+  } else {
+    items.sort((a,b) => (b.featured || 50) - (a.featured || 50));
+  }
 
   const matchedArtists = query
     ? artists.filter(a => [a.name,a.handle,a.field,a.location].join(' ').toLowerCase().includes(query))
     : [];
 
-  const selected = query ? [] : items.slice(0, 3);
-  const browseItems = query ? items : items.slice(3);
+  const spotlight = !query && state.feedMode === 'Discover' && state.filter === 'All' ? items.slice(0,5) : [];
+  const feedItems = spotlight.length ? items.slice(5) : items;
+
+  const sidebarModes = [
+    ['Discover','compass'],
+    ['Recent','clock-3'],
+    ['Popular','flame'],
+    ['Following','users']
+  ];
 
   main.innerHTML = `
-    <div class="page explore-page">
-      ${query ? `
-        <section class="search-summary search-summary--editorial">
-          <div>
-            <p class="archive-index">Search / Margin</p>
-            <h1>“${escapeHTML(state.search)}”</h1>
-            <p>${items.length} work${items.length === 1 ? '' : 's'} found</p>
-          </div>
-          <button class="button button-quiet button-small" id="clear-search">${icon('x',14)} Clear</button>
-        </section>
-        ${matchedArtists.length ? `
-          <div class="search-artist-row">
-            ${matchedArtists.map(a => `<button class="search-artist-pill" data-creator="${a.id}">
-              <span class="avatar"><img src="${a.avatar}" alt=""></span>
-              <span><strong>${escapeHTML(a.name)}</strong><small>${escapeHTML(a.field)} · ${escapeHTML(a.location)}</small></span>
-            </button>`).join('')}
-          </div>` : ''}
-      ` : `
-        <header class="archive-opening">
-          <div>
-            <p class="archive-index">01 / Explore</p>
-            <h1>Explore</h1>
-          </div>
-          <p class="archive-note">New work, ongoing practices, and things worth returning to. Selected loosely across disciplines rather than ranked into a single feed.</p>
-        </header>
+    <div class="explore-shell">
+      <aside class="discovery-sidebar" aria-label="Explore navigation">
+        <div class="sidebar-group">
+          <span class="sidebar-label">Browse</span>
+          ${sidebarModes.map(([mode,iconName]) => `<button class="sidebar-link ${state.feedMode === mode ? 'is-active' : ''}" data-feed-mode="${mode}">${icon(iconName,16)}<span>${mode}</span></button>`).join('')}
+        </div>
+        <div class="sidebar-group">
+          <span class="sidebar-label">Creative fields</span>
+          ${fields.slice(1).map(field => `<button class="sidebar-link ${state.filter === field ? 'is-active' : ''}" data-sidebar-filter="${field}"><span>${field}</span></button>`).join('')}
+        </div>
+        <div class="sidebar-group sidebar-links-bottom">
+          <a class="sidebar-link" href="#collections">${icon('bookmark',16)}<span>Saved work</span></a>
+          <a class="sidebar-link" href="#jobs">${icon('briefcase-business',16)}<span>Creative jobs</span></a>
+        </div>
+      </aside>
 
-        <section class="selected-stage" aria-label="Selected work">
-          ${selected.map((item,index) => `
-            <article class="selected-work selected-work--${index + 1}">
-              <button class="selected-image" data-open-art="${item.id}">
-                <img src="${coverImage(item)}" alt="${escapeAttr(item.title)} by ${escapeAttr(item.artist)}">
-              </button>
-              <div class="selected-caption">
-                <span class="selected-number">0${index + 1}</span>
-                <div>
-                  <strong>${escapeHTML(item.title)}</strong>
-                  <button data-creator="${item.artistId}">${escapeHTML(item.artist)}</button>
-                </div>
+      <div class="page explore-page">
+        ${query ? `
+          <header class="search-page-head">
+            <div>
+              <span class="section-kicker">Search results</span>
+              <h1>“${escapeHTML(state.search)}”</h1>
+              <p>${items.length} project${items.length === 1 ? '' : 's'} found</p>
+            </div>
+            <button class="button button-quiet button-small" id="clear-search">${icon('x',14)} Clear</button>
+          </header>
+          ${matchedArtists.length ? `
+            <section class="people-results">
+              <div class="compact-section-head"><h2>Artists</h2></div>
+              <div class="artist-scroll">
+                ${matchedArtists.map(a => artistDiscoveryCard(a)).join('')}
               </div>
-            </article>`).join('')}
-        </section>
+            </section>
+          ` : ''}
+        ` : `
+          <header class="home-head">
+            <div>
+              <span class="section-kicker">${state.feedMode}</span>
+              <h1>${state.feedMode === 'Discover' ? 'Find work that sticks with you.' : state.feedMode}</h1>
+            </div>
+            <p>${state.feedMode === 'Discover'
+              ? 'Projects, process, and artists across illustration, design, photography, 3D, painting, and more.'
+              : state.feedMode === 'Following'
+                ? 'A feed made only from artists you follow.'
+                : state.feedMode === 'Recent'
+                  ? 'Recently published work across the community.'
+                  : 'Projects getting the most appreciation right now.'}</p>
+          </header>
 
-        <section class="artist-ribbon" aria-label="Artists to know">
-          <div class="artist-ribbon-copy">
-            <span>Artists to know</span>
-            <small>Across illustration, image making, design, 3D, and painting</small>
+          ${spotlight.length ? `
+            <section class="spotlight-section">
+              <div class="compact-section-head">
+                <h2>Featured today</h2>
+                <span>Curated from the community</span>
+              </div>
+              <div class="spotlight-grid">
+                ${spotlight.map((item,index) => spotlightCard(item,index)).join('')}
+              </div>
+            </section>
+
+            <section class="artists-section">
+              <div class="compact-section-head">
+                <h2>Artists to follow</h2>
+                <span>Fresh work across disciplines</span>
+              </div>
+              <div class="artist-scroll">
+                ${artists.map(a => artistDiscoveryCard(a)).join('')}
+              </div>
+            </section>
+          ` : ''}
+        `}
+
+        <section class="feed-section">
+          <div class="feed-heading">
+            <div>
+              <h2>${query ? 'Projects' : state.filter === 'All' ? (state.feedMode === 'Discover' ? 'More to explore' : state.feedMode) : state.filter}</h2>
+              <span>${feedItems.length} project${feedItems.length === 1 ? '' : 's'}</span>
+            </div>
+            <div class="feed-controls">
+              <div class="filter-scroll mobile-field-filters" aria-label="Filter artwork">
+                <button class="filter-chip ${state.filter === 'All' ? 'is-active' : ''}" data-filter="All">All</button>
+                ${fields.slice(1).map(field => `<button class="filter-chip ${state.filter === field ? 'is-active' : ''}" data-filter="${field}">${field}</button>`).join('')}
+              </div>
+              <select class="sort-select" id="sort-select" aria-label="Sort projects">
+                <option ${state.sort === 'Featured' ? 'selected' : ''}>Featured</option>
+                <option ${state.sort === 'Newest' ? 'selected' : ''}>Newest</option>
+                <option ${state.sort === 'Most appreciated' ? 'selected' : ''}>Most appreciated</option>
+              </select>
+              <div class="density-control" aria-label="Artwork size">
+                <button class="icon-button density-button" data-density-change="-1" aria-label="Larger artwork">${icon('minus',15)}</button>
+                <button class="icon-button density-button" data-density-change="1" aria-label="Smaller artwork">${icon('plus',15)}</button>
+              </div>
+            </div>
           </div>
-          <div class="artist-ribbon-list">
-            ${artists.map(a => `<button class="artist-ribbon-item" data-creator="${a.id}">
-              <span class="avatar"><img src="${a.avatar}" alt=""></span>
-              <span><strong>${escapeHTML(a.name)}</strong><small>${escapeHTML(a.field)}</small></span>
-            </button>`).join('')}
-          </div>
+
+          ${feedItems.length ? `
+            <div class="art-grid density-${state.gridDensity}" style="--feed-columns:${state.gridDensity}">
+              ${feedItems.map((item,index) => artCard(item,index,'feed')).join('')}
+            </div>
+          ` : `
+            <div class="empty-state">
+              ${icon(state.feedMode === 'Following' ? 'users' : 'search-x',30)}
+              <strong>${state.feedMode === 'Following' ? 'Your following feed is quiet.' : 'No work matched this view.'}</strong>
+              ${state.feedMode === 'Following' ? 'Follow artists from Discover and their new projects will appear here.' : 'Try another creative field or search.'}
+            </div>
+          `}
         </section>
-      `}
-
-      <section class="browse-intro">
-        <div>
-          <p class="archive-index">${query ? 'Results' : '02 / Browse'}</p>
-          <h2>${query ? 'Work' : 'The archive'}</h2>
-        </div>
-        <p>${query ? 'Refine by discipline or change the sort.' : 'A changing mix of recent projects and older work resurfacing through the community.'}</p>
-      </section>
-
-      <div class="feed-toolbar feed-toolbar--soft">
-        <div class="filter-scroll" aria-label="Filter artwork">
-          ${fields.map(field => `<button class="filter-chip ${state.filter === field ? 'is-active' : ''}" data-filter="${field}">${field}</button>`).join('')}
-        </div>
-        <span class="toolbar-spacer"></span>
-        <select class="sort-select" id="sort-select" aria-label="Sort projects">
-          <option ${state.sort === 'Featured' ? 'selected' : ''}>Featured</option>
-          <option ${state.sort === 'Newest' ? 'selected' : ''}>Newest</option>
-          <option ${state.sort === 'Most appreciated' ? 'selected' : ''}>Most appreciated</option>
-        </select>
       </div>
-
-      ${browseItems.length ? `<section class="gallery-grid" aria-label="Artwork">${browseItems.map((item,index) => artCard(item,index,'gallery')).join('')}</section>` : `
-        <div class="empty-state">
-          ${icon('search-x',30)}
-          <strong>No work matched that search.</strong>
-          Try another artist, field, or tag.
-        </div>
-      `}
     </div>
   `;
 
@@ -622,19 +668,78 @@ function renderExplore() {
     searchInput.value = '';
     renderExplore();
   });
+
+  document.querySelectorAll('[data-feed-mode]').forEach(btn => btn.addEventListener('click', () => {
+    state.feedMode = btn.dataset.feedMode;
+    state.filter = 'All';
+    renderExplore();
+  }));
+
+  document.querySelectorAll('[data-sidebar-filter]').forEach(btn => btn.addEventListener('click', () => {
+    state.filter = btn.dataset.sidebarFilter;
+    state.feedMode = 'Discover';
+    renderExplore();
+  }));
+
   document.querySelectorAll('[data-filter]').forEach(btn => btn.addEventListener('click', () => {
     state.filter = btn.dataset.filter;
     renderExplore();
   }));
+
   document.querySelector('#sort-select')?.addEventListener('change', event => {
     state.sort = event.target.value;
     renderExplore();
   });
+
+  document.querySelectorAll('[data-density-change]').forEach(btn => btn.addEventListener('click', () => {
+    const change = Number(btn.dataset.densityChange);
+    state.gridDensity = Math.max(3, Math.min(5, state.gridDensity + change));
+    writeLocal('margin.gridDensity', state.gridDensity);
+    renderExplore();
+  }));
+
+  document.querySelectorAll('[data-quick-follow]').forEach(btn => btn.addEventListener('click', event => {
+    event.stopPropagation();
+    const id = btn.dataset.quickFollow;
+    if (state.follows.has(id)) state.follows.delete(id);
+    else state.follows.add(id);
+    persist();
+    renderExplore();
+  }));
+
   bindArtworkEvents(main);
   bindCreatorEvents(main);
   refreshIcons();
 }
 
+function spotlightCard(item, index) {
+  return `<article class="spotlight-card spotlight-card--${index + 1}">
+    <button class="spotlight-image" data-open-art="${item.id}" aria-label="Open ${escapeAttr(item.title)}">
+      <img src="${coverImage(item)}" alt="${escapeAttr(item.title)} by ${escapeAttr(item.artist)}">
+      <span class="spotlight-scrim"></span>
+      <span class="spotlight-copy">
+        <strong>${escapeHTML(item.title)}</strong>
+        <span>${escapeHTML(item.artist)} · ${escapeHTML(item.field)}</span>
+      </span>
+    </button>
+  </article>`;
+}
+
+function artistDiscoveryCard(artist) {
+  const following = state.follows.has(artist.id);
+  const artistWork = allArt().filter(item => item.artistId === artist.id).slice(0,2);
+  return `<article class="artist-discovery-card">
+    <button class="artist-discovery-main" data-creator="${artist.id}">
+      <span class="avatar avatar-lg"><img src="${artist.avatar}" alt=""></span>
+      <span class="artist-discovery-copy">
+        <strong>${escapeHTML(artist.name)}</strong>
+        <small>${escapeHTML(artist.field)} · ${escapeHTML(artist.location)}</small>
+      </span>
+    </button>
+    <button class="follow-mini ${following ? 'is-following' : ''}" data-quick-follow="${artist.id}">${following ? 'Following' : 'Follow'}</button>
+    ${artistWork.length ? `<div class="artist-mini-work">${artistWork.map(item => `<img src="${coverImage(item)}" alt="">`).join('')}</div>` : ''}
+  </article>`;
+}
 function renderFollowing() {
   const followed = allArt().filter(item => state.follows.has(item.artistId));
 
