@@ -573,7 +573,7 @@ function quickIndexItem(iconName, title, count, href) {
     '<span class="quick-icon">' + icon(iconName, 18) + '</span>' +
     '<span><strong>' + title + '</strong><small>' + count + ' entries</small></span>' +
     icon("chevron-right", 17) +
-  '</a>';
+  '</button>';
 }
 
 function renderArchive() {
@@ -691,7 +691,7 @@ function renderHub(category) {
 }
 
 function resourceItem(resource) {
-  return '<a class="resource-item" href="#reference">' +
+  return '<button class="resource-item" type="button" data-scroll-target="reference">' +
     '<span class="resource-icon">' + icon(resource[0], 20) + '</span>' +
     '<span><strong>' + escapeHTML(resource[1]) + '</strong><span>' + escapeHTML(resource[2]) + '</span></span>' +
     icon("chevron-right", 17) +
@@ -793,11 +793,11 @@ function renderEntry(entry) {
           '<section class="on-this-page panel">' +
             '<h3>On this page</h3>' +
             '<nav aria-label="Entry sections">' +
-              '<a href="#overview">Overview</a>' +
-              '<a href="#levels">' + sectionLabel + '</a>' +
-              '<a href="#reference">Reference index</a>' +
-              '<a href="#characters">' + (isGame ? "Characters" : "Cast & characters") + '</a>' +
-              '<a href="#notes">Archive note</a>' +
+              '<button type="button" data-scroll-target="overview">Overview</button>' +
+              '<button type="button" data-scroll-target="levels">' + sectionLabel + '</button>' +
+              '<button type="button" data-scroll-target="reference">Reference index</button>' +
+              '<button type="button" data-scroll-target="characters">' + (isGame ? "Characters" : "Cast & characters") + '</button>' +
+              '<button type="button" data-scroll-target="notes">Archive note</button>' +
             '</nav>' +
           '</section>' +
         '</div>' +
@@ -805,6 +805,13 @@ function renderEntry(entry) {
     '</div>' +
     footer() +
   '</div>';
+
+  document.querySelectorAll("[data-scroll-target]").forEach(function(control) {
+    control.addEventListener("click", function() {
+      var target = document.getElementById(control.dataset.scrollTarget);
+      if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  });
 
   refreshIcons();
 }
