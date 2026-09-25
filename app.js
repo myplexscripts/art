@@ -412,6 +412,132 @@ const entries = [
     characters: [["Lara Croft", "Archaeologist"], ["Jonah Maiava", "Lara's friend and ally"]],
     artifact: "Survivor tie-in",
     note: "The archive should make reading order and continuity placement easy to understand without forcing print material into game-style chapter structures."
+  },
+  {
+    id: "guardian",
+    type: "Game",
+    category: "games",
+    title: "Lara Croft and the Guardian of Light",
+    year: 2010,
+    era: "Lara Croft",
+    developer: "Crystal Dynamics",
+    publisher: "Crystal Dynamics",
+    platforms: "PC, Xbox 360, PlayStation 3, Switch, iOS, Android",
+    location: "Central America",
+    hero: "",
+    blurb: "An isometric action-adventure built around exploration, traps, score challenges, and cooperative puzzle solving with Lara and the guardian Totec.",
+    levels: ["Campaign", "Challenge objectives", "Relics & artifacts", "Co-op puzzles"],
+    characters: [["Lara Croft", "Adventurer"], ["Totec", "Guardian of Light"], ["Xolotl", "Keeper of Darkness"]],
+    artifact: "Mirror of Smoke",
+    note: "This branch of the franchise needs its own identity in the archive while remaining connected to the main Tomb Raider timeline."
+  },
+  {
+    id: "osiris",
+    type: "Game",
+    category: "games",
+    title: "Lara Croft and the Temple of Osiris",
+    year: 2014,
+    era: "Lara Croft",
+    developer: "Crystal Dynamics",
+    publisher: "Crystal Dynamics",
+    platforms: "PC, PlayStation 4, Xbox One, Switch",
+    location: "Egypt",
+    hero: "",
+    blurb: "A four-player cooperative action-adventure in which Lara, Carter Bell, Horus, and Isis work together to stop Set and restore Osiris.",
+    levels: ["Campaign", "Tombs", "Challenge rooms", "Relics & rewards"],
+    characters: [["Lara Croft", "Adventurer"], ["Carter Bell", "Treasure hunter"], ["Horus", "Egyptian god"], ["Isis", "Egyptian goddess"], ["Set", "Antagonist"]],
+    artifact: "Fragments of Osiris",
+    note: "Co-op mechanics, challenge tombs, score systems, and platform releases should be easy to distinguish from the mainline series."
+  },
+  {
+    id: "relicrun",
+    type: "Mobile Game",
+    category: "games",
+    title: "Lara Croft: Relic Run",
+    year: 2015,
+    era: "Mobile",
+    developer: "Simutronics",
+    publisher: "Square Enix",
+    platforms: "iOS, Android",
+    location: "Multiple expedition zones",
+    hero: "",
+    blurb: "A mobile action runner built around traversal, vehicles, combat, boss encounters, and relic collection.",
+    levels: ["Expedition zones", "Relics", "Boss encounters", "Upgrades"],
+    characters: [["Lara Croft", "Adventurer"]],
+    artifact: "Ancient relics",
+    note: "Mobile titles need version history and availability notes because storefront support can change over time."
+  },
+  {
+    id: "laracroftgo",
+    type: "Mobile Game",
+    category: "games",
+    title: "Lara Croft GO",
+    year: 2016,
+    era: "Mobile",
+    developer: "Square Enix Montreal",
+    publisher: "Crystal Dynamics",
+    platforms: "iOS, Android, PC, PlayStation",
+    location: "A long-forgotten civilization",
+    hero: "",
+    blurb: "A turn-based puzzle adventure that distills traversal, traps, enemies, relics, and exploration into carefully staged diorama-like levels.",
+    levels: ["Main adventure", "Relic collections", "Bonus chapters", "Outfits"],
+    characters: [["Lara Croft", "Adventurer"], ["Queen of Venom", "Mythic adversary"]],
+    artifact: "Relic collections",
+    note: "Puzzle solutions should be indexed by area and move sequence without overwhelming the clean presentation."
+  },
+  {
+    id: "reloaded",
+    type: "Mobile Game",
+    category: "games",
+    title: "Tomb Raider Reloaded",
+    year: 2023,
+    era: "Mobile",
+    developer: "Emerald City Games",
+    publisher: "CDE Entertainment",
+    platforms: "iOS, Android",
+    location: "Classic-inspired tombs and ruins",
+    hero: "",
+    blurb: "A stylized roguelike mobile game that reinterprets classic Tomb Raider enemies, relics, traps, and locations around repeatable runs and ability choices.",
+    levels: ["Campaign chapters", "Relics", "Abilities", "Events"],
+    characters: [["Lara Croft", "Adventurer"]],
+    artifact: "Scion-inspired relic hunt",
+    note: "Live-service and mobile entries need update history separated from evergreen game information."
+  },
+  {
+    id: "legacy",
+    type: "Game",
+    category: "games",
+    title: "Tomb Raider: Legacy of Atlantis",
+    year: 2027,
+    era: "Upcoming",
+    developer: "Crystal Dynamics / Flying Wild Hog",
+    publisher: "Amazon Games",
+    platforms: "PlayStation 5, Xbox Series X|S, PC, Switch 2",
+    location: "Peru, Greece, Egypt, Mediterranean",
+    hero: "",
+    blurb: "A modern reimagining of Lara Croft's 1996 adventure, rebuilding the search for the Scion with interconnected spaces, redesigned puzzles, and contemporary traversal.",
+    levels: ["Peru", "Greece", "Egypt", "Atlantis"],
+    characters: [["Lara Croft", "Archaeologist and adventurer"], ["Jacqueline Natla", "Atlantean ruler"]],
+    artifact: "Scion of Atlantis",
+    note: "Keep this page clearly separated from both the 1996 original and Anniversary while cross-linking shared locations, characters, and artifacts."
+  },
+  {
+    id: "catalyst",
+    type: "Game",
+    category: "games",
+    title: "Tomb Raider: Catalyst",
+    year: 2027,
+    era: "Upcoming",
+    developer: "Crystal Dynamics",
+    publisher: "Amazon Games",
+    platforms: "PlayStation 5, Xbox Series X|S, PC",
+    location: "Northern India",
+    hero: "",
+    blurb: "A new Lara Croft adventure set across Northern India after a mythical cataclysm exposes ancient secrets and draws rival treasure hunters into the region.",
+    levels: ["Northern India", "Tombs", "Open exploration", "Adventure tech"],
+    characters: [["Lara Croft", "Archaeologist and adventurer"]],
+    artifact: "Unannounced",
+    note: "Upcoming titles should preserve confirmed information and clearly distinguish it from speculation or fan interpretation."
   }
 ];
 
@@ -469,6 +595,48 @@ const categoryInfo = {
     intro: "Comics, novels, graphic novels, creators, reading order, collected editions, continuity placement, and related media."
   }
 };
+
+const officialArt = {
+  tr1: "https://images.ctfassets.net/x77ixfmkpoiv/7pTZciXENaSSnInYyFGDaU/b87e6aea3adb657bdf7bbaa88fc69ccd/TRI_Product_Image.jpg",
+  legend: "https://images.ctfassets.net/x77ixfmkpoiv/1NSgtwUYhUwTEeBd0aPdPP/eb5e3b6b63f7687fecc4ef7ab175a1a2/Tomb-Raider-Legend-Box-Art-1x1-min.png",
+  tr2013: "https://images.ctfassets.net/x77ixfmkpoiv/1kBTjEMTz260u9jP8y3rUb/94f34f188d522f685d5350231100b0ea/6WCniRsHGdHc6mJU7rOQ6yRu.webp",
+  rise: "https://images.ctfassets.net/x77ixfmkpoiv/1kBTjEMTz260u9jP8y3rUb/94f34f188d522f685d5350231100b0ea/6WCniRsHGdHc6mJU7rOQ6yRu.webp",
+  shadow: "https://images.ctfassets.net/x77ixfmkpoiv/1kBTjEMTz260u9jP8y3rUb/94f34f188d522f685d5350231100b0ea/6WCniRsHGdHc6mJU7rOQ6yRu.webp",
+  remastered123: "https://images.ctfassets.net/x77ixfmkpoiv/7ErxLMbT9j12ay9gUrfiXp/451a3da53a3ce5462c74bed6a172a4b7/TR-Horizontal-Key-Art.png",
+  remastered456: "https://images.ctfassets.net/x77ixfmkpoiv/4El0ojdohCP4m3syZSEYHl/0c3e724f0985ea69f1e4073e4039389d/TR4-6-Horizontal-Key-Art.jpg",
+  legacy: "https://images.ctfassets.net/x77ixfmkpoiv/4RcCksagisTo2TKarz0S9w/d79f84520b5625adf7755fa7af9fb819/Tomb_Raider_-_Legacy_of_Atlantis_NoLogo_169_crop.png",
+  catalyst: "https://images.ctfassets.net/x77ixfmkpoiv/6tHn0Q2ZyzuR0YMvmz23YM/f2caaf6ae151b325a0316f0a6f71ab72/TombRaider-Catalyst-Teaser-LaraCroft-Climb.png"
+};
+
+const anniversaryArt = "https://images.ctfassets.net/x77ixfmkpoiv/rr7mVtH3FEiqh8rXUtEeA/255f98ea62abc1af4195badfcc72d60d/Tomb_Raider_30th_Anniversary_Desktop_Wallpaper.png";
+
+function shortTitle(title) {
+  return title.replace(/^Lara Croft:?\s*/i, "").replace(/^Tomb Raider:?\s*/i, "").trim() || "Tomb Raider";
+}
+
+function visualClass(entry) {
+  if (entry.era === "Classic") return "classic";
+  if (entry.era === "Legend") return "legend";
+  if (entry.era === "Survivor") return "survivor";
+  if (entry.era === "Remastered") return "remastered";
+  if (entry.era === "Upcoming") return "upcoming";
+  if (entry.era === "Mobile" || entry.era === "Lara Croft") return "spinoff";
+  if (entry.category === "screen") return "screen";
+  return "print";
+}
+
+function entryVisual(entry, className) {
+  var art = officialArt[entry.id];
+  var cls = className || "media-art";
+  if (art) {
+    return '<div class="' + cls + '"><img src="' + art + '" alt="" loading="lazy"></div>';
+  }
+  return '<div class="' + cls + ' art-fallback art-' + visualClass(entry) + '">' +
+    '<span class="art-icon">' + icon(entry.category === "games" ? "compass" : entry.category === "screen" ? "clapperboard" : "book-open", 24) + '</span>' +
+    '<span class="art-year">' + entry.year + '</span>' +
+    '<strong>' + escapeHTML(shortTitle(entry.title)) + '</strong>' +
+  '</div>';
+}
 
 const main = document.querySelector("#main");
 const searchInput = document.querySelector("#site-search");
@@ -631,7 +799,7 @@ function renderArchive() {
   refreshIcons();
 }
 function filtersFor(category) {
-  if (category === "games") return ["All", "Classic", "Legend", "Survivor", "Remastered"];
+  if (category === "games") return ["All", "Classic", "Legend", "Survivor", "Lara Croft", "Mobile", "Remastered", "Upcoming"];
   if (category === "screen") return ["All", "Film", "Series", "Animation"];
   if (category === "print") return ["All", "Comics", "Novel"];
   return ["All"];
