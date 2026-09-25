@@ -464,8 +464,12 @@ function artCard(item, index = 0, context = '') {
   const liked = state.likes.has(item.id);
   const saved = state.saves.has(item.id);
   const image = coverImage(item);
-  const galleryClass = context === 'gallery' ? ` art-card--gallery gallery-shape-${index % 8}` : '';
-  return `<article class="art-card${galleryClass}">
+  const contextClass = context === 'gallery'
+    ? ` art-card--gallery gallery-shape-${index % 8}`
+    : context === 'portfolio'
+      ? ` art-card--portfolio portfolio-shape-${index % 6}`
+      : '';
+  return `<article class="art-card${contextClass}">
     <button class="art-thumb" data-open-art="${item.id}" aria-label="Open ${escapeAttr(item.title)} by ${escapeAttr(item.artist)}">
       <img src="${image}" alt="${escapeAttr(item.title)} by ${escapeAttr(item.artist)}" loading="lazy">
       <span class="art-overlay" aria-hidden="true">
@@ -1030,35 +1034,44 @@ function renderProfile() {
   const portfolio = profilePortfolio();
   const totalLikes = portfolio.reduce((sum,item) => sum + (item.likes || 0),0) + state.likes.size;
   const tab = state.profileTab;
+  const featured = portfolio[0];
 
   main.innerHTML = `
-    <div class="page">
-      <section class="profile-hero">
-        <div>
-          <div class="profile-id">
-            <span class="avatar avatar-me avatar-xl">DV</span>
-            <div>
-              <h1>${escapeHTML(state.profile.name)}</h1>
-              <div class="profile-handle">${escapeHTML(state.profile.handle)} · <span class="profile-location">${icon('map-pin',14)} ${escapeHTML(state.profile.location)}</span></div>
-            </div>
+    <div class="page profile-page">
+      <section class="profile-authored">
+        <div class="profile-authored-copy">
+          <div class="profile-kicker">
+            <span class="avatar avatar-me">DV</span>
+            <span>${escapeHTML(state.profile.handle)}</span>
+            <span>${icon('map-pin',13)} ${escapeHTML(state.profile.location)}</span>
           </div>
-          <p class="profile-copy">${escapeHTML(state.profile.bio)}</p>
+          <h1>${escapeHTML(state.profile.name)}</h1>
+          <p class="profile-statement">${escapeHTML(state.profile.bio)}</p>
+          <div class="profile-actions profile-actions--authored">
+            <button class="button button-quiet" id="edit-profile">${icon('pencil',15)} Edit profile</button>
+            <button class="button button-primary" id="profile-upload">${icon('plus',15)} Add project</button>
+          </div>
+          <div class="profile-facts">
+            <span><strong>${portfolio.length}</strong> projects</span>
+            <span><strong>1.8k</strong> followers</span>
+            <span><strong>${formatNumber(totalLikes)}</strong> appreciations</span>
+            <span class="availability-mark"><i></i>${escapeHTML(state.profile.availability)} for work</span>
+          </div>
         </div>
-        <div class="profile-actions">
-          <button class="button button-quiet" id="edit-profile">${icon('pencil',15)} Edit profile</button>
-          <button class="button button-primary" id="profile-upload">${icon('plus',15)} Add project</button>
-        </div>
+
+        ${featured ? `
+          <button class="profile-feature" data-open-art="${featured.id}">
+            <img src="${coverImage(featured)}" alt="${escapeAttr(featured.title)}">
+            <span class="profile-feature-caption">
+              <small>Featured work</small>
+              <strong>${escapeHTML(featured.title)}</strong>
+              <span>${escapeHTML(featured.field)} · ${escapeHTML(featured.year)}</span>
+            </span>
+          </button>
+        ` : ''}
       </section>
 
-      <div class="profile-stats">
-        <span><strong>${portfolio.length}</strong> projects</span>
-        <span><strong>1.8k</strong> followers</span>
-        <span><strong>42.6k</strong> project views</span>
-        <span><strong>${formatNumber(totalLikes)}</strong> appreciations</span>
-        <span><strong>${escapeHTML(state.profile.availability)}</strong> for work</span>
-      </div>
-
-      <nav class="profile-tabs" aria-label="Profile sections">
+      <nav class="profile-tabs profile-tabs--authored" aria-label="Profile sections">
         ${['portfolio','timeline','about','studio'].map(name => `<button class="profile-tab ${tab === name ? 'is-active' : ''}" data-profile-tab="${name}">${name[0].toUpperCase() + name.slice(1)}</button>`).join('')}
       </nav>
 
@@ -1082,7 +1095,7 @@ function renderProfile() {
 function profileTabHTML(tab, portfolio) {
   if (tab === 'portfolio') {
     return portfolio.length
-      ? `<section class="masonry">${portfolio.map(artCard).join('')}</section>`
+      ? `<section class="portfolio-grid">${portfolio.map((item,index) => artCard(item,index,'portfolio')).join('')}</section>`
       : `<div class="empty-state">${icon('images',30)}<strong>Your portfolio is empty.</strong>Publish a project and choose “Add to portfolio”.</div>`;
   }
 
@@ -1240,40 +1253,50 @@ function renderArtist(id) {
   }
   const portfolio = allArt().filter(item => item.artistId === id && item.portfolio !== false);
   const following = state.follows.has(id);
+  const featured = portfolio[0];
 
   main.innerHTML = `
-    <div class="page">
-      <section class="profile-hero">
-        <div>
-          <div class="profile-id">
-            <span class="avatar avatar-xl"><img src="${artist.avatar}" alt=""></span>
-            <div>
-              <h1>${escapeHTML(artist.name)}</h1>
-              <div class="profile-handle">${escapeHTML(artist.handle)} · <span class="profile-location">${icon('map-pin',14)} ${escapeHTML(artist.location)}</span></div>
-            </div>
+    <div class="page profile-page">
+      <section class="profile-authored">
+        <div class="profile-authored-copy">
+          <div class="profile-kicker">
+            <span class="avatar"><img src="${artist.avatar}" alt=""></span>
+            <span>${escapeHTML(artist.handle)}</span>
+            <span>${icon('map-pin',13)} ${escapeHTML(artist.location)}</span>
           </div>
-          <p class="profile-copy">${escapeHTML(artist.bio)}</p>
+          <h1>${escapeHTML(artist.name)}</h1>
+          <p class="profile-statement">${escapeHTML(artist.bio)}</p>
+          <div class="profile-actions profile-actions--authored">
+            <button class="button button-quiet" id="message-artist">${icon('mail',15)} Message</button>
+            <button class="button ${following ? 'button-quiet' : 'button-primary'}" id="follow-artist">${following ? 'Following' : 'Follow'}</button>
+          </div>
+          <div class="profile-facts">
+            <span><strong>${portfolio.length}</strong> projects</span>
+            <span><strong>${formatNumber(artist.followers)}</strong> followers</span>
+            <span><strong>${formatNumber(artist.views)}</strong> project views</span>
+            <span class="availability-mark ${artist.status === 'Available' ? '' : 'is-busy'}"><i></i>${escapeHTML(artist.status)} for work</span>
+          </div>
         </div>
-        <div class="profile-actions">
-          <button class="button button-quiet" id="message-artist">${icon('mail',15)} Message</button>
-          <button class="button ${following ? 'button-quiet' : 'button-primary'}" id="follow-artist">${following ? 'Following' : 'Follow'}</button>
-        </div>
+
+        ${featured ? `
+          <button class="profile-feature" data-open-art="${featured.id}">
+            <img src="${coverImage(featured)}" alt="${escapeAttr(featured.title)}">
+            <span class="profile-feature-caption">
+              <small>Featured work</small>
+              <strong>${escapeHTML(featured.title)}</strong>
+              <span>${escapeHTML(featured.field)} · ${escapeHTML(featured.year)}</span>
+            </span>
+          </button>
+        ` : ''}
       </section>
 
-      <div class="profile-stats">
-        <span><strong>${formatNumber(portfolio.length)}</strong> projects</span>
-        <span><strong>${formatNumber(artist.followers)}</strong> followers</span>
-        <span><strong>${formatNumber(artist.views)}</strong> project views</span>
-        <span><strong>${escapeHTML(artist.status)}</strong> for work</span>
-      </div>
-
-      <nav class="profile-tabs">
+      <nav class="profile-tabs profile-tabs--authored">
         <button class="profile-tab is-active" id="artist-portfolio-tab">Portfolio</button>
         <button class="profile-tab" id="artist-about-tab">About</button>
       </nav>
 
       <div id="artist-content">
-        <section class="masonry">${portfolio.map(artCard).join('')}</section>
+        <section class="portfolio-grid">${portfolio.map((item,index) => artCard(item,index,'portfolio')).join('')}</section>
       </div>
     </div>
   `;
