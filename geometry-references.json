@@ -6,9 +6,11 @@
     "Deep Waves"
   ],
   "implementation": "Original flat Canvas 2D shapes; no downloaded SVGs, images, bevels or shadows.",
-  "texture": "The collection's shared print-grain overlay covers the artwork and clock.",
+  "texture": "Clean gallery artwork uses the page's global grain once. The full-screen viewer's grain covers its artwork and clock. Exported previews contain no grain.",
+  "gallery": "Shared framed caption band displays each scene's name, series and number.",
   "palette": {
-    "hue_degrees_per_second": 0.32,
+    "cycling_scenes": ["stacks", "blooms"],
+    "cycling_hue_degrees_per_second": 0.32,
     "saturation_percent": 36,
     "shade": "Darker, muted shades; one hue for all shapes and background at any instant."
   },
@@ -31,7 +33,8 @@
     {
       "id": "deepwaves",
       "title": "Deep Waves",
-      "motion": "Flat water ribbons and fine crest lines follow travelling swells, opposing smaller ripples and a slow rise and fall.",
+      "motion": "Concentric, slightly undulating water ripples expand every nine seconds. The scene scrolls slowly vertically and drifts sideways, reversing smoothly without a reset.",
+      "palette": "Fixed hue 205 degrees, saturation 36 percent; layered shades lighten from the outer deep water toward the inner rings. No full hue cycling.",
       "audio_source": "openblue"
     }
   ]

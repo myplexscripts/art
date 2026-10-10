@@ -159,10 +159,8 @@ def adapt_scenes():
     text = text.replace('.series, .posters a, footer {', '.series, .posters a {').replace('header p, footer.in, .series.in', 'header p, .series.in')
     text = '\n'.join(line for line in text.splitlines() if not line.lstrip().startswith('footer')) + '\n'
     text = text.replace('Living posters for your screen. Open one, go fullscreen, and leave it running.', 'Calming scenes for your screen. Open one, go fullscreen, and unwind.')
-    if '.posters a.grained::after' not in text:
-        text = text.replace('  .posters a.textless canvas { position: relative; z-index: 1; }', '  .posters a.textless canvas { position: relative; z-index: 1; }\n  .posters a.grained { position: relative; }\n  .posters a.grained::after { content: ""; position: absolute; inset: 0; z-index: 2; background: var(--grain, none); background-size: var(--grain-size, 256px); pointer-events: none; }')
-    if "a.classList.toggle('grained'" not in text:
-        text = text.replace("    a.classList.toggle('textless', scene.textless === true);", "    a.classList.toggle('textless', scene.textless === true);\n    a.classList.toggle('grained', scene.grain === true);")
+    # Gallery previews use the page's existing grain; the viewer has its own overlay.
+    text = '\n'.join(line for line in text.splitlines() if '.posters a.grained' not in line and "a.classList.toggle('grained'" not in line) + '\n'
     text = text.replace('  function open(name, grow) {\n    player?.close();', "  const resolveSceneName = name => ({ endlesslayers: 'stacks', petalorbit: 'blooms', sand: 'deepwaves' }[name] ?? name);\n  function open(name, grow) {\n    name = resolveSceneName(name);\n    if (!cards.some(c => c.name === name)) { leave(); return; }\n    player?.close();")
     text = text.replace("petalorbit: 'blooms' }", "petalorbit: 'blooms', sand: 'deepwaves' }")
     text = text.replace("  const asked = new URLSearchParams(location.search).get('scene');", "  const asked = resolveSceneName(new URLSearchParams(location.search).get('scene'));")

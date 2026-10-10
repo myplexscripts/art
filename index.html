@@ -67,8 +67,6 @@
   .posters a:focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; }
   .posters canvas { width: 100%; height: 100%; display: block; }
   .posters a.textless canvas { position: relative; z-index: 1; }
-  .posters a.grained { position: relative; }
-  .posters a.grained::after { content: ""; position: absolute; inset: 0; z-index: 2; background: var(--grain, none); background-size: var(--grain-size, 256px); pointer-events: none; }
   /* Arriving: the wordmark's letters rise from behind their baseline one after another, the orange rule is drawn across,
      the line of copy follows, and then the rows deal their posters in from the left, one row after another down the
      whole page, whether or not they are on screen yet. */
@@ -145,7 +143,6 @@
     const a = document.createElement('a'), canvas = document.createElement('canvas');
     a.href = '?scene=' + name; a.setAttribute('aria-label', `${scene.title}, ${series.name} ${scene.no}`);
     a.classList.toggle('textless', scene.textless === true);
-    a.classList.toggle('grained', scene.grain === true);
     a.draggable = false; a.addEventListener('dragstart', (e) => e.preventDefault());
     a.append(canvas); a.style.setProperty('--i', Math.min(wrap.children.length, 6)); wrap.append(a);
     const card = { name, scene, canvas, ctx: canvas.getContext('2d'), t: STILL, run: 0 };

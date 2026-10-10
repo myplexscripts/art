@@ -1,4 +1,4 @@
-// Three flat, bedside-friendly scenes. Every shade shares one continuously cycling hue.
+// Three flat, bedside-friendly scenes. Stacks and Blooms cycle hue; Deep Waves stays blue.
 // Seeded smooth noise gives motion an irregular pace without frame-dependent randomness.
 export const name = 'Geometry';
 const TAU = Math.PI * 2;
@@ -37,7 +37,8 @@ export function stackState(t, { H, S }) {
     scrollSpeed: range * drift.derivative * camera.rate + height * arrival.rate };
 }
 function scene(title, no, dark, audio, render) {
-  return { title, no: 'No. ' + no, dark, text: '#f5ead8', audio, textless: true, grain: true, make,
+  // The gallery uses the same framed title and number band as the original posters.
+  return { title, no: 'No. ' + no, dark, text: '#0e1c3a', audio, grain: true, make,
     paint(c, p, t, G) { c.save(); render(c, t, G); c.restore(); } };
 }
 const stacks = scene('Stacks', '01', '#1d2939', 'openblue', (c, t, G) => {
@@ -103,30 +104,38 @@ const blooms = scene('Blooms', '02', '#482c43', 'lavender', (c, t, G) => {
   }
 });
 
-const deepwaves = scene('Deep Waves', '03', '#183340', 'openblue', (c, t, { W, H, S }) => {
-  const hue = hueAt(t, 205), bands = 10;
-  c.fillStyle = ink(hue, 17); c.fillRect(0, 0, W, H);
-  // Travelling swells and smaller, opposing ripples deform each flat water ribbon.
-  // Neighbouring lines share the main swell so the surface moves as a body of water.
-  for (let i = 0; i < bands; i++) {
-    const baseline = H * (.07 + i * .105), phase = i * .38;
-    const crest = x => baseline
-      + Math.sin(x / W * TAU * 1.25 - t * .18 + phase) * S * .052
-      + Math.sin(x / W * TAU * 2.4 + t * .12 + phase * 1.6) * S * .019
-      + Math.sin(t * .065 + i * .55) * S * .012;
-    c.beginPath();
-    for (let j = 0; j <= 96; j++) {
-      const x = W * j / 96, y = crest(x);
-      j ? c.lineTo(x, y) : c.moveTo(x, y);
-    }
-    c.lineTo(W, H); c.lineTo(0, H); c.closePath();
-    c.fillStyle = ink(hue, (i % 2 === 0 ? 32 : 24) + i * .9); c.fill();
-    c.beginPath();
-    for (let j = 0; j <= 96; j++) {
-      const x = W * j / 96, y = crest(x);
-      j ? c.lineTo(x, y) : c.moveTo(x, y);
-    }
-    c.strokeStyle = ink(hue, 49 + i * .7); c.lineWidth = Math.max(1, S * .0025); c.stroke();
+export function waveState(t, { W, H, S }) {
+  // A slow vertical camera scroll reveals different parts of the same ripple field.
+  // It reverses gently rather than wrapping and jumping back to a new origin.
+  const x = W * .5 + Math.sin(t * .006) * S * .10;
+  const y = H * .38 - Math.sin(t * .008) * H * .16;
+  const cover = Math.hypot(Math.max(x, W - x), Math.max(y, H - y) / .9) / .985;
+  return { x, y, cover, spacing: S * .19, phase: t / 9 - Math.floor(t / 9), hue: 205 };
+}
+const deepwaves = scene('Deep Waves', '03', '#183340', 'openblue', (c, t, G) => {
+  const { W, H, S } = G, state = waveState(t, G);
+  c.fillStyle = ink(state.hue, 17); c.fillRect(0, 0, W, H);
+  // Concentric, almost circular water ripples share one softly moving unit contour.
+  // Draw it once, then scale it for each expanding ring instead of rebuilding every ring.
+  const contour = new Path2D();
+  for (let j = 0; j <= 160; j++) {
+    const a = j / 160 * TAU;
+    const r = 1 + .009 * Math.sin(a * 3 - t * .11) + .006 * Math.sin(a * 5 + t * .075);
+    const x = Math.cos(a) * r, y = Math.sin(a) * r * .9;
+    j ? contour.lineTo(x, y) : contour.moveTo(x, y);
+  }
+  contour.closePath(); c.translate(state.x, state.y);
+  // Like Stacks, the layers stay within one hue: deeper outer water is darker,
+  // and inner layers step up in shade. Deep Waves never cycles around the colour wheel.
+  for (let i = Math.ceil(state.cover / state.spacing) + 1; i >= 0; i--) {
+    const radius = (i + state.phase) * state.spacing;
+    if (radius <= 0) continue;
+    const light = 49 - clamp(radius / state.cover) * 30;
+    c.save(); c.scale(radius, radius);
+    c.fillStyle = ink(state.hue, light); c.fill(contour);
+    c.strokeStyle = ink(state.hue, light + 5);
+    c.lineWidth = Math.max(1, S * .0025) / radius; c.stroke(contour);
+    c.restore();
   }
 });
 export const scenes = { stacks, blooms, deepwaves };

@@ -61,17 +61,17 @@ The scenes use deterministic geometry for fine details and independent, slow clo
 
 The **Geometry** collection contains only **Stacks**, **Blooms** and **Deep Waves**. The Essentials series and the other Geometry scenes are no longer registered in the gallery. Previously supplied static Essentials covers remain archived in `covers/essentials/`. Existing `?scene=sand` links open Deep Waves.
 
-All three Geometry scenes use flat shapes, print grain and a muted, bedside-friendly palette. The grain covers the gallery artwork and both the artwork and clock in the full-screen viewer. The entire canvas shares one hue at a time; only shade varies, and every element rotates through hue at the same slow rate. Animations use standard Canvas 2D and cached vector paths for mobile Safari. Their clocks are independent of frame rate and remain consistent after a resize or a long pause.
+All three Geometry scenes use flat shapes and a muted, bedside-friendly palette. Gallery cards display the same name, series and number band as the original posters and rely on the page's global grain, with no grain baked into their artwork or an extra card overlay. Full-screen playback fills every edge, with grain covering both the artwork and clock. Stacks and Blooms share one slowly cycling hue; Deep Waves keeps a fixed blue hue with layered lighter and darker shades. Animations use standard Canvas 2D and cached vector paths for mobile Safari. Their clocks are independent of frame rate and remain consistent after a resize or a long pause.
 
 | Scene | Motion | Reused ambience and music |
 | --- | --- | --- |
 | **Stacks** (`?scene=stacks`) | Flat bars are exactly five times the previous thickness. Left/right arrivals and camera drift independently change pace through smooth seeded randomness. Shades run from light at the top to dark at the bottom. Bounded drift always leaves background showing. | Open Blue: deep-water ambience and its two music tracks. |
 | **Blooms** (`?scene=blooms`) | Contrasting shades alternate between expanding flowers. A new bloom starts at zero radius every 5.8 seconds. Four-, six-, three- and five-lobed shapes take turns about every three minutes, with enough time to fill the canvas. Existing blooms keep their shape as the next variation emerges from the center. | Lavender Field: field ambience and its two music tracks. |
-| **Deep Waves** (`?scene=deepwaves`) | Flat water ribbons and fine crest lines undulate with travelling swells, opposing ripples and a gentle rise and fall. | Open Blue: deep-water ambience and its two music tracks. |
+| **Deep Waves** (`?scene=deepwaves`) | Concentric water ripples expand outward while the scene slowly scrolls vertically and drifts sideways. Gentle reversals keep the scroll continuous. Inner layers are lighter and outer layers darker, all in one fixed blue hue. | Open Blue: deep-water ambience and its two music tracks. |
 
 The audio uses existing local files, streamed and crossfaded through the same Ambience, Music and Next Track controls as the original scenes. Track choices are saved separately for each new scene. On iOS, an initial tap can unlock playback when autoplay is blocked.
 
-[View the Geometry scenes](docs/geometry-preview.png) or [watch ten seconds of their motion](docs/geometry-motion.mp4). [`geometry-references.json`](geometry-references.json) records the authored motion and audio sources. No external SVGs or image assets are needed.
+[View the Geometry scenes](docs/geometry-preview.png) or [watch ten seconds of their motion](docs/geometry-motion.mp4). These exported previews contain no grain. [`geometry-references.json`](geometry-references.json) records the authored motion and audio sources. No external SVGs or image assets are needed.
 
 All **132 audio files** are included in `live/audio/` (about 553 MB), so playback does not depend on WAVZ's CDN. Audio starts after browser interaction when autoplay restrictions apply. Ambience and music have separate volume and mute controls; available music tracks cycle as in the original.
 
