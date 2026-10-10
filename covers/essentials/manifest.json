@@ -1,0 +1,650 @@
+{
+  "archive": "https://artofapplemusic.com/",
+  "collection": "Essentials",
+  "snapshot_date": "2026-10-10",
+  "source_cover_count": 455,
+  "completed_cover_count": 64,
+  "method": "AI-assisted static recreations with typography and Apple Music branding removed.",
+  "covers": [
+    {
+      "genre": "AACM",
+      "filename": "aacm.png",
+      "reference": "AACM Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/aacm-essentials/pl.349356ea7636435bb42948122c34f79a",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/63/b0/55/63b055ec-b070-ea2e-653c-a9ac709da817/bc29873f-faa2-449a-8b8f-916a2984be32.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "872f7daf1013dcd3b00b70c89dba750253e25e591bf286a7eb831bf181761a25"
+    },
+    {
+      "genre": "Acid House",
+      "filename": "acid-house.png",
+      "reference": "Acid House Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/acid-house-essentials/pl.4f6433dff6124f3a8a40e588b838109c",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features211/v4/2d/95/c9/2d95c961-78be-34a0-146d-512f320ebe69/414b7085-9234-47dd-b717-06778ccfde79.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "2258492b00805e1d853ea8bbc6a20f88a51829aefb5329caca265e711243554d"
+    },
+    {
+      "genre": "Acid Jazz",
+      "filename": "acid-jazz.png",
+      "reference": "Acid Jazz Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/acid-jazz-essentials/pl.d08fd25ecbf44c67bfc8d838abfdead8",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features211/v4/59/ca/b2/59cab206-b706-b72a-a1ae-74443e7201e9/1e9f578d-4c09-4fc5-b231-fa1f29e38979.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "2ab4bc7801a08eac5aa4baf89a8cfbb67613ed39d8ea025c0a6b083778902ec2"
+    },
+    {
+      "genre": "African Reggae",
+      "filename": "african-reggae.png",
+      "reference": "African Reggae Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/african-reggae-essentials/pl.e62025f868014d47a186d5a54c1e206d",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/25/05/e6/2505e657-b14a-e7c3-d61a-15bc0e09f1c5/b522a406-b9c9-4352-a5f4-21cf2e90432e.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "7de6bd69ce329e84b95ee0eabddebba7fee692fbc6519275c797f980a2b936be"
+    },
+    {
+      "genre": "Afrikaans",
+      "filename": "afrikaans.png",
+      "reference": "Afrikaans Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/afrikaans-essentials/pl.25a456bf72e4481ab9512e2a27134190",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/ef/72/24/ef722481-60c6-52af-323d-f1cd2d5b73d5/808a28dc-3875-4529-850e-3d0c3d021175.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "6cb51f0fefe8acfeef3a4536af965f852db0ee914f3dec644b14cd45ce91cf3e"
+    },
+    {
+      "genre": "Afrikaanse Alternatief",
+      "filename": "afrikaanse-alternatief.png",
+      "reference": "Afrikaanse Alternatief Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/afrikaanse-alternatief-essentials/pl.c177f120635d4fb8b277afd57d5bea3e",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features211/v4/ac/d4/d2/acd4d28a-1dad-57ce-9d41-220285484613/323758e9-9250-4deb-bd59-cd3855ea9846.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "f43776fd6e08c9959138173c4bc231d713032823f9fe9d7bdf414fe4a045cbdf"
+    },
+    {
+      "genre": "Afrikaanse Duette",
+      "filename": "afrikaanse-duette.png",
+      "reference": "Afrikaanse Duette Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/afrikaanse-duette-essentials/pl.f469a02b361f40c088983da4fe96dec8",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features211/v4/76/1a/21/761a2125-45a1-bafe-3f32-98dcff4a8216/7c7696f4-d447-46d2-9576-8fad8939f8e2.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "fc989df75cb74ee5dc9990040ed37650d257b13b1f488853c6efe2526a122f83"
+    },
+    {
+      "genre": "Afrikaanse Kersfees",
+      "filename": "afrikaanse-kersfees.png",
+      "reference": "Afrikaanse Kersfees Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/afrikaanse-kersfees-essentials/pl.444ff6b449b04f62a588f0e94f176401",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/03/4a/82/034a8257-984c-745f-2589-93e29ba52779/e678bf7e-9c1a-4165-b5c7-6ada73bf36ed.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "1ecf9a1f0bc9baa6e891a3f285ff97872223201e709646eaae8441c53984c3bf"
+    },
+    {
+      "genre": "Afrikaanse Sokkie",
+      "filename": "afrikaanse-sokkie.png",
+      "reference": "Afrikaanse Sokkie Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/afrikaanse-sokkie-essentials/pl.9c6ec43dd6ad4e78bea49a04d6d6eaf4",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features221/v4/42/ab/df/42abdf72-fa42-07eb-bb00-f99e2bf2ea14/ebe8bcf2-0da6-406a-b9e2-36465701e1d1.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "33ca2df9c54ac4fd3c64b78d6a4f457a6807a5f2d92347eb316d2877dd577582"
+    },
+    {
+      "genre": "Afro House",
+      "filename": "afro-house.png",
+      "reference": "Afro House Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/afro-house-essentials/pl.b6092fa6766647b09b1a92961d1c12f2",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/e9/d1/97/e9d19717-d69d-5c3a-f411-0c6e157a1818/69a5a7db-50af-46b3-8b76-a4f91bdc453f.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "89e364eddd4a16695f2af37907fe8127565ade8f6c436ccc327d8b3c2812e697"
+    },
+    {
+      "genre": "Afro-Folk",
+      "filename": "afro-folk.png",
+      "reference": "Afro-Folk Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/afro-folk-essentials/pl.2caa1b8308394ac1accc33342ff384cd",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/6f/87/76/6f877660-8719-2d3f-f5a6-c2776f54bf43/eb958aca-8701-4c45-98dc-c6f88a704ee1.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "710acfe124570a9b81f52daa6bb1b9622391f827d0cc7564348629c81793f4ba"
+    },
+    {
+      "genre": "Afrobeat",
+      "filename": "afrobeat.png",
+      "reference": "Afrobeat Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/afrobeat-essentials/pl.993d2301e6f446f1a64ac47e0a9d094e",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features221/v4/c3/c7/77/c3c77797-723e-99c9-b437-f6083fdafb96/b19db8ac-536f-497a-a29e-c93d8a57d398.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "fd084b5387e038fc83f47d273c379604c3c258fb1e18031c7c44fde9b7a6c873"
+    },
+    {
+      "genre": "Afrobeats",
+      "filename": "afrobeats.png",
+      "reference": "Afrobeats Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/afrobeats-essentials/pl.5f435f55d253405abe15d0348831887d",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features221/v4/89/20/0e/89200e37-3052-4a6d-979d-f54b68c2f881/afd24a01-f929-4ce4-a540-fe4a0b063086.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "b6758678f42eb908e92bec3831745685007e3b3e9558d3e0248b217ac308c881"
+    },
+    {
+      "genre": "Afropop",
+      "filename": "afropop.png",
+      "reference": "Afropop Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/afropop-essentials/pl.bd604feb292a42a9b3037dc6bacb66ba",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/64/2c/68/642c6841-e6d7-3de3-fb20-94747ecd5d0d/eac4c498-fb7f-46f9-8f7a-397512981b0c.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "d0cb496d2fe2718c7188dd3ed7fff767de236397cc791384dc8bd1f5c7498d75"
+    },
+    {
+      "genre": "Alt-Country",
+      "filename": "alt-country.png",
+      "reference": "Alt-Country Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/alt-country-essentials/pl.f2fb679ea6864b828dd9f3b3f2d62b7b",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/4f/1e/95/4f1e958d-5482-ba70-5c8f-a9625efd9e8d/71e6cdd0-a513-439b-b3eb-75fef8d9c0f9.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "5ceb3b6e6d05ab9ae6a79f1ba8bb4b92bd18d908175ac87bb2894c66b4727083"
+    },
+    {
+      "genre": "Alternative Hip-Hop",
+      "filename": "alternative-hip-hop.png",
+      "reference": "Alternative Hip-Hop Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/alternative-rap-essentials/pl.c50280b15852442ba25ca9949fa1a6a5",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features221/v4/60/59/57/60595722-f391-e871-f979-123e23e06c8a/11bd3507-1a0f-4e0d-844b-11d3df9702b8.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "523cbecd8c7cfed94830ec41b3101431d280a1fcf3c8f975cba35b3d6e5a29fc"
+    },
+    {
+      "genre": "Alté",
+      "filename": "alte.png",
+      "reference": "Alté Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/alt%C3%A9-essentials/pl.a5ae46a339a04081a81b2f21bde1527d",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/bb/72/c9/bb72c96d-79ea-1312-6e6b-b3822e47c411/2635b0d8-9e8e-4458-a114-b4cb533e866b.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "7bc6d81385d1c195f5c64a655d91c618bd3c274e06f968fb5621fa573cb45f92"
+    },
+    {
+      "genre": "Amapiano",
+      "filename": "amapiano.png",
+      "reference": "Amapiano Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/amapiano-essentials/pl.596bc74bab694f1da1f8b388593934b4",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/ef/26/9d/ef269d93-4894-6ce2-01e2-b631c9d844cd/e454a41e-b9db-4eeb-ab19-36641754602b.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "25ae2b433b18f096a8fe8bc0c87418a4c26855e5f5420de480552b2e93fcd8aa"
+    },
+    {
+      "genre": "Ambient",
+      "filename": "ambient.png",
+      "reference": "Ambient Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/ambient-essentials/pl.472dc0c5efe548bb9846e484378aa47b",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features221/v4/98/a6/4d/98a64d1a-5c30-67fd-640f-78c3bc819a84/8678027c-f51e-412c-831e-9f7aed018f46.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "6d5757d147798d00fe1dc6085828b5a11ed2aaa3bb767fa74cfc8f7b81e2cba6"
+    },
+    {
+      "genre": "Americana",
+      "filename": "americana.png",
+      "reference": "Americana Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/americana-essentials/pl.09d2969fa441483eba00a5ec41e279eb",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/bf/e3/83/bfe38318-a5c9-9422-9283-8dc4398151ff/35e5e350-d11d-449b-b5a9-f43a0f020e7e.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "eba6b828942c6d20ee1528b0d9a9f3bf6440d8a7509aa112821c9e9eac35f5fc"
+    },
+    {
+      "genre": "Anatolian Rock",
+      "filename": "anatolian-rock.png",
+      "reference": "Anatolian Rock Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/anatolian-rock-essentials/pl.42b923f075fa4da28213085b9bb9af50",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/98/3c/81/983c81a4-6901-9813-5aff-7669762a5088/9b6e03aa-24d8-4086-b74f-8c55ec85a308.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "89cfd806552a3d1d9291c9201837415919028ae3e0030cbba7a5c180324692f9"
+    },
+    {
+      "genre": "Aotearoa New Zealand Hits",
+      "filename": "aotearoa-new-zealand-hits.png",
+      "reference": "Aotearoa New Zealand Hits Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/aotearoa-new-zealand-hits-essentials/pl.f8137299b4384e85b99a04c7f0da783f",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/e8/42/53/e842536a-e298-1bb3-f47d-2ca960ad2177/6723283f-8702-4a6e-8428-e582332f753e.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "3bd4b9f20700c886a141a30b0aa2752b196f55e036d2e4b74d8913395c2784ac"
+    },
+    {
+      "genre": "Aotearoa Roots",
+      "filename": "aotearoa-roots.png",
+      "reference": "Aotearoa Roots Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/aotearoa-roots-essentials/pl.72b27ccb6a054f09809529686f7d24ab",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features115/v4/a1/13/b8/a113b882-fe11-1bd4-9293-3929f9b19880/U0MtTVMtV1ctQW90ZWFyb2FfUm9vdHNfRXNzZW50aWFscy1BREFNX0lEPTk5OTc2NjMxOC5wbmc.png/1080x1080SC.CAESS02.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "49cde75d1075527329d6a403f266a213a8bc45a62db1ed5c2011f1e774ef789b"
+    },
+    {
+      "genre": "Arabesk",
+      "filename": "arabesk.png",
+      "reference": "Arabesk Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/arabesk-essentials/pl.64c41c265a54422a8ec4f9b84fdb2002",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/54/c0/21/54c02137-7ef5-7384-7143-c283e3f80434/62825995-c377-4780-8b75-21189b56cc95.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "1824f6c67122181b776a2d635ea5cece327e0e28c112b48b97fa939bc4538e0a"
+    },
+    {
+      "genre": "Arabic Pop",
+      "filename": "arabic-pop.png",
+      "reference": "Arabic Pop Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/arabic-pop-essentials/pl.13ed4275930a49a3840a9ea81913cc63",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/ef/5e/af/ef5eaff1-d129-5b37-3c59-ed6e93e63eee/ff0943e9-bcec-40d3-9bad-551f9c25d3e9.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "0050e537ed58a66d587997b9b08b9cfebdc01bf061b59f1d2641a63952d462a5"
+    },
+    {
+      "genre": "Art Song",
+      "filename": "art-song.png",
+      "reference": "Art Song Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/art-song-essentials/pl.2f0250b36f8c4a338ffda4ffd2361e5c",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/63/ca/72/63ca72f7-2a08-4905-fa06-b0fa86879739/a1ac557b-ad1f-4650-8669-795593706486.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "5f27769c2eaec0cf2f75663ee7ac1d39cc31a46588c050990a87838a5aba5283"
+    },
+    {
+      "genre": "Asian Underground",
+      "filename": "asian-underground.png",
+      "reference": "Asian Underground Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/asian-underground-essentials/pl.1b26759ac6694bc6bc5672595a1fd8e5",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/53/8f/af/538fafdc-da30-2b5f-9865-d557cb65bf61/acd58d23-111c-4f77-84f7-f178232fb60e.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "21747caa42e537828e3f509561ed647f2a90addb0f7afe1bb33b540b23dc6488"
+    },
+    {
+      "genre": "Atlanta Hip-Hop",
+      "filename": "atlanta-hip-hop.png",
+      "reference": "Atlanta Hip-Hop Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/atlanta-hip-hop-essentials/pl.de1a43425bce45149b9f0bb1b6c1eb7f",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features211/v4/29/18/e0/2918e076-2621-25eb-4a2c-2786d6932d63/e6776ca1-eedb-4277-adbc-6bfa07d7892f.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "72ce2b4e8087b0977f8f167324b2f070196b17ca68931ccf999ee538e6e91b17"
+    },
+    {
+      "genre": "Aussie Hip-Hop",
+      "filename": "aussie-hip-hop.png",
+      "reference": "Aussie Hip-Hop Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/aussie-hip-hop-essentials/pl.bed5c310ce3e4d7a88cbcd6cbdddc489",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/16/34/2f/16342fbd-f917-c953-8149-4e89d3ea989c/90746b91-de8d-4507-8056-1d4aa1c232b1.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "5fd8e9a6ef96159e82d9cbdfe6dff1339eac49854af58e0b3a7c1a25743d4f7d"
+    },
+    {
+      "genre": "Australian Alt-Rock",
+      "filename": "australian-alt-rock.png",
+      "reference": "Australian Alt-Rock Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/australian-alt-rock-essentials/pl.adffc42fe3e54fca906668672283140b",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/2c/fb/f1/2cfbf1c5-aedf-68b0-a095-fcf8c7dae164/bd568569-341a-4067-a28a-99ff3caebc75.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "54af40b4429d79b0d9464e69c1fb73cd4959642d1677964e557a4a68f03ea7a4"
+    },
+    {
+      "genre": "Australian Country",
+      "filename": "australian-country.png",
+      "reference": "Australian Country Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/australian-country-essentials/pl.830f3d68e6c142e687e7b809c7345c3a",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/25/e2/b7/25e2b73b-fab6-612e-426a-9774896facdf/e5a88b96-a22a-4f14-af04-cea20194e571.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "e13295870fd8b555b20f39f8bb96211884bc554764dcc96724d1cbb567464766"
+    },
+    {
+      "genre": "Australian Dance",
+      "filename": "australian-dance.png",
+      "reference": "Australian Dance Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/australian-dance-essentials/pl.1d0159a4e93e4470b6b53b9722322768",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/ad/50/46/ad504626-0450-ad34-56eb-e2bfd58b291d/ccc10abf-7624-4f47-99af-72e0987b1350.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "ec4056561dc8b22237414cdf92b54281462eca2e9586329d162ba1c2d36e1ea3"
+    },
+    {
+      "genre": "Australian Electronic",
+      "filename": "australian-electronic.png",
+      "reference": "Australian Electronic Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/australian-electronic-essentials/pl.760574e7bcee4014959e07140266ea63",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/5b/17/3e/5b173ee9-cd59-5d40-3631-822a2c106cd6/5f8f5eb4-fcf5-4015-b81e-26c26c878d9c.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "44879add3e736112f83b64e8ff20eba65c3badd0f7851ddf0ebb191520bc7cff"
+    },
+    {
+      "genre": "Australian",
+      "filename": "australian.png",
+      "reference": "Australian Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/aussie-essentials/pl.37739657eba848b4b2d68a9276e665fe",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/5a/a5/18/5aa5186f-6aa1-2dbb-2337-49369073c6d5/137493f6-46a5-4c8e-a04d-a13db59c94cc.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "addaf18ac362e1a0b01b2834097816022a958844ff8b90aa60e7c615e5bca755"
+    },
+    {
+      "genre": "Australian Indie",
+      "filename": "australian-indie.png",
+      "reference": "Australian Indie Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/australian-indie-essentials/pl.06be61c3586f4f59aa350462c0d865a9",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/11/69/ef/1169ef12-cf68-ff06-e524-a3c06030f520/02252214-8dec-467d-8f84-7b34f4f13533.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "335db126366c6ada52702ab21e3f4629182824c4b0a4ea94509b7547e53e0c34"
+    },
+    {
+      "genre": "Australian Kids",
+      "filename": "australian-kids.png",
+      "reference": "Australian Kids Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/australian-kids-essentials/pl.5d2252f3ff9b49c399ac901c6ef91d48",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/46/57/06/46570670-1b30-1aa8-e073-9fa007ce0384/ac9b3306-9507-454b-acda-357e22f5956a.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "0e8851402f7100927b9c016eb10e795f04268649eecbc69e53cfab9b3a37d88d"
+    },
+    {
+      "genre": "Australian Pop",
+      "filename": "australian-pop.png",
+      "reference": "Australian Pop Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/australian-pop-essentials/pl.36a14c8b390c450ba380acbd10e8b51d",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/6f/3d/f8/6f3df8e9-9a42-a567-cc43-0485e90a295a/40f7f567-502f-4bd0-a3db-279b8548cd66.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "fbcc832739256d724791e68f494b1405aee872aac40e92c2977b9841b4bc4ce9"
+    },
+    {
+      "genre": "Australian Pub Rock",
+      "filename": "australian-pub-rock.png",
+      "reference": "Australian Pub Rock Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/aussie-pub-rock-essentials/pl.bbb4a3cc809d4ac88b1e1493001b3481",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features211/v4/91/fd/d5/91fdd5bb-1c96-f63a-c426-097b2dd1b6f0/96b1e655-62d6-402c-9ed3-fe25c855a460.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "fa9abb680dec78f177cd11d32c6316c585297aa0f403a56d9a9811d3f1fc6f44"
+    },
+    {
+      "genre": "Australian Rock",
+      "filename": "australian-rock.png",
+      "reference": "Australian Rock Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/australian-rock-essentials/pl.3bd0830f625440d4b24d7230e332da45",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/5f/76/24/5f76248f-d2fc-e0b6-b360-4ea283ae8ed1/2b95ff6d-b666-48c7-b1f2-5d4357492687.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "589d6ce30cc31bb278c4c6c6934a7bf864082b26167912472f6100b7bb7fbd3e"
+    },
+    {
+      "genre": "Austropop",
+      "filename": "austropop.png",
+      "reference": "Austropop Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/austropop-essentials/pl.04d3a21518bc492bbe37b34e16bc45a3",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/ab/20/9f/ab209f23-e9ba-a829-8e8e-92f535b317bb/fbf00dee-fd25-406d-8d42-9e869b955469.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "81a4f26ea6bd82d70244da184d7110495f57a4a3e2ddd3cb222abed918cc0d15"
+    },
+    {
+      "genre": "Avant-Garde Classical",
+      "filename": "avant-garde-classical.png",
+      "reference": "Avant-Garde Classical Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/avant-garde-classical-essentials/pl.a4b9bfdc1eb64492a5838ff1b228bd18",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/f7/25/52/f725525d-9631-96c6-ea8c-901cdd78b535/eb09f265-8d8f-48f2-8865-6720efb1f1ac.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "0de12a26ff70a346aeba5922502c966fac4d509b871332d806d003c148992441"
+    },
+    {
+      "genre": "Avant-Garde Metal",
+      "filename": "avant-garde-metal.png",
+      "reference": "Avant-Garde Metal Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/avant-garde-metal-essentials/pl.c688febffed44e6ead513f700cb61fc0",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/5a/8b/32/5a8b3242-37a8-8807-2be4-37bf9310f244/80406f7f-90fa-4ff5-bd0f-41d1448be045.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "c1b152b2860dcb2be0e84ff9fc75cec60f1c1bf6d8f894a552be1bcde2cbc6fd"
+    },
+    {
+      "genre": "Axé",
+      "filename": "axe.png",
+      "reference": "Axé Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/ax%C3%A9-essentials/pl.c31245eb13f34a35ae4929b3f1977ca3",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/0a/80/47/0a804720-9fd3-849d-622e-c7ef9f15085b/6afe7ff1-e13f-4f3b-86c0-885315d0310a.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "fb579489b3e95522c487229c73b6a930dbc6aed7d665ccbac565cffb6fa8f362"
+    },
+    {
+      "genre": "Bachata",
+      "filename": "bachata.png",
+      "reference": "Bachata Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/bachata-essentials/pl.8956f99f017c44daad3915b9982da320",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/12/cc/2d/12cc2df6-b6ca-d68a-ecdb-c01ac75204d5/1e093d9f-405c-43d2-84cd-6dac3ef206fe.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "c5842b314e36874a49097185ba39757bf054e41ccd229a39aeebacb27f5bc75c"
+    },
+    {
+      "genre": "Baile Funk",
+      "filename": "baile-funk.png",
+      "reference": "Baile Funk Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/baile-funk-essentials/pl.417cac675faa4b65a37c5db538b2af35",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/10/65/21/10652129-d463-9df0-f04e-fe103c3cd1d8/24e4fa12-c070-4abe-addc-175da3b331d9.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "9d2fe3adb905d048f913edad7d5035783aa2cf4d39d7c3faeb970143bebee92f"
+    },
+    {
+      "genre": "Bakersfield Sound",
+      "filename": "bakersfield-sound.png",
+      "reference": "Bakersfield Sound Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/bakersfield-sound-essentials/pl.05b086c39c4f4f47ad322d3bd963b6e6",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/c0/ab/6f/c0ab6f46-4cc4-96e5-08ed-0e806a7008d0/04bf1527-e0a0-4adf-aca6-8c61344aedc8.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "44e695f695994ac31fe7f32bb976251ee700ae4139369db6a1298a3270647289"
+    },
+    {
+      "genre": "Balearic",
+      "filename": "balearic.png",
+      "reference": "Balearic Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/balearic-essentials/pl.b431ba5195da4a74b0691eb302e54868",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features211/v4/f0/a8/55/f0a8554c-d8be-d5a7-b96b-f1b7b0588565/c4e763fd-86ff-4b93-b7b9-0fbe7ff362b3.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "0e4eb7960ed9d8014c245a53305df8d27adbebd5845779077e8abf364b920fc5"
+    },
+    {
+      "genre": "Bebop",
+      "filename": "bebop.png",
+      "reference": "Bebop Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/bebop-essentials/pl.b92faec22e4d46da848df9ec3a516c6c",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features211/v4/50/dd/ac/50ddac78-087c-a55b-f9cc-fc4a8385c238/442950b5-1b57-4e86-bd49-153fb1b6cfbc.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "2ca6607af2ed5b2e06d45d6e1d15a173c2acdb3f867b58871e0f19dbbd2f2c22"
+    },
+    {
+      "genre": "Benga",
+      "filename": "benga.png",
+      "reference": "Benga Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/benga-essentials/pl.f598bda77d61498daec42ebb44f875e0",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/4e/92/63/4e926341-0f1a-81d6-0624-c4da86557db9/9ac020ec-5ece-4baa-8b38-817d36ed841d.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "636907dc22181a555be6318109e6f40a8630a9edaa493806b33ac1d593b0d3be"
+    },
+    {
+      "genre": "Big Band and Swing",
+      "filename": "big-band-and-swing.png",
+      "reference": "Big Band and Swing Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/big-band-and-swing-essentials/pl.136aa89e93b14237b4fc975498fbb730",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/4a/f1/9c/4af19c34-b73d-97c9-8110-3890780159fb/ce1a791e-922e-4b13-832e-f40d9a52db27.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "72451e30155ed7743de454ffc40b61cb1b0a9d7a9a5c9a52536aafce1adf1c0f"
+    },
+    {
+      "genre": "Black Metal",
+      "filename": "black-metal.png",
+      "reference": "Black Metal Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/black-metal-essentials/pl.f2a0894f01274bec9cca97fd0335c775",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/69/56/1e/69561e22-ba8f-d0d0-56fd-66dc1243b72c/ed9f08cc-299a-483e-b115-69ccf3c86c9a.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "127c1c7e4926500cfe3bfccf25086a6b04b1222cc67b425d955ee528be00b5d9"
+    },
+    {
+      "genre": "Black Sea",
+      "filename": "black-sea.png",
+      "reference": "Black Sea Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/black-sea-essentials/pl.a7750df5384d4c40ba02eb89b1d99726",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/ff/cc/14/ffcc14ab-8fc3-e0a2-7e0e-1745f3877b22/cd9fc672-87c8-48ae-a76e-988a01f78c10.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "03630aaca7e40dc638cf41cea6ef9c1a5a62ae48bd1ef99d28488119b824c94e"
+    },
+    {
+      "genre": "Blackgaze",
+      "filename": "blackgaze.png",
+      "reference": "Blackgaze Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/blackgaze-pioneers-essentials/pl.9a2acca6d49d4afeb67402698e76561d",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/0d/b1/e5/0db1e593-b6b2-e435-9aa7-585d52850a31/72681351-07b5-4ac0-bc26-a4077eee3493.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "4fff1a3f12c03f3f65140c0de53d9c7a5a081635b9de2e21485a7e3d4d8eeedd"
+    },
+    {
+      "genre": "Bluegrass",
+      "filename": "bluegrass.png",
+      "reference": "Bluegrass Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/bluegrass-essentials/pl.bdbf992bdd754cb2b5ff5aed3b4e66ee",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/b4/a9/32/b4a932f9-0491-fdea-bd63-92ae6a8aab8d/2f5d0d6c-457b-4bd0-9c55-4113d9597186.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "63d8fe5198d4928574c08b311a2263519d15a532929825a33b5e53aae9e2652a"
+    },
+    {
+      "genre": "Blues Guitar",
+      "filename": "blues-guitar.png",
+      "reference": "Blues Guitar Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/blues-guitar-essentials/pl.b4b3161e3d0c4b9fad834af8591d1d02",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/3b/dc/9e/3bdc9ec9-d6d2-552f-fd0c-ff78655894d8/b997300b-b820-44be-bfae-d81e63a15338.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "cfc7eccd941e7d1ce7e6bb6bf84db829d469a7335fc94ff39c903ded60eb97b7"
+    },
+    {
+      "genre": "Blues Piano",
+      "filename": "blues-piano.png",
+      "reference": "Blues Piano Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/blues-piano-essentials/pl.e85d8a26ba4e4b6daf19dbd15f08ad24",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/8e/05/70/8e057051-740f-9599-fc6d-11f670919b3e/25044d58-5388-4692-92d3-a15266215763.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "e16cc610de5b1e937d266b738e57029d3a47c54e3b67c3b6b3c12bba8e0b6dbc"
+    },
+    {
+      "genre": "Boeremusiek",
+      "filename": "boeremusiek.png",
+      "reference": "Boeremusiek Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/boeremusiek-essentials/pl.6037fc6bbd064afd80ce98cf567335c8",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/7a/d1/70/7ad1709b-b91a-2d44-3d5e-f1f84d896c31/3fc71a77-a738-4595-b3cf-15ac6f6e142b.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "ca6e1d6dcfca105069516cf643fe501e222730f68b8cfa6210cfee49ccbec2fa"
+    },
+    {
+      "genre": "Bolero",
+      "filename": "bolero.png",
+      "reference": "Bolero Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/bolero-essentials/pl.f29832d078114e04866bf66dc3f58fa4",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/22/a8/93/22a893cb-2fcf-bf65-2aa7-59eb7d58684b/bee637c5-6615-4006-a264-bf830417add6.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "16146fc8b08fd42d776d38aa1f58a4462da10659195a169289d70ebc3e574f72"
+    },
+    {
+      "genre": "Bollywood",
+      "filename": "bollywood.png",
+      "reference": "Bollywood Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/bollywood-essentials/pl.c7be009ba325420394d51269b3c4a9fe",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/15/64/e8/1564e8ec-1609-6724-1098-f0328b380979/bf7e7ba2-9791-4a07-a549-2fdbecbd1e91.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "fc8fd78d968cd0c72d9e5409ccd2e7c3bd41b0f14043bf937881b32843d5c20e"
+    },
+    {
+      "genre": "Boogie-Woogie",
+      "filename": "boogie-woogie.png",
+      "reference": "Boogie-Woogie Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/boogie-woogie-essentials/pl.f93a46425feb4074abd97fe2cad07d72",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/7a/33/3b/7a333b17-c6fd-67a8-57b3-d0078ad9691f/78b145a3-89e4-4ee5-be4b-9c46b201b8fb.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "aee478076bd559848d477c72c24d9142373df1482f0a3a3124354f4ea980c06f"
+    },
+    {
+      "genre": "Bossa Nova",
+      "filename": "bossa-nova.png",
+      "reference": "Bossa Nova Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/bossa-nova-essentials/pl.0ba2b2f245a8436dba7b8120d8ade8c5",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features221/v4/2a/57/0a/2a570a98-8478-1d1e-bfdb-b6c9b6feb177/4fa58eb8-966a-40df-be77-66c0943cd25c.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "8e7de79436a5f5d8a2a9f221d36b56d6649a7d86ea91da31490913427bd05ba8"
+    },
+    {
+      "genre": "Brazilian Hip-Hop",
+      "filename": "brazilian-hip-hop.png",
+      "reference": "Brazilian Hip-Hop Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/brazilian-hip-hop-essentials/pl.7b0c6b5477194aaa9984b47497f8c03e",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features221/v4/62/2d/fd/622dfdaf-ba8a-9df1-dcd4-747d570d906d/d4889253-139b-47a5-a54b-926f03a854bb.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "ea0214d13707f2df4aa10f9ed54a1a12f5810c709ef9426c0763b8fced383c9b"
+    },
+    {
+      "genre": "Breakup Songs",
+      "filename": "breakup-songs.png",
+      "reference": "Breakup Songs Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/breakup-songs-essentials/pl.536240edbf6f493898278eed8660dfa9",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/c6/bb/cd/c6bbcd68-922d-b937-1cf5-98c594458005/a96328b0-5700-47b6-bd91-98a545c849eb.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "18e38eea3617be0a760271f7692f6a362c35299fe51a608a3a3b236b8708e276"
+    },
+    {
+      "genre": "Brill Building Pop",
+      "filename": "brill-building-pop.png",
+      "reference": "Brill Building Pop Essentials",
+      "playlist": "https://music.apple.com/gb/playlist/brill-building-pop-essentials/pl.7e6597c750f342938c14c97279e84d42",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/7f/7b/0a/7f7b0a30-2675-65e5-3ef6-48958d45b246/211eb586-b681-49b6-9d98-568ce3250d8f.png/3840x3840bb.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "0629fe61ca97ee95a0fabff7ab8a01ac4246c6ea926805f19279a5e384b5c60c"
+    }
+  ]
+}

@@ -1,5 +1,7 @@
 # Living posters
 
+Static, text-free recreations of the Essentials genre covers are available in [`covers/essentials/`](covers/essentials/).
+
 A complete snapshot of the 32 living posters published at [WAVZ](https://wavz.us), plus nine **Music Series** posters and six **Essentials Series** genre studies: 47 posters across eight series. The original WAVZ artwork, code and audio are by **Nick Saulino**; the gallery retains his attribution. The additions contain five original music rooms and ten newly coded interpretations of playlist artwork.
 
 The existing original **Lantern Cove** page is preserved at [`lantern-cove/index.html`](lantern-cove/index.html).
