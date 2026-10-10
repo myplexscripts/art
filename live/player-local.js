@@ -16,7 +16,8 @@ const CSS = `
   .wz-grain { pointer-events: none; z-index: 2; }
   .wz-clock { position: absolute; inset: 0; display: grid; place-items: center; z-index: 1; pointer-events: none; margin: 0; color: #fff; opacity: 1; font: 800 clamp(40px, 14vmin, 180px)/1 "Inter", system-ui, sans-serif; letter-spacing: -.04em; white-space: nowrap; text-shadow: none; }
   /* Shape the whole time as one text run: the colon and AM/PM space keep their natural widths. */
-  .wz-clock-face { pointer-events: auto; touch-action: none; padding: 20px; cursor: ew-resize; display: inline-block; font-kerning: normal; opacity: 1; }
+  .wz-clock-face { position: absolute; left: 50%; top: 50%; width: max-content; transform: translate(-50%, -50%); pointer-events: auto; touch-action: none; -webkit-touch-callout: none; padding: 20px; cursor: ew-resize; display: inline-block; font-kerning: normal; opacity: 1; }
+  .wz-clock-face.dragging { cursor: grabbing; }
   .wz-clock-face:focus-visible { outline: 1px solid currentColor; outline-offset: -10px; border-radius: 12px; }
   .wz-clock[hidden] { display: none; }
   /* The bottom controls slide over the artwork and never reserve space in its canvas. */
@@ -60,7 +61,7 @@ const CSS = `
   .wz-ui label.muted .wz-mute { opacity: .5; text-decoration: line-through; }
   .wz-hud { position: absolute; left: 10px; top: 8px; font: 12px ui-monospace, monospace; color: #0e1c3a; background: rgba(242, 229, 195, .85); padding: 3px 7px; border-radius: 4px; white-space: pre-wrap; max-width: 92%; z-index: 3; pointer-events: none; }
 `;
-const HTML = `<canvas class="wz-scene"></canvas><div class="wz-grain"></div><time class="wz-clock" hidden><span class="wz-clock-face" role="button" tabindex="0" aria-pressed="false" title="Tap for white or palette color. Pinch to resize. Swipe right for bolder text, left for lighter. Keyboard: Enter for color; + / − for size; left / right arrows for weight."></span></time>
+const HTML = `<canvas class="wz-scene"></canvas><div class="wz-grain"></div><time class="wz-clock" hidden><span class="wz-clock-face" role="button" tabindex="0" aria-pressed="false" title="Tap for white or palette color. Hold to move. Triple tap to center. Pinch to resize. Swipe for weight. Keyboard: Enter for color; Home to center; + / − for size; left / right arrows for weight."></span></time>
   <nav class="wz-ui off" aria-label="Scene controls"><div class="wz-row wz-r1"><a class="wz-home wz-it" style="--i:0" href="./" aria-label="Back to all scenes"><svg class="wz-arrow" viewBox="0 0 24 14"><path d="M0 7 9 0v4.6h15v4.8H9V14z"/></svg><span class="wz-word">Scenes</span></a><button class="wz-clock-toggle wz-it" style="--i:3" aria-pressed="false">Clock<em class="wz-word">off</em></button><button class="wz-full wz-it" style="--i:4" aria-label="Fullscreen" title="Fullscreen"><svg viewBox="0 0 20 20"><path d="M2 7V2h5M13 2h5v5M18 13v5h-5M7 18H2v-5"/></svg></button></div>
   <div class="wz-row wz-r2"><label class="wz-it" style="--i:1"><button class="wz-mute" data-bus="amb" title="Mute or unmute">Ambience</button><input class="wz-amb" type="range" min="0" max="1" step="0.01" aria-label="Ambience volume"></label><label class="wz-it" style="--i:2"><button class="wz-mute" data-bus="mus" title="Mute or unmute">Music</button><input class="wz-mus" type="range" min="0" max="1" step="0.01" aria-label="Music volume"><button class="wz-trk" title="Next track">A</button></label></div></nav><div class="wz-hud" hidden></div>`;
 const title = (scene) => 'Scenes: ' + scene.title.toLowerCase().replace(/\b[a-z]+/g, (w, i) => (i && ['at', 'of', 'the', 'in'].includes(w) ? w : w[0].toUpperCase() + w.slice(1)));
@@ -115,7 +116,7 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
   grain.style.backgroundImage = `url(${tile()})`; grain.style.backgroundSize = 512 / devicePixelRatio + 'px';
   grain.hidden = textless && SCENES[first].grain !== true;
   let pending;
-  const refit = () => { clearTimeout(pending); pending = setTimeout(() => { if (!flight && !closed) fit(); }, 120); };
+  const refit = () => { if (!flight && !closed) fitClock(); clearTimeout(pending); pending = setTimeout(() => { if (!flight && !closed) fit(); }, 120); };
   const listen = [[window, 'resize'], [window, 'orientationchange'], [screen.orientation, 'change'], [window.visualViewport, 'resize'], [document, 'fullscreenchange'], [document, 'webkitfullscreenchange']].filter(([t]) => t);
   for (const [t, type] of listen) t.addEventListener(type, refit);
 
@@ -136,10 +137,10 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
     clockFace.setAttribute('aria-pressed', String(clockColored));
     if (!clockColored) { clockFace.style.color = '#fff'; return; }
     if (!clockOn || !L || now - paletteAt < 1000) return;
-    paletteAt = now; clockFace.style.color = samplePalette();
+    paletteAt = now; clockFace.style.color = samplePalette(now);
   }
   const toggleClockColor = () => {
-    clockColored = !clockColored; paletteAt = -Infinity;
+    clockColored = !clockColored; paletteAt = -Infinity; samplePalette.reset();
     localStorage.setItem('wavz-clock-color', clockColored ? 'palette' : 'white');
     updateClockColor(performance.now());
   };
@@ -149,7 +150,45 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
     return clamp(Number.isFinite(value) ? value : fallback, min, max);
   };
   let clockScale = savedNumber('wavz-clock-scale', 1, .5, 4), clockWeight = savedNumber('wavz-clock-weight', 800, 100, 900);
+  const positionKey = 'wavz-clock-position-' + name;
+  let position = { x: .5, y: .5 }, positionAnimation = null;
+  try {
+    const saved = JSON.parse(localStorage.getItem(positionKey));
+    if (saved && Number.isFinite(saved.x) && Number.isFinite(saved.y)) position = { x: clamp(saved.x, 0, 1), y: clamp(saved.y, 0, 1) };
+  } catch {}
+  const clockCenter = () => { const r = clockFace.getBoundingClientRect(), art = root.getBoundingClientRect(); return { x: r.x + r.width / 2 - art.x, y: r.y + r.height / 2 - art.y }; };
+  // One pixel protects against fractional text/transform rounding in mobile WebKit.
+  const clockSize = () => { const r = clockFace.getBoundingClientRect(); return { halfW: r.width / 2 + 1, halfH: r.height / 2 + 1 }; };
+  function placeClock() {
+    const { halfW, halfH } = clockSize();
+    clockFace.style.left = clamp(position.x * root.clientWidth, halfW, root.clientWidth - halfW) + 'px';
+    clockFace.style.top = clamp(position.y * root.clientHeight, halfH, root.clientHeight - halfH) + 'px';
+  }
+  function cancelPositionAnimation(freeze = true) {
+    if (!positionAnimation) return;
+    const p = clockCenter(); positionAnimation.cancel(); positionAnimation = null;
+    if (freeze) position = { x: p.x / root.clientWidth, y: p.y / root.clientHeight };
+    placeClock();
+  }
+  const reassessPalette = () => { samplePalette.reset(); paletteAt = -Infinity; };
+  function centerClock() {
+    cancelPositionAnimation();
+    const from = clockCenter(), x = root.clientWidth / 2, y = root.clientHeight / 2;
+    const { halfW, halfH } = clockSize();
+    position = { x: .5, y: .5 }; localStorage.removeItem(positionKey); placeClock();
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduced) {
+      positionAnimation = clockFace.animate([
+        { left: from.x + 'px', top: from.y + 'px' },
+        { left: clamp(x + (x - from.x) * .07, halfW, root.clientWidth - halfW) + 'px', top: clamp(y + (y - from.y) * .07, halfH, root.clientHeight - halfH) + 'px', offset: .78 },
+        { left: x + 'px', top: y + 'px' },
+      ], { duration: 650, easing: 'cubic-bezier(.16,1,.3,1)' });
+      const animation = positionAnimation;
+      animation.onfinish = () => { if (positionAnimation === animation) positionAnimation = null; reassessPalette(); };
+    } else reassessPalette();
+  }
   function fitClock() {
+    cancelPositionAnimation(false);
     clockFace.style.fontWeight = String(clockWeight);
     if (!clockOn || closed) return;
     const size = clamp(Math.min(root.clientWidth, root.clientHeight) * .14, 40, 180) * clockScale;
@@ -158,6 +197,7 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
     const width = clockFace.getBoundingClientRect().width - 40, height = size;
     const fit = Math.min(1, (root.clientWidth * .92 - 40) / Math.max(1, width), (root.clientHeight * .9 - 40) / height);
     if (fit < 1) clockFace.style.fontSize = Math.max(1, size * fit) + 'px';
+    placeClock();
   }
   const saveClockStyle = () => {
     localStorage.setItem('wavz-clock-scale', String(clockScale));
@@ -173,7 +213,7 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
     const now = new Date();
     const text = clockFormat.format(now).replace(/[\u00a0\u202f]/g, ' ');
     clockFace.textContent = text;
-    clockFace.setAttribute('aria-label', 'Current time: ' + text + '. Tap to change clock color.');
+    clockFace.setAttribute('aria-label', 'Current time: ' + text + '. Tap for color, hold to move, triple tap to center.');
     clock.dateTime = now.toISOString();
     clock.setAttribute('aria-label', 'Current time: ' + clockFace.textContent);
     fitClock();
@@ -182,34 +222,58 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
   }
   // Capture gestures that start on the clock; a second finger may land beside it.
   const fingers = new Map();
-  let gesture = null, pinched = false, tap = null;
+  let gesture = null, pinched = false, tap = null, holdTimer = 0, tapTimer = 0, tapCount = 0, lastTap = 0, dragged = false;
+  const clearHold = () => { clearTimeout(holdTimer); clockFace.classList.remove('dragging'); };
+  const clearTaps = () => { clearTimeout(tapTimer); tapCount = 0; };
+  const recordTap = () => {
+    const now = performance.now();
+    tapCount = now - lastTap < 350 ? tapCount + 1 : 1; lastTap = now;
+    clearTimeout(tapTimer);
+    if (tapCount === 3) { tapCount = 0; centerClock(); }
+    else tapTimer = setTimeout(() => { if (tapCount === 1 && !closed && clockOn) toggleClockColor(); tapCount = 0; }, 350);
+  };
   const distance = () => { const [a, b] = [...fingers.values()]; return Math.hypot(b.x - a.x, b.y - a.y); };
   const beginGesture = () => {
+    clearHold();
     if (fingers.size >= 2) { pinched = true; gesture = { distance: Math.max(1, distance()), scale: clockScale }; }
     else if (fingers.size === 1 && !pinched) { const [p] = fingers.values(); gesture = { x: p.x, y: p.y, weight: clockWeight }; }
     else gesture = null;
   };
   const stopClockGesture = () => {
+    clearHold(); clearTaps(); cancelPositionAnimation(false);
     const ids = [...fingers.keys()]; fingers.clear(); gesture = null; pinched = false; tap = null;
     for (const id of ids) if (root.hasPointerCapture(id)) root.releasePointerCapture(id);
     saveClockStyle();
+    if (dragged) { localStorage.setItem(positionKey, JSON.stringify(position)); dragged = false; reassessPalette(); }
   };
   root.addEventListener('pointerdown', (e) => {
     if (!clockOn || flight || e.button !== 0 || ui.contains(e.target)) return;
     if (!clockFace.contains(e.target) && !fingers.size) return;
     if (fingers.size >= 2) return;
-    if (!fingers.size) tap = { id: e.pointerId, x: e.clientX, y: e.clientY, time: performance.now() };
+    if (!fingers.size) { cancelPositionAnimation(); clearTimeout(tapTimer); tap = { id: e.pointerId, x: e.clientX, y: e.clientY, time: performance.now() }; }
     else tap = null;
     e.preventDefault(); fingers.set(e.pointerId, { x: e.clientX, y: e.clientY });
     root.setPointerCapture(e.pointerId); beginGesture();
+    if (fingers.size === 1 && !pinched) holdTimer = setTimeout(() => {
+      if (!tap || fingers.size !== 1 || !gesture || closed) return;
+      const [p] = fingers.values();
+      gesture = { x: p.x, y: p.y, anchor: clockCenter(), drag: true };
+      tap = null; clearTaps(); clockFace.classList.add('dragging'); ui.classList.add('off');
+    }, 380);
   });
   root.addEventListener('pointermove', (e) => {
     if (!fingers.has(e.pointerId)) return;
-    if (tap && Math.hypot(e.clientX - tap.x, e.clientY - tap.y) > 8) tap = null;
+    if (tap && Math.hypot(e.clientX - tap.x, e.clientY - tap.y) > 8) { tap = null; clearHold(); clearTaps(); }
     e.preventDefault(); fingers.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (!gesture) return;
     if (fingers.size === 2) clockScale = clamp(gesture.scale * distance() / gesture.distance, .5, 4);
-    else {
+    else if (gesture.drag) {
+      const box = root.getBoundingClientRect(), { halfW, halfH } = clockSize();
+      const x = clamp(gesture.anchor.x + e.clientX - gesture.x, halfW, box.width - halfW);
+      const y = clamp(gesture.anchor.y + e.clientY - gesture.y, halfH, box.height - halfH);
+      position = { x: x / box.width, y: y / box.height }; placeClock(); dragged = true;
+      return;
+    } else {
       const dx = e.clientX - gesture.x, dy = e.clientY - gesture.y;
       if (Math.abs(dx) < 8 || Math.abs(dx) < Math.abs(dy)) return;
       clockWeight = Math.round(clamp(gesture.weight + dx * 2, 100, 900));
@@ -217,20 +281,35 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
     fitClock();
   });
   const finishGesture = (e) => {
-    const tapped = e.type === 'pointerup' && tap?.id === e.pointerId && !pinched && performance.now() - tap.time < 600;
+    const tapped = e.type === 'pointerup' && tap?.id === e.pointerId && !pinched && performance.now() - tap.time < 380;
     if (!fingers.delete(e.pointerId)) return;
     tap = null;
     if (root.hasPointerCapture(e.pointerId)) root.releasePointerCapture(e.pointerId);
-    if (!fingers.size) { gesture = null; pinched = false; saveClockStyle(); }
+    if (!fingers.size) {
+      clearHold(); gesture = null; pinched = false; saveClockStyle();
+      if (e.type !== 'pointerup') clearTaps();
+      if (dragged) { localStorage.setItem(positionKey, JSON.stringify(position)); dragged = false; reassessPalette(); }
+    }
     else beginGesture();
-    if (tapped) toggleClockColor();
+    if (tapped) recordTap();
   };
   for (const type of ['pointerup', 'pointercancel', 'lostpointercapture']) root.addEventListener(type, finishGesture);
+  clockFace.addEventListener('contextmenu', e => e.preventDefault());
+  // Screen readers activate a button with a synthetic click rather than pointer gestures.
+  clockFace.addEventListener('click', e => { if (e.detail === 0 && clockOn && !closed) { clearTaps(); toggleClockColor(); } });
   clockFace.addEventListener('wheel', (e) => {
     if (!e.ctrlKey || !clockOn) return;
     e.preventDefault(); clockScale = clamp(clockScale * Math.exp(-e.deltaY * .01), .5, 4); fitClock(); saveClockStyle();
   }, { passive: false });
   clockFace.addEventListener('keydown', (e) => {
+    if (e.key === 'Home') { e.preventDefault(); clearTaps(); centerClock(); return; }
+    if (e.shiftKey && ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+      e.preventDefault(); cancelPositionAnimation();
+      const p = clockCenter(), { halfW, halfH } = clockSize();
+      const x = clamp(p.x + (e.key === 'ArrowLeft' ? -16 : e.key === 'ArrowRight' ? 16 : 0), halfW, root.clientWidth - halfW);
+      const y = clamp(p.y + (e.key === 'ArrowUp' ? -16 : e.key === 'ArrowDown' ? 16 : 0), halfH, root.clientHeight - halfH);
+      position = { x: x / root.clientWidth, y: y / root.clientHeight }; placeClock(); localStorage.setItem(positionKey, JSON.stringify(position)); reassessPalette(); return;
+    }
     if (['Enter', ' '].includes(e.key)) { e.preventDefault(); toggleClockColor(); return; }
     if (['ArrowLeft', 'ArrowRight'].includes(e.key)) clockWeight = clamp(clockWeight + (e.key === 'ArrowRight' ? 50 : -50), 100, 900);
     else if (['+', '=', '-', '−'].includes(e.key)) clockScale = clamp(clockScale * (['+', '='].includes(e.key) ? 1.1 : 1 / 1.1), .5, 4);
@@ -286,7 +365,7 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
 
   // ---- controls: they show on any movement and fade after a few seconds
   let hide;
-  const show = () => { if (flight) return; ui.classList.remove('off'); clearTimeout(hide); hide = setTimeout(() => ui.classList.add('off'), 3500); };
+  const show = (e) => { if (flight || (e && (clockFace.contains(e.target) || fingers.size))) return; ui.classList.remove('off'); clearTimeout(hide); hide = setTimeout(() => ui.classList.add('off'), 3500); };
   for (const type of ['pointermove', 'pointerdown']) root.addEventListener(type, show);
   addEventListener('keydown', show);
   // Use DOM fullscreen where supported. On iPhone, keep the full-bleed page/PWA

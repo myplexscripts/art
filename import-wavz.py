@@ -62,7 +62,7 @@ def adapt_for_local_hosting():
     text = path.read_text()
     text = re.sub(r'<script async src="https://www.googletagmanager.com/gtag/js\?id=G-PKL1DBXEWK"></script>\s*<script>.*?</script>\s*', '', text, count=1, flags=re.S)
     text = text.replace('href="/favicon/', 'href="./favicon/').replace('href="/site.webmanifest', 'href="./site.webmanifest')
-    text = re.sub(r'href="\./site\.webmanifest(?:\?[^\"]*)?"', 'href="./site.webmanifest?v=4"', text, count=1)
+    text = re.sub(r'href="\./site\.webmanifest(?:\?[^\"]*)?"', 'href="./site.webmanifest?v=5"', text, count=1)
     text = text.replace("a.href = '/?scene=' + name", "a.href = '?scene=' + name")
     text = text.replace("history.replaceState(null, '', '/')", "history.replaceState(null, '', location.pathname)")
     path.write_text(text)
@@ -132,6 +132,8 @@ def adapt_local_viewer():
     text = text.replace(" document.querySelector('meta[name=viewport]').content += ', viewport-fit=cover';", '')
     if 'href="./live/fonts.css"' not in text:
         text = text.replace('</head>', '<link rel="stylesheet" href="./live/fonts.css">\n</head>')
+    if (ROOT / 'live/welcome.js').exists() and 'src="./live/welcome.js"' not in text:
+        text = text.replace('</head>', '<link rel="stylesheet" href="./live/welcome.css">\n<script type="module" src="./live/welcome.js"></script>\n</head>')
     text = re.sub(r'--face: [^;]+;', '--face: "Inter", system-ui, sans-serif;', text, count=1)
     if '--display:' not in text:
         text = text.replace('--face: "Inter", system-ui, sans-serif;', '--face: "Inter", system-ui, sans-serif; --display: "Inter", system-ui, sans-serif;')
@@ -159,6 +161,8 @@ def adapt_scenes():
     text = text.replace('.series, .posters a, footer {', '.series, .posters a {').replace('header p, footer.in, .series.in', 'header p, .series.in')
     text = '\n'.join(line for line in text.splitlines() if not line.lstrip().startswith('footer')) + '\n'
     text = text.replace('Living posters for your screen. Open one, go fullscreen, and leave it running.', 'Calming scenes for your screen. Open one, go fullscreen, and unwind.')
+    if (ROOT / 'live/welcome.js').exists() and 'class="scenes-guide"' not in text:
+        text = text.replace('Calming scenes for your screen. Open one, go fullscreen, and unwind.</p>', 'Calming scenes for your screen. Open one, go fullscreen, and unwind.<button class="scenes-guide" type="button">Welcome &amp; iPhone setup</button></p>')
     # Gallery previews use the page's existing grain; the viewer has its own overlay.
     text = '\n'.join(line for line in text.splitlines() if '.posters a.grained' not in line and "a.classList.toggle('grained'" not in line) + '\n'
     text = text.replace('  function open(name, grow) {\n    player?.close();', "  const resolveSceneName = name => ({ endlesslayers: 'stacks', petalorbit: 'blooms', sand: 'deepwaves' }[name] ?? name);\n  function open(name, grow) {\n    name = resolveSceneName(name);\n    if (!cards.some(c => c.name === name)) { leave(); return; }\n    player?.close();")

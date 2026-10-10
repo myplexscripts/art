@@ -1,49 +1,62 @@
-// Pick a hue from the art's edges, then choose a readable shade against the clock's background.
+// Actual scene inks, with a stable light/dark decision based on the art beneath the clock.
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 export const luminance = rgb => rgb.map(v => { v /= 255; return v <= .04045 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4; }).reduce((sum, v, i) => sum + v * [.2126, .7152, .0722][i], 0);
 export const contrast = (a, b) => (Math.max(a, b) + .05) / (Math.min(a, b) + .05);
-function hsl(rgb) {
-  const [r, g, b] = rgb.map(v => v / 255), hi = Math.max(r, g, b), lo = Math.min(r, g, b), d = hi - lo, l = (hi + lo) / 2;
-  if (!d) return [0, 0, l];
-  const h = hi === r ? ((g - b) / d + (g < b ? 6 : 0)) : hi === g ? (b - r) / d + 2 : (r - g) / d + 4;
-  return [h * 60, d / (1 - Math.abs(2 * l - 1)), l];
-}
-function rgb(h, s, l) {
-  const a = s * Math.min(l, 1 - l), f = n => { const k = (n + h / 30) % 12; return 255 * (l - a * Math.max(-1, Math.min(k - 3, 9 - k, 1))); };
-  return [f(0), f(8), f(4)];
-}
-export function choosePaletteColor(edges, backgrounds) {
-  let x = 0, y = 0, saturation = 0, weights = 0;
-  for (const color of edges) {
-    const [h, s, l] = hsl(color), weight = s * (.25 + l);
-    x += Math.cos(h * Math.PI / 180) * weight; y += Math.sin(h * Math.PI / 180) * weight;
-    saturation += s * weight; weights += weight;
+const median = values => [...values].sort((a, b) => a - b)[Math.floor(values.length / 2)];
+
+export function choosePaletteColor(palette, backgrounds, polarity = null, minimum = 3) {
+  const background = median(backgrounds.map(luminance));
+  polarity ??= background >= .18 ? 'dark' : 'light';
+  const ranked = [...palette].sort((a, b) => luminance(a) - luminance(b));
+  const source = polarity === 'dark' ? ranked[0] : ranked[ranked.length - 1];
+  let color = [...source], score = contrast(luminance(color), background);
+  // Start with an ink already in the scene. Change it only as much as readability needs.
+  // Large type needs three-to-one contrast; smaller, light-weight settings need more.
+  const end = polarity === 'dark' ? 0 : 255;
+  for (let amount = .01; score < minimum && amount <= 1; amount += .01) {
+    color = source.map(channel => channel + (end - channel) * amount);
+    score = contrast(luminance(color), background);
   }
-  const hue = (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
-  const sat = clamp(weights ? saturation / weights : .36, .3, .58);
-  const behind = backgrounds.map(luminance);
-  let best, bestScore = 0;
-  for (const light of [.82, .88, .94, .72, .6, .38, .24, .12, .05]) {
-    const color = rgb(hue, sat, light), lum = luminance(color);
-    const score = Math.min(...behind.map(v => contrast(lum, v)));
-    if (score > bestScore) { best = color; bestScore = score; }
-    if (score >= 4.5) break;
-  }
-  return { color: `rgb(${best.map(v => Math.round(v)).join(' ')})`, contrast: bestScore, hue };
+  return { color: `rgb(${color.map(v => Math.round(v)).join(' ')})`, contrast: score, polarity, source };
 }
-export function makePaletteSampler(canvas, face) {
-  const tiny = document.createElement('canvas'); tiny.width = tiny.height = 20;
-  const c = tiny.getContext('2d', { willReadFrequently: true });
-  return () => {
-    c.drawImage(canvas, 0, 0, 20, 20);
-    const data = c.getImageData(0, 0, 20, 20).data;
-    const at = (x, y) => { const i = (clamp(Math.round(y), 0, 19) * 20 + clamp(Math.round(x), 0, 19)) * 4; return [data[i], data[i + 1], data[i + 2]]; };
-    const art = canvas.getBoundingClientRect(), text = face.getBoundingClientRect();
-    const x0 = (text.left + 20 - art.left) / art.width * 19, x1 = (text.right - 20 - art.left) / art.width * 19;
-    const y0 = (text.top + 20 - art.top) / art.height * 19, y1 = (text.bottom - 20 - art.top) / art.height * 19;
-    const behind = [];
-    for (let i = 0; i < 5; i++) for (let j = 0; j < 3; j++) behind.push(at(x0 + (x1 - x0) * i / 4, y0 + (y1 - y0) * j / 2));
-    const edges = [[1, 1], [18, 1], [1, 18], [18, 18], [10, 1], [10, 18]].map(([x, y]) => at(x, y));
-    return choosePaletteColor(edges, behind).color;
+
+// A moving layer cannot reverse the clock's colour immediately. Opposite brightness
+// must persist for twelve seconds, outside a generous dead band, before changing ink.
+export function makeBrightnessAssessment() {
+  let polarity = null, filtered = null, previous = null, pending = null, since = 0;
+  const assess = (brightness, now) => {
+    if (filtered === null) filtered = brightness;
+    else filtered += (brightness - filtered) * (1 - Math.exp(-Math.max(0, Math.min(2000, now - previous)) / 3000));
+    previous = now;
+    if (!polarity) polarity = filtered >= .18 ? 'dark' : 'light';
+    const opposite = polarity === 'light' ? filtered > .24 && brightness > .24 : filtered < .12 && brightness < .12;
+    if (!opposite) pending = null;
+    else if (pending !== polarity) { pending = polarity; since = now; }
+    else if (now - since >= 12000) { polarity = polarity === 'light' ? 'dark' : 'light'; pending = null; }
+    return polarity;
   };
+  assess.reset = () => { polarity = filtered = previous = pending = null; };
+  return assess;
+}
+
+export function makePaletteSampler(canvas, face) {
+  const tiny = document.createElement('canvas'); tiny.width = tiny.height = 32;
+  const c = tiny.getContext('2d', { willReadFrequently: true }), assess = makeBrightnessAssessment();
+  const sample = (now = performance.now()) => {
+    c.drawImage(canvas, 0, 0, 32, 32);
+    const data = c.getImageData(0, 0, 32, 32).data, palette = [];
+    const at = (x, y) => { const i = (clamp(Math.round(y), 0, 31) * 32 + clamp(Math.round(x), 0, 31)) * 4; return [data[i], data[i + 1], data[i + 2]]; };
+    for (let i = 0; i < data.length; i += 4) if (data[i + 3] > 240) palette.push([data[i], data[i + 1], data[i + 2]]);
+    if (!palette.length) return '#fff';
+    const art = canvas.getBoundingClientRect(), text = face.getBoundingClientRect();
+    const x0 = (text.left + 20 - art.left) / art.width * 31, x1 = (text.right - 20 - art.left) / art.width * 31;
+    const y0 = (text.top + 20 - art.top) / art.height * 31, y1 = (text.bottom - 20 - art.top) / art.height * 31;
+    const behind = [];
+    for (let i = 0; i < 9; i++) for (let j = 0; j < 5; j++) behind.push(at(x0 + (x1 - x0) * i / 8, y0 + (y1 - y0) * j / 4));
+    const font = getComputedStyle(face), size = parseFloat(font.fontSize), weight = Number(font.fontWeight);
+    const minimum = size >= 24 || (size >= 18.67 && weight >= 700) ? 3 : 4.5;
+    return choosePaletteColor(palette, behind, assess(median(behind.map(luminance)), now), minimum).color;
+  };
+  sample.reset = assess.reset;
+  return sample;
 }
