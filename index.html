@@ -67,6 +67,7 @@
   @media (hover: none) { .series div { display: none; } }
   .posters a:focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; }
   .posters canvas { width: 100%; height: 100%; display: block; }
+  .posters a.textless canvas { position: relative; z-index: 1; }
   /* Arriving: the wordmark's letters rise from behind their baseline one after another, the orange rule is drawn across,
      the line of copy follows, and then the rows deal their posters in from the left, one row after another down the
      whole page, whether or not they are on screen yet. */
@@ -110,7 +111,7 @@
   </header>
   <div class="rule"></div>
   <div id="rows"></div>
-  <footer>WAVZ originals by <a href="https://nicksaulino.com" rel="author">Nick Saulino</a> · Original Music Series made for this collection</footer>
+  <footer>WAVZ originals by <a href="https://nicksaulino.com" rel="author">Nick Saulino</a> · Music Series: original rooms and playlist-art interpretations</footer>
 </main>
 </div>
 <script type="module">
@@ -147,6 +148,7 @@
    for (const [name, scene] of Object.entries(series.scenes)) {
     const a = document.createElement('a'), canvas = document.createElement('canvas');
     a.href = '?scene=' + name; a.setAttribute('aria-label', `${scene.title}, ${series.name} ${scene.no}`);
+    a.classList.toggle('textless', scene.textless === true);
     a.draggable = false; a.addEventListener('dragstart', (e) => e.preventDefault());
     a.append(canvas); a.style.setProperty('--i', Math.min(wrap.children.length, 6)); wrap.append(a);
     const card = { name, scene, canvas, ctx: canvas.getContext('2d'), t: STILL, run: 0 };

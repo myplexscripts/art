@@ -47,6 +47,8 @@ function blend(A, B, e) {
 // the orange rule draws in to its middle and is gone, and on a narrow poster all the lettering fades with it.
 // frame: 1 is the full poster; 0 is the picture alone, edge to edge, with no margin or title; between, the frame is part-way gone.
 export function makeLayout(aspect, scene, { brand = true, dark = false, mix = null, frame = 1 } = {}) {
+  // Text-free artwork always fills its canvas, including gallery cards and frame transitions.
+  if (scene.textless) frame = 0;
   const VW = width(aspect), VH = VW / aspect, m = M * frame;
   const spec = mix ? blend(titleSpec(mix.from, VW, VH), titleSpec(mix.to, VW, VH), mix.e) : titleSpec(styleFor(aspect, brand), VW, VH);
   return { VW, VH, spec, scene, dark: +dark, m, frame, G: scene.make(VW - 2 * m, VH - 2 * m - spec.band * frame) };

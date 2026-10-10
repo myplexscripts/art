@@ -61,7 +61,7 @@ const CSS = `
   .wz-ui input[type=range]::-moz-range-track { height: 3px; background: color-mix(in srgb, currentColor 28%, transparent); }
   .wz-ui input[type=range]::-moz-range-progress { height: 3px; background: #dd7f45; }
   .wz-ui input[type=range]::-moz-range-thumb { width: 13px; height: 13px; border: 0; border-radius: 50%; background: currentColor; }
-  .wz-ui [hidden], .wz-ui .wz-row[hidden], .wz-mark[hidden] { display: none; }
+  .wz-ui [hidden], .wz-ui .wz-row[hidden], .wz-mark[hidden], .wz-grain[hidden] { display: none; }
   .wz-ui label button { transition: opacity .25s; }
   .wz-ui button.wz-trk { width: 24px; height: 24px; padding: 1px 0 0; justify-content: center; border: 2px solid currentColor; border-radius: 50%; letter-spacing: 0; font-size: 12px; flex: none; }
   .wz-ui button.wz-trk:not(:disabled):hover, .wz-ui button.wz-trk:focus-visible { border-color: #dd7f45; }
@@ -92,7 +92,8 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
   const root = Object.assign(document.createElement('div'), { className: 'wz-player', innerHTML: HTML }), $ = (c) => root.querySelector('.' + c);
   const scene = $('wz-scene'), grain = $('wz-grain'), mark = $('wz-mark'), ui = $('wz-ui'), hud = $('wz-hud'), ctx = scene.getContext('2d');
   const before = { title: document.title, bg: document.body.style.background, htmlBg: document.documentElement.style.background, overflow: document.documentElement.style.overflow, gutter: document.documentElement.style.scrollbarGutter, theme: document.querySelector('meta[name=theme-color]')?.content };
-  let name = first, L, k = 1, look = localStorage.getItem('wavz-frame') ?? 'light', tween = null, flight = null, closed = false, sound = null, on = false;
+  const textless = SCENES[first].textless === true;
+  let name = first, L, k = 1, look = textless ? 'none' : localStorage.getItem('wavz-frame') ?? 'light', tween = null, flight = null, closed = false, sound = null, on = false;
   document.body.append(root);
   document.documentElement.style.overflow = 'hidden'; document.documentElement.style.scrollbarGutter = 'auto';   // the scene takes the scrollbar's room too
   // the page behind changes colour with the frame, at the same pace
@@ -133,7 +134,7 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
   function dock(w) {
     const u = w / L.VW, wide = L.spec.band === 120, gap = (L.VW - 2 * M - 760) * u, across = (L.VW - 2 * M) * u;
     // a strip 1100 or more across has room for the wordmark and the title at its ends, the controls between them
-    const mode = uiLook === 'none' ? 'strip' : wide && gap >= 540 ? 'band' : 'full', sides = mode === 'strip' && w >= 1100, room = mode === 'band' ? gap : mode === 'full' ? across : sides ? w - 500 : w - 32;
+    const mode = uiLook === 'none' ? 'strip' : wide && gap >= 540 ? 'band' : 'full', sides = !textless && mode === 'strip' && w >= 1100, room = mode === 'band' ? gap : mode === 'full' ? across : sides ? w - 500 : w - 32;
     ui.classList.toggle('sides', sides);
     ui.dataset.mode = mode; ui.classList.toggle('two', room < 600); ui.classList.toggle('tight', room >= 600 && room < 740);
     Object.assign(ui.style, mode === 'strip' ? { left: '0', width: '100%', height: '' } : { left: (mode === 'band' ? M + 300 : M) * u + 'px', width: room + 'px', height: (L.spec.band + M * 0.6) * u + 'px' });
@@ -144,6 +145,7 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
     Object.assign(mark.style, { left: (mk.x - mk.ax * mw) * u + 'px', top: (mk.y - mk.size * 0.76) * u + 'px', width: mw * u + 'px', height: mk.size * 0.8 * u + 'px' });
   }
   grain.style.backgroundImage = `url(${tile()})`; grain.style.backgroundSize = 512 / devicePixelRatio + 'px';
+  grain.hidden = textless;
   let pending;
   const refit = () => { clearTimeout(pending); pending = setTimeout(() => { if (!flight && !closed) fit(); }, 120); };
   const listen = [[window, 'resize'], [window, 'orientationchange'], [screen.orientation, 'change'], [window.visualViewport, 'resize']].filter(([t]) => t);
@@ -152,6 +154,7 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
   // ---- the frame can be printed light or dark, or left off so the picture fills the screen; the page behind it and
   // the browser's own chrome follow
   const frame = $('wz-frame');
+  frame.hidden = textless;
   function paint() {
     const c = look === 'light' ? CREAM : SCENES[name].dark, meta = document.querySelector('meta[name=theme-color]');
     document.documentElement.style.background = document.body.style.background = c; if (meta) meta.content = c; root.style.setProperty('--wz-bg', c);
@@ -202,7 +205,7 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
   const notes = [], note = (m) => { notes.push(((performance.now() / 1000) % 100).toFixed(1) + ' ' + m); if (notes.length > 14) notes.shift(); };   // shown with ?debug
   let last = performance.now(), fps = 60, ms = 0, n = 0, vis = 0, downAt = 0;   // vis: how far the controls have come up, 0 to 1
   // one frame of the scene; as a full-screen video the grain is printed into it, since the video shows only the canvas
-  frame1 = (t) => { ctx.setTransform(k, 0, 0, k, 0, 0); draw(ctx, t / LOOP, L, t); if (vfs && grainFill) { ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = grainFill; ctx.fillRect(0, 0, scene.width, scene.height); } };
+  frame1 = (t) => { ctx.setTransform(k, 0, 0, k, 0, 0); draw(ctx, t / LOOP, L, t); if (vfs && grainFill && !textless) { ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = grainFill; ctx.fillRect(0, 0, scene.width, scene.height); } };
   let grainFill = null;
   function tick(now) {
     if (closed) return;

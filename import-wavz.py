@@ -81,13 +81,22 @@ def adapt_for_local_hosting():
     # Retain the locally authored Music Series when refreshing the WAVZ snapshot.
     if (ROOT / 'live/s-music.js').exists():
         path = ROOT / 'index.html'
-        path.write_text(path.read_text().replace('Made by <a href="https://nicksaulino.com" rel="author">Nick Saulino</a>', 'WAVZ originals by <a href="https://nicksaulino.com" rel="author">Nick Saulino</a> · Original Music Series made for this collection'))
+        path.write_text(path.read_text().replace('Made by <a href="https://nicksaulino.com" rel="author">Nick Saulino</a>', 'WAVZ originals by <a href="https://nicksaulino.com" rel="author">Nick Saulino</a> · Music Series: original rooms and playlist-art interpretations'))
+        text = path.read_text().replace('  .posters canvas { width: 100%; height: 100%; display: block; }', '  .posters canvas { width: 100%; height: 100%; display: block; }\n  .posters a.textless canvas { position: relative; z-index: 1; }')
+        text = text.replace("    a.draggable = false;", "    a.classList.toggle('textless', scene.textless === true);\n    a.draggable = false;")
+        path.write_text(text)
         path = ROOT / 'live/poster.js'
         text = path.read_text().replace("import * as orbit from './s-orbit.js';", "import * as orbit from './s-orbit.js';\nimport * as music from './s-music.js';")
         text = text.replace('[nocturne, weather, windows, daybreak, deep, orbit]', '[nocturne, weather, windows, daybreak, deep, orbit, music]')
+        text = text.replace('  const VW = width(aspect), VH = VW / aspect, m = M * frame;', '  // Text-free artwork always fills its canvas, including gallery cards and frame transitions.\n  if (scene.textless) frame = 0;\n  const VW = width(aspect), VH = VW / aspect, m = M * frame;')
         path.write_text(text)
         path = ROOT / 'live/player.js'
-        text = path.read_text().replace('.wz-ui [hidden], .wz-mark[hidden]', '.wz-ui [hidden], .wz-ui .wz-row[hidden], .wz-mark[hidden]')
+        text = path.read_text().replace('.wz-ui [hidden], .wz-mark[hidden]', '.wz-ui [hidden], .wz-ui .wz-row[hidden], .wz-mark[hidden], .wz-grain[hidden]')
+        text = text.replace("  let name = first, L, k = 1, look = localStorage.getItem('wavz-frame') ?? 'light',", "  const textless = SCENES[first].textless === true;\n  let name = first, L, k = 1, look = textless ? 'none' : localStorage.getItem('wavz-frame') ?? 'light',")
+        text = text.replace("sides = mode === 'strip' && w >= 1100", "sides = !textless && mode === 'strip' && w >= 1100")
+        text = text.replace("  const frame = $('wz-frame');", "  const frame = $('wz-frame');\n  frame.hidden = textless;")
+        text = text.replace("grain.style.backgroundSize = 512 / devicePixelRatio + 'px';", "grain.style.backgroundSize = 512 / devicePixelRatio + 'px';\n  grain.hidden = textless;")
+        text = text.replace('if (vfs && grainFill)', 'if (vfs && grainFill && !textless)')
         marker = "  const muted = { amb: localStorage.getItem('wavz-ambience-off')"
         text = text.replace(marker, "  const hasAudio = SCENES[name].audio !== false;\n  root.querySelector('.wz-r2').hidden = !hasAudio;\n" + marker)
         text = text.replace('  async function startSound() {', '  async function startSound() {\n    if (!hasAudio) return;')

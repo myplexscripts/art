@@ -1,6 +1,6 @@
 # Living posters
 
-A complete snapshot of the 32 living posters published at [WAVZ](https://wavz.us), plus five original **Music Series** posters: 37 posters across seven series. The original WAVZ artwork, code and audio are by **Nick Saulino**; the gallery retains his attribution. The Music Series is new artwork created for this repository.
+A complete snapshot of the 32 living posters published at [WAVZ](https://wavz.us), plus nine **Music Series** posters: 41 posters across seven series. The original WAVZ artwork, code and audio are by **Nick Saulino**; the gallery retains his attribution. The Music Series contains five original music rooms and four newly coded interpretations of playlist artwork.
 
 The existing original **Lantern Cove** page is preserved at [`lantern-cove/index.html`](lantern-cove/index.html).
 
@@ -24,7 +24,7 @@ Open `http://localhost:8000/`. Open an individual poster using `?scene=beach`, f
 | Daybreak | Rice Terraces, Lavender Field, Alpine Lake, Balloon Dawn, Savanna Sunrise |
 | Deep | Kelp Forest, Coral Garden, The Wreck, Jellyfish Bloom, Open Blue |
 | Orbit | Earthrise, Ringed Giant, Space Station, Red Planet, Comet Pass |
-| Music (original) | Needle Drop, Tape Loop, Blue Hour, Brass Midnight, Signal Bloom |
+| Music | Needle Drop, Tape Loop, Blue Hour, Brass Midnight, Signal Bloom, Silk Current, Orbital Drift, Tidal Bloom, Afterglow Arcade |
 
 **Needle Drop** (`?scene=needledrop`) is an original animated listening-room scene: a detailed direct-drive turntable with vinyl grooves, strobe dots, a calibrated pitch fader and a cueing lever, flanked by cloth-front speakers. A shelf of records, rainy round window, pendant light, sleeve, plant and steaming mug establish the room. Its warm rose, plum and teal inks use the collection's shared poster frame. This poster is intentionally silent: it creates no audio context, requests no audio files and hides the player audio controls.
 
@@ -34,6 +34,17 @@ The rest of the Music Series is also original and silent:
 - **Blue Hour** (`?scene=bluehour`): an open-front upright piano with strings, dampers, hammer mechanisms, ivory keys, pedals and an upholstered bench. Marked scores, a working metronome and lamp sit beneath a rainy city window.
 - **Brass Midnight** (`?scene=brassmidnight`): a tapered saxophone with pearl keys, rods, bow guards and an engraved bell, resting on a padded stand. Velvet curtains, a rhythm section, ribbon microphone, near tables and moving stage light complete the jazz room.
 - **Signal Bloom** (`?scene=signalbloom`): a wood-sided analog synth with labeled modules, calibrated pots, patch-plug collars, faders and a phosphor-style scope. Test gear, circuit studies, a task lamp, headphones and a penciled patch sheet fill the workshop.
+
+Four additional silent animations take their visual direction from [The Art of Apple Music](https://artofapplemusic.com/). They fill the canvas without a title band, lettering or logos; transient navigation controls appear on interaction. The references remain Apple playlist artwork, and these are procedural interpretations rather than copies of their images or videos:
+
+| Poster | Archive reference | Animation |
+| --- | --- | --- |
+| **Silk Current** (`?scene=silkcurrent`) | Ambient Chill | A pearlescent blue ribbon curls around a luminous orb; cyan and lavender reflections drift across its surface. |
+| **Orbital Drift** (`?scene=orbitaldrift`) | Ambient Sleep | A shell of 7,200 independently shaded points rotates over a pale pool of light, with fine meridians and gentle ripples. |
+| **Tidal Bloom** (`?scene=tidalbloom`) | Pure Chill | Six translucent, irregular aqua loops rotate and breathe on warm ivory. |
+| **Afterglow Arcade** (`?scene=afterglowarcade`) | Chilltronics | Twelve polished indigo arches recede toward a glowing horizon, surrounded by moving clouds, stars, a miniature tree and a porcelain orb. |
+
+[View the four-poster preview](docs/music-art-preview.png). [`music-art-references.json`](music-art-references.json) records the selected playlist and cover URLs. No archive assets are bundled or requested at runtime.
 
 The scenes use deterministic geometry for fine details and independent, slow clocks for environmental movement. Wood grain, metal fasteners, glass reflections and instrument mechanisms are drawn as vectors; there are no image or audio dependencies in the Music Series.
 

@@ -1,0 +1,43 @@
+{
+  "archive": "https://artofapplemusic.com/",
+  "retrieved": "2026-10-10",
+  "method": "New procedural Canvas interpretations; no source images, videos, lettering, logos or audio are included.",
+  "references": [
+    {
+      "scene": "silkcurrent",
+      "title": "Silk Current",
+      "reference": "Ambient Chill",
+      "curator": "Apple Music Chill",
+      "collection": "",
+      "playlist": "https://music.apple.com/gb/playlist/ambient-chill/pl.bed492442a53481f98e98c6c4da9e01d",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features115/v4/77/3f/2f/773f2f2c-fdd3-e525-7e71-88bcb84a68b4/U0RTLU1TLVdXLUFtYmllbnRfQ2hpbGxfTG9nby1BREFNX0lEPTE1MjIzOTA4OTEucG5n.png/3840x3840bb.png"
+    },
+    {
+      "scene": "orbitaldrift",
+      "title": "Orbital Drift",
+      "reference": "Ambient Sleep",
+      "curator": "Apple Music Sleep",
+      "collection": "",
+      "playlist": "https://music.apple.com/gb/playlist/ambient-sleep/pl.2ce0acb450d048c49d4c4b52b2f4b195",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features116/v4/93/11/ff/9311ff39-a0f1-e5f7-d408-d7287d405ddd/U0RTLU1TLVdXLUFtYmllbnRfU2xlZXAtQURBTV9JRD0xNTIyNjE1NDkxLnBuZw.png/3840x3840bb.png"
+    },
+    {
+      "scene": "tidalbloom",
+      "title": "Tidal Bloom",
+      "reference": "Pure Chill",
+      "curator": "Apple Music Chill",
+      "collection": "Pure",
+      "playlist": "https://music.apple.com/gb/playlist/pure-chill/pl.c74ebd652d9f40a1b92dec44dc422a32",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features125/v4/26/d2/80/26d2809d-e413-ea2d-e088-ab10d26a7063/U0RTLU1TLVdXLVB1cmVfQ2hpbGxfTG9nby1BREFNX0lEPTExNDYwMzkzNTYucG5n.png/3840x3840bb.png"
+    },
+    {
+      "scene": "afterglowarcade",
+      "title": "Afterglow Arcade",
+      "reference": "Chilltronics",
+      "curator": "Apple Music Dance",
+      "collection": "",
+      "playlist": "https://music.apple.com/gb/playlist/chilltronics/pl.41871eaa3ab940cc8c0c60a3f70cde98",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features116/v4/b2/08/0a/b2080a3e-3b0c-31e2-cfef-337c228a4ce6/U0MtTVMtV1ctQ2hpbGx0cm9uaWNzLnBuZw.png/1080x1080SC.DN01.png"
+    }
+  ]
+}
