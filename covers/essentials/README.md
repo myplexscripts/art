@@ -1,7 +1,7 @@
 # Essentials covers
 
-Static square PNG recreations of the genre covers in the [Essentials collection](https://artofapplemusic.com/). All lettering and Apple Music branding are removed, with the underlying artwork reconstructed.
+455 static square PNG recreations of the covers in the [Essentials collection](https://artofapplemusic.com/). Each image is 1254 × 1254 pixels, with all text and Apple Music branding removed.
 
-Files are named for their individual genre or subgenre, in lowercase with hyphens. Additional covers with the same genre receive a numeric suffix, such as `college-rock-2.png`.
+Files use lowercase genre names with hyphens. When a genre has multiple covers, every file receives a numeric suffix, such as `college-rock-1.png` and `college-rock-2.png`. Editorial labels such as “Essentials” are omitted from filenames.
 
-These are AI-assisted recreations of the referenced artwork. The original playlist artwork belongs to its respective rights holders. `manifest.json` records the source playlist and cover for each image.
+These images were recreated with AI from the referenced artwork. Original playlist artwork belongs to its respective rights holders. [`manifest.json`](manifest.json) records each source playlist and cover, image dimensions, and SHA-256 checksum.
