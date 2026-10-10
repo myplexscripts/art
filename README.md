@@ -1,6 +1,6 @@
 # Living posters
 
-A complete snapshot of the 32 living posters published at [WAVZ](https://wavz.us), plus an original **Music Series**: 33 posters across seven series. The original WAVZ artwork, code and audio are by **Nick Saulino**; the gallery retains his attribution. The Music Series is new artwork created for this repository.
+A complete snapshot of the 32 living posters published at [WAVZ](https://wavz.us), plus five original **Music Series** posters: 37 posters across seven series. The original WAVZ artwork, code and audio are by **Nick Saulino**; the gallery retains his attribution. The Music Series is new artwork created for this repository.
 
 The existing original **Lantern Cove** page is preserved at [`lantern-cove/index.html`](lantern-cove/index.html).
 
@@ -24,9 +24,16 @@ Open `http://localhost:8000/`. Open an individual poster using `?scene=beach`, f
 | Daybreak | Rice Terraces, Lavender Field, Alpine Lake, Balloon Dawn, Savanna Sunrise |
 | Deep | Kelp Forest, Coral Garden, The Wreck, Jellyfish Bloom, Open Blue |
 | Orbit | Earthrise, Ringed Giant, Space Station, Red Planet, Comet Pass |
-| Music (original) | Needle Drop |
+| Music (original) | Needle Drop, Tape Loop, Blue Hour, Brass Midnight, Signal Bloom |
 
 **Needle Drop** (`?scene=needledrop`) is an original animated vinyl scene: a spinning record with a rotating label, strobe dots and light glints, a gently swaying tonearm, breathing speaker cones, flowing wall bands and drifting clouds through a round window. Its warm rose, plum and teal inks use the collection's shared poster frame. This poster is intentionally silent: it creates no audio context, requests no audio files and hides the player audio controls.
+
+The rest of the Music Series is also original and silent:
+
+- **Tape Loop** (`?scene=tapeloop`): counter-rotating cassette reels, drifting tape ribbon, a rolling counter and animated meter.
+- **Blue Hour** (`?scene=bluehour`): an upright piano with gently moving keys and shimmering strings beneath a rainy arched window.
+- **Brass Midnight** (`?scene=brassmidnight`): a golden saxophone with a traveling highlight, slow spotlights and floating graphic accents.
+- **Signal Bloom** (`?scene=signalbloom`): an analog synthesizer with a traveling scope waveform, moving faders, turning knobs and swaying patch cables.
 
 All **132 audio files** are included in `live/audio/` (about 553 MB), so playback does not depend on WAVZ's CDN. Audio starts after browser interaction when autoplay restrictions apply. Ambience and music have separate volume and mute controls; available music tracks cycle as in the original.
 
