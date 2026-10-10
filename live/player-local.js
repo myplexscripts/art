@@ -13,7 +13,9 @@ const CSS = `
   /* Artwork covers every edge, including the notch and home indicator. Only controls are inset. */
   .wz-player canvas, .wz-grain { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
   .wz-grain { pointer-events: none; z-index: 2; }
-  .wz-clock { position: absolute; inset: 0; display: grid; place-items: center; z-index: 3; pointer-events: none; margin: 0; color: #fff; font: 500 clamp(40px, 14vmin, 180px)/1 "Manrope", "Inter", system-ui, sans-serif; font-variant-numeric: tabular-nums; letter-spacing: -.045em; white-space: nowrap; text-shadow: 0 2px 24px #0009, 0 1px 3px #000b; }
+  .wz-clock { position: absolute; inset: 0; display: grid; place-items: center; z-index: 3; pointer-events: none; margin: 0; color: #fff; font: 500 clamp(40px, 14vmin, 180px)/1 "Manrope", "Inter", system-ui, sans-serif; font-variant-numeric: tabular-nums; letter-spacing: -.045em; white-space: nowrap; text-shadow: none; }
+  .wz-clock-face { pointer-events: auto; touch-action: none; padding: 20px; cursor: ew-resize; }
+  .wz-clock-face:focus-visible { outline: 1px solid currentColor; outline-offset: -10px; border-radius: 12px; }
   .wz-clock[hidden] { display: none; }
   /* The bottom controls slide over the artwork and never reserve space in its canvas. */
   .wz-ui { position: absolute; bottom: 0; z-index: 3; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; gap: 2px; color: var(--ink); transition: color .7s, transform .38s cubic-bezier(.2, .7, .2, 1) 0s; }
@@ -56,7 +58,7 @@ const CSS = `
   .wz-ui label.muted .wz-mute { opacity: .5; text-decoration: line-through; }
   .wz-hud { position: absolute; left: 10px; top: 8px; font: 12px ui-monospace, monospace; color: #0e1c3a; background: rgba(242, 229, 195, .85); padding: 3px 7px; border-radius: 4px; white-space: pre-wrap; max-width: 92%; z-index: 3; pointer-events: none; }
 `;
-const HTML = `<canvas class="wz-scene"></canvas><div class="wz-grain"></div><time class="wz-clock" hidden></time>
+const HTML = `<canvas class="wz-scene"></canvas><div class="wz-grain"></div><time class="wz-clock" hidden><span class="wz-clock-face" tabindex="0" title="Pinch to resize. Swipe right for bolder text, left for lighter. Keyboard: + / − to resize; left / right arrows for weight."></span></time>
   <nav class="wz-ui off" aria-label="Poster controls"><div class="wz-row wz-r1"><a class="wz-home wz-it" style="--i:0" href="./" aria-label="Back to all posters"><svg class="wz-arrow" viewBox="0 0 24 14"><path d="M0 7 9 0v4.6h15v4.8H9V14z"/></svg><span class="wz-word">Posters</span></a><button class="wz-clock-toggle wz-it" style="--i:3" aria-pressed="false">Clock<em class="wz-word">off</em></button><button class="wz-full wz-it" style="--i:4" aria-label="Fullscreen" title="Fullscreen"><svg viewBox="0 0 20 20"><path d="M2 7V2h5M13 2h5v5M18 13v5h-5M7 18H2v-5"/></svg></button></div>
   <div class="wz-row wz-r2"><label class="wz-it" style="--i:1"><button class="wz-mute" data-bus="amb" title="Mute or unmute">Ambience</button><input class="wz-amb" type="range" min="0" max="1" step="0.01" aria-label="Ambience volume"></label><label class="wz-it" style="--i:2"><button class="wz-mute" data-bus="mus" title="Mute or unmute">Music</button><input class="wz-mus" type="range" min="0" max="1" step="0.01" aria-label="Music volume"><button class="wz-trk" title="Next track">A</button></label></div></nav><div class="wz-hud" hidden></div>`;
 const title = (scene) => 'WAVZ: ' + scene.title.toLowerCase().replace(/\b[a-z]+/g, (w, i) => (i && ['at', 'of', 'the', 'in'].includes(w) ? w : w[0].toUpperCase() + w.slice(1)));
@@ -99,7 +101,7 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
     scene.style.width = final ? '' : fw + 'px'; scene.style.height = final ? '' : fh + 'px';
     const w = final ? bw : r.width * s, h = final ? bh : r.height * s, st = final || !mix ? cur : mix;
     L = makeLayout(w / h, SCENES[name], { dark: st.d, frame: st.f, mix: final ? null : mix }); k = w / L.VW;
-    if (final) dock(r.width);
+    if (final) { dock(r.width); fitClock(); }
   }
   // Controls overlay the art and alone respect the notch and home indicator.
   function dock(w) {
@@ -123,10 +125,30 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
   }
 
   // ---- clock: local time, off by default, remembered across posters and sessions.
-  const clock = $('wz-clock'), clockToggle = $('wz-clock-toggle');
+  const clock = $('wz-clock'), clockFace = $('wz-clock-face'), clockToggle = $('wz-clock-toggle');
   clock.id = 'wz-clock-' + ++clockId; clockToggle.setAttribute('aria-controls', clock.id);
   const clockFormat = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' });
   let clockOn = localStorage.getItem('wavz-clock') === '1', clockTimer = 0;
+  const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+  const savedNumber = (key, fallback, min, max) => {
+    const saved = localStorage.getItem(key), value = saved === null ? fallback : Number(saved);
+    return clamp(Number.isFinite(value) ? value : fallback, min, max);
+  };
+  let clockScale = savedNumber('wavz-clock-scale', 1, .5, 4), clockWeight = savedNumber('wavz-clock-weight', 500, 200, 800);
+  function fitClock() {
+    clockFace.style.fontWeight = String(clockWeight);
+    if (!clockOn || closed) return;
+    const size = clamp(Math.min(root.clientWidth, root.clientHeight) * .14, 40, 180) * clockScale;
+    clockFace.style.fontSize = size + 'px';
+    // Keep even a large clock inside the art, including locales that display AM/PM.
+    const width = clockFace.getBoundingClientRect().width - 40, height = size;
+    const fit = Math.min(1, (root.clientWidth * .92 - 40) / Math.max(1, width), (root.clientHeight * .9 - 40) / height);
+    if (fit < 1) clockFace.style.fontSize = Math.max(1, size * fit) + 'px';
+  }
+  const saveClockStyle = () => {
+    localStorage.setItem('wavz-clock-scale', String(clockScale));
+    localStorage.setItem('wavz-clock-weight', String(clockWeight));
+  };
   function updateClock() {
     clearTimeout(clockTimer);
     clock.hidden = !clockOn;
@@ -135,14 +157,66 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
     clockToggle.setAttribute('aria-label', 'Clock: ' + (clockOn ? 'on' : 'off'));
     if (!clockOn || closed) return;
     const now = new Date();
-    clock.textContent = clockFormat.format(now); clock.dateTime = now.toISOString();
-    clock.setAttribute('aria-label', 'Current time: ' + clock.textContent);
+    clockFace.textContent = clockFormat.format(now); clock.dateTime = now.toISOString();
+    clock.setAttribute('aria-label', 'Current time: ' + clockFace.textContent);
+    fitClock();
     clockTimer = setTimeout(updateClock, 60000 - (now.getSeconds() * 1000 + now.getMilliseconds()) + 25);
   }
-  clockToggle.addEventListener('click', () => { clockOn = !clockOn; localStorage.setItem('wavz-clock', clockOn ? '1' : '0'); updateClock(); });
+  // Capture gestures that start on the clock; a second finger may land beside it.
+  const fingers = new Map();
+  let gesture = null, pinched = false;
+  const distance = () => { const [a, b] = [...fingers.values()]; return Math.hypot(b.x - a.x, b.y - a.y); };
+  const beginGesture = () => {
+    if (fingers.size >= 2) { pinched = true; gesture = { distance: Math.max(1, distance()), scale: clockScale }; }
+    else if (fingers.size === 1 && !pinched) { const [p] = fingers.values(); gesture = { x: p.x, y: p.y, weight: clockWeight }; }
+    else gesture = null;
+  };
+  const stopClockGesture = () => {
+    const ids = [...fingers.keys()]; fingers.clear(); gesture = null; pinched = false;
+    for (const id of ids) if (root.hasPointerCapture(id)) root.releasePointerCapture(id);
+    saveClockStyle();
+  };
+  root.addEventListener('pointerdown', (e) => {
+    if (!clockOn || flight || e.button !== 0 || ui.contains(e.target)) return;
+    if (!clockFace.contains(e.target) && !fingers.size) return;
+    if (fingers.size >= 2) return;
+    e.preventDefault(); fingers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    root.setPointerCapture(e.pointerId); beginGesture();
+  });
+  root.addEventListener('pointermove', (e) => {
+    if (!fingers.has(e.pointerId)) return;
+    e.preventDefault(); fingers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (!gesture) return;
+    if (fingers.size === 2) clockScale = clamp(gesture.scale * distance() / gesture.distance, .5, 4);
+    else {
+      const dx = e.clientX - gesture.x, dy = e.clientY - gesture.y;
+      if (Math.abs(dx) < 8 || Math.abs(dx) < Math.abs(dy)) return;
+      clockWeight = Math.round(clamp(gesture.weight + dx * 2, 200, 800));
+    }
+    fitClock();
+  });
+  const finishGesture = (e) => {
+    if (!fingers.delete(e.pointerId)) return;
+    if (root.hasPointerCapture(e.pointerId)) root.releasePointerCapture(e.pointerId);
+    if (!fingers.size) { gesture = null; pinched = false; saveClockStyle(); }
+    else beginGesture();
+  };
+  for (const type of ['pointerup', 'pointercancel', 'lostpointercapture']) root.addEventListener(type, finishGesture);
+  clockFace.addEventListener('wheel', (e) => {
+    if (!e.ctrlKey || !clockOn) return;
+    e.preventDefault(); clockScale = clamp(clockScale * Math.exp(-e.deltaY * .01), .5, 4); fitClock(); saveClockStyle();
+  }, { passive: false });
+  clockFace.addEventListener('keydown', (e) => {
+    if (['ArrowLeft', 'ArrowRight'].includes(e.key)) clockWeight = clamp(clockWeight + (e.key === 'ArrowRight' ? 50 : -50), 200, 800);
+    else if (['+', '=', '-', '−'].includes(e.key)) clockScale = clamp(clockScale * (['+', '='].includes(e.key) ? 1.1 : 1 / 1.1), .5, 4);
+    else return;
+    e.preventDefault(); fitClock(); saveClockStyle();
+  });
+  clockToggle.addEventListener('click', () => { stopClockGesture(); clockOn = !clockOn; localStorage.setItem('wavz-clock', clockOn ? '1' : '0'); updateClock(); });
   const resumeClock = () => { if (document.visibilityState === 'visible') updateClock(); };
   document.addEventListener('visibilitychange', resumeClock);
   updateClock();
+  document.fonts.ready.then(() => { if (!closed) fitClock(); });
 
   // ---- growing out of, and shrinking back into, a rectangle on the page. The poster is recomposed on every frame of
   // the flight, so it reflows into the screen's shape as it travels rather than being stretched.
@@ -199,7 +273,7 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
   // the screen is kept awake while a scene is up, where the browser allows it: these are made to be left running
   let awake = null; const wake2 = () => { if (!closed && document.visibilityState === 'visible') navigator.wakeLock?.request('screen').then((w) => { awake = w; }, () => {}); };
   wake2(); document.addEventListener('visibilitychange', wake2);
-  root.addEventListener('dblclick', (e) => { if (!ui.contains(e.target)) toggleFull(); });
+  root.addEventListener('dblclick', (e) => { if (!ui.contains(e.target) && !clockFace.contains(e.target)) toggleFull(); });
   if (home) $('wz-home').addEventListener('click', (e) => { e.preventDefault(); home(); });
   const esc = (e) => { if (e.key === 'Escape' && !isFull() && !flight) $('wz-home').click(); };
   addEventListener('keydown', esc);
@@ -255,6 +329,7 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
   requestAnimationFrame(tick);
 
   function end() {
+    stopClockGesture();
     closed = true; awake?.release().catch(() => {}); document.removeEventListener('visibilitychange', wake2); sound?.stop(); clearTimeout(hide); clearTimeout(pending); clearTimeout(clockTimer); document.removeEventListener('visibilitychange', resumeClock);
     for (const [t, type] of listen) t.removeEventListener(type, refit);
     removeEventListener('keydown', show); removeEventListener('keydown', esc); root.remove();
