@@ -62,6 +62,7 @@ def adapt_for_local_hosting():
     text = path.read_text()
     text = re.sub(r'<script async src="https://www.googletagmanager.com/gtag/js\?id=G-PKL1DBXEWK"></script>\s*<script>.*?</script>\s*', '', text, count=1, flags=re.S)
     text = text.replace('href="/favicon/', 'href="./favicon/').replace('href="/site.webmanifest', 'href="./site.webmanifest')
+    text = re.sub(r'href="\./site\.webmanifest(?:\?[^\"]*)?"', 'href="./site.webmanifest?v=3"', text, count=1)
     text = text.replace("a.href = '/?scene=' + name", "a.href = '?scene=' + name")
     text = text.replace("history.replaceState(null, '', '/')", "history.replaceState(null, '', location.pathname)")
     path.write_text(text)
@@ -75,6 +76,8 @@ def adapt_for_local_hosting():
     path = ROOT / 'site.webmanifest'
     manifest = json.loads(path.read_text())
     manifest.update(start_url='./', scope='./')
+    # Leave browser/OS chrome untinted; the iOS status bar overlays the artwork.
+    manifest.pop('theme_color', None)
     for icon in manifest['icons']:
         icon['src'] = './' + icon['src'].lstrip('/')
     path.write_text(json.dumps(manifest, indent=2) + '\n')
@@ -105,6 +108,16 @@ def adapt_for_local_hosting():
         text = text.replace('  async function startSound() {', '  async function startSound() {\n    if (!hasAudio) return;')
         text = text.replace('  on = !(muted.amb && muted.mus); levels();', '  on = hasAudio && !(muted.amb && muted.mus); levels();')
         path.write_text(text)
+    if (ROOT / 'live/s-geometry.js').exists():
+        path = ROOT / 'live/poster.js'
+        text = path.read_text()
+        if "import * as geometry from './s-geometry.js';" not in text:
+            text = text.replace("import { C, M, FONT }", "import * as geometry from './s-geometry.js';\nimport { C, M, FONT }")
+            text = re.sub(r'(export const SERIES = \[[^\]]+)(\])', r'\1, geometry\2', text, count=1)
+        path.write_text(text)
+        path = ROOT / 'index.html'
+        text = path.read_text().replace('Music and Essentials: original rooms and playlist-art interpretations', 'Music, Essentials and Geometry: original rooms, playlist studies and moving shapes')
+        path.write_text(text)
     if (ROOT / 'live/player-local.js').exists():
         adapt_local_viewer()
 
@@ -116,6 +129,7 @@ def adapt_local_viewer():
     path.write_text(text)
     path = ROOT / 'index.html'
     text = path.read_text()
+    text = re.sub(r'<meta name="theme-color"[^>]*>\s*', '', text, count=1)
     text = re.sub(r'(<meta name="viewport" content=")([^"]+)(">)', lambda m: m[1] + m[2] + ('' if 'viewport-fit=cover' in m[2] else ', viewport-fit=cover') + m[3], text, count=1)
     text = text.replace(" document.querySelector('meta[name=viewport]').content += ', viewport-fit=cover';", '')
     if 'href="./live/fonts.css"' not in text:

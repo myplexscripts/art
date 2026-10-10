@@ -79,7 +79,7 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
   const q = new URLSearchParams(location.search), force = +q.get('res') || 0, skip = at === null ? +q.get('t') || 0 : at - performance.now() / 1000, debug = q.has('debug');
   const root = Object.assign(document.createElement('div'), { className: 'wz-player', innerHTML: HTML }), $ = (c) => root.querySelector('.' + c);
   const scene = $('wz-scene'), grain = $('wz-grain'), ui = $('wz-ui'), hud = $('wz-hud'), ctx = scene.getContext('2d');
-  const before = { title: document.title, bg: document.body.style.background, htmlBg: document.documentElement.style.background, overflow: document.documentElement.style.overflow, gutter: document.documentElement.style.scrollbarGutter, theme: document.querySelector('meta[name=theme-color]')?.content };
+  const before = { title: document.title, bg: document.body.style.background, htmlBg: document.documentElement.style.background, overflow: document.documentElement.style.overflow, gutter: document.documentElement.style.scrollbarGutter };
   const textless = SCENES[first].textless === true;
   let name = first, L, k = 1, flight = null, closed = false, sound = null, on = false;
   document.body.append(root);
@@ -118,9 +118,8 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
   for (const [t, type] of listen) t.addEventListener(type, refit);
 
   function paint() {
-    const c = SCENES[name].dark, meta = document.querySelector('meta[name=theme-color]');
+    const c = SCENES[name].dark;
     document.documentElement.style.background = document.body.style.background = c;
-    if (meta) meta.content = c;
     root.style.setProperty('--ink', CREAM); root.style.setProperty('--sub', '#f0bd4d'); root.style.setProperty('--paper', c);
   }
 
@@ -340,7 +339,6 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
     // to: a rectangle to shrink back into before going; the page's own look is put back first so it shows through
     close({ to = null } = {}) {
       document.title = before.title; document.body.style.background = before.bg; document.documentElement.style.background = before.htmlBg; document.documentElement.style.overflow = before.overflow; document.documentElement.style.scrollbarGutter = before.gutter; document.documentElement.style.transition = document.body.style.transition = '';
-      const meta = document.querySelector('meta[name=theme-color]'); if (meta && before.theme) meta.content = before.theme;
       if (isFull()) leaveFull.call(document);
       on = false; sound?.stop(); sound = null;   // the sound starts fading as the scene starts to leave
       if (to && !closed) fly(root.getBoundingClientRect(), to, 'b', end); else end();
