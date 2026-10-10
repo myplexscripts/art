@@ -4,12 +4,19 @@
 // For checking: ?debug shows a readout, ?res=3840 forces the long side, ?t=40 starts the clock 40 s in.
 import './nozoom.js';
 import { draw, makeLayout, styleFor, SCENES } from './poster.js';
-import { makeClockColor, makePaletteSampler } from './clock-palette.js';
+import { hex, makeClockColor, makePaletteSampler } from './clock-palette.js';
 import { depthLayersFor, makeDepthRenderer } from './clock-depth.js';
-import { DEPTH_CSS, makeDepthPicker } from './clock-depth-picker.js';
+import { COLOR_CSS, makeColorPicker } from './clock-color-picker.js';
 
 const LOOP = 30, MAXPX = 3840, CREAM = '#f2e5c3', FLIGHT = 650;
+// Keep authored depth and saved choices intact while the feature is unavailable in the app.
+const DEPTH_ENABLED = false;
 const FACE = '"Inter", system-ui, sans-serif';
+const colorSetting = saved => {
+  if (saved && ['white', 'adaptive'].includes(saved.mode)) return { mode: saved.mode };
+  if (saved && ['poster', 'custom'].includes(saved.mode) && Array.isArray(saved.rgb) && saved.rgb.length === 3 && saved.rgb.every(v => Number.isFinite(v) && v >= 0 && v <= 255)) return { mode: saved.mode, rgb: saved.rgb.map(Math.round) };
+  return null;
+};
 let clockId = 0;
 const CSS = `
   .wz-player { position: fixed; inset: 0; z-index: 10; overflow: hidden; -webkit-user-select: none; user-select: none; --wz-safe-left: env(safe-area-inset-left, 0px); --wz-safe-right: env(safe-area-inset-right, 0px); --wz-safe-bottom: env(safe-area-inset-bottom, 0px); }
@@ -38,12 +45,14 @@ const CSS = `
   .wz-row { display: flex; align-items: center; justify-content: center; gap: 6px 22px; }
   .wz-ui:not(.two) { flex-direction: row; align-items: center; gap: 22px; }
   .wz-ui:not(.two) .wz-row { display: contents; }
-  .wz-ui:not(.two) .wz-clock-toggle { order: 3; } .wz-ui:not(.two) .wz-depth-toggle { order: 4; } .wz-ui:not(.two) .wz-full { order: 5; } .wz-ui:not(.two) label { order: 2; }
+  .wz-ui:not(.two) .wz-clock-toggle { order: 3; } .wz-ui:not(.two) .wz-color-toggle { order: 4; } .wz-ui:not(.two) .wz-full { order: 5; } .wz-ui:not(.two) label { order: 2; }
   .wz-ui.two .wz-r1 { justify-content: space-between; gap: 10px; } .wz-ui.two .wz-r2 { gap: 14px; } .wz-ui.two label { flex: 1 1 0; }
   .wz-ui.tight { gap: 14px; } .wz-ui.tight .wz-word { display: none; }
   .wz-ui a, .wz-ui button { font: 600 13px/1 ${FACE}; letter-spacing: .06em; text-transform: uppercase; color: inherit; background: none; border: 0; padding: 11px 0 9px; border-bottom: 3px solid transparent; text-decoration: none; cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 7px; }
   .wz-ui a:hover, .wz-ui button:not(:disabled):hover, .wz-ui a:focus-visible, .wz-ui button:focus-visible { border-bottom-color: #dd7f45; outline: none; }
   .wz-ui em { font-style: normal; color: var(--sub); }
+  .wz-ui .wz-color-toggle { min-width: 40px; min-height: 44px; justify-content: center; }
+  .wz-color-dot { display: block; width: 14px; height: 14px; border: 1px solid #f2e5c388; border-radius: 50%; flex: none; }
   .wz-ui svg { width: 17px; height: 17px; display: block; fill: none; stroke: currentColor; stroke-width: 2.4; }
   .wz-ui svg.wz-arrow { width: 21px; height: 12px; fill: currentColor; stroke: none; margin-top: -1px; transition: transform .2s; }
   .wz-ui a:hover .wz-arrow { transform: translateX(-3px); }
@@ -64,9 +73,9 @@ const CSS = `
   .wz-ui label.muted .wz-trk { cursor: default; }
   .wz-ui label.muted .wz-mute { opacity: .5; text-decoration: line-through; }
   .wz-hud { position: absolute; left: 10px; top: 8px; font: 12px ui-monospace, monospace; color: #0e1c3a; background: rgba(242, 229, 195, .85); padding: 3px 7px; border-radius: 4px; white-space: pre-wrap; max-width: 92%; z-index: 4; pointer-events: none; }
-` + DEPTH_CSS;
-const HTML = `<canvas class="wz-scene"></canvas><canvas class="wz-foreground" hidden aria-hidden="true"></canvas><div class="wz-grain"></div><time class="wz-clock" hidden><span class="wz-clock-face" role="button" tabindex="0" aria-pressed="false" title="Tap for white or palette color. Hold to move. Triple tap to center. Pinch to resize. Swipe for weight. Keyboard: Enter for color; Home to center; + / − for size; left / right arrows for weight."></span></time>
-  <nav class="wz-ui off" aria-label="Scene controls"><div class="wz-row wz-r1"><a class="wz-home wz-it" style="--i:0" href="./" aria-label="Back to all scenes"><svg class="wz-arrow" viewBox="0 0 24 14"><path d="M0 7 9 0v4.6h15v4.8H9V14z"/></svg><span class="wz-word">Scenes</span></a><button class="wz-clock-toggle wz-it" style="--i:3" aria-pressed="false">Clock<em class="wz-word">off</em></button><button class="wz-depth-toggle wz-it" style="--i:4" aria-label="Choose clock depth" title="Choose clock depth"><svg viewBox="0 0 20 20"><path d="m2 6 8-4 8 4-8 4-8-4Zm0 4 8 4 8-4M2 14l8 4 8-4"/></svg><span class="wz-word">Depth</span><em class="wz-word">off</em></button><button class="wz-full wz-it" style="--i:5" aria-label="Fullscreen" title="Fullscreen"><svg viewBox="0 0 20 20"><path d="M2 7V2h5M13 2h5v5M18 13v5h-5M7 18H2v-5"/></svg></button></div>
+` + COLOR_CSS;
+const HTML = `<canvas class="wz-scene"></canvas><canvas class="wz-foreground" hidden aria-hidden="true"></canvas><div class="wz-grain"></div><time class="wz-clock" hidden><span class="wz-clock-face" role="button" tabindex="0" aria-pressed="false" title="Tap for white or your chosen colour. More colours in the toolbar. Hold to move. Triple tap to center. Pinch to resize. Swipe for weight. Keyboard: Enter for colour; Home to center; + / − for size; left / right arrows for weight."></span></time>
+  <nav class="wz-ui off" aria-label="Scene controls"><div class="wz-row wz-r1"><a class="wz-home wz-it" style="--i:0" href="./" aria-label="Back to all scenes"><svg class="wz-arrow" viewBox="0 0 24 14"><path d="M0 7 9 0v4.6h15v4.8H9V14z"/></svg><span class="wz-word">Scenes</span></a><button class="wz-clock-toggle wz-it" style="--i:3" aria-pressed="false">Clock<em class="wz-word">off</em></button><button class="wz-color-toggle wz-it" style="--i:4" aria-label="Choose clock colour" title="Choose clock colour"><span class="wz-color-dot" aria-hidden="true"></span><span class="wz-word">Colour</span></button><button class="wz-full wz-it" style="--i:5" aria-label="Fullscreen" title="Fullscreen"><svg viewBox="0 0 20 20"><path d="M2 7V2h5M13 2h5v5M18 13v5h-5M7 18H2v-5"/></svg></button></div>
   <div class="wz-row wz-r2"><label class="wz-it" style="--i:1"><button class="wz-mute" data-bus="amb" title="Mute or unmute">Ambience</button><input class="wz-amb" type="range" min="0" max="1" step="0.01" aria-label="Ambience volume"></label><label class="wz-it" style="--i:2"><button class="wz-mute" data-bus="mus" title="Mute or unmute">Music</button><input class="wz-mus" type="range" min="0" max="1" step="0.01" aria-label="Music volume"><button class="wz-trk" title="Next track">A</button></label></div></nav><div class="wz-hud" hidden></div>`;
 const title = (scene) => 'Scenes: ' + scene.title.toLowerCase().replace(/\b[a-z]+/g, (w, i) => (i && ['at', 'of', 'the', 'in'].includes(w) ? w : w[0].toUpperCase() + w.slice(1)));
 // Print grain: one small tile of noise, made once and repeated over the scene, so it costs nothing per frame or per size.
@@ -89,7 +98,7 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
   const foreground = $('wz-foreground'), renderDepth = makeDepthRenderer(ctx, foreground.getContext('2d'), SCENES[first].dark);
   const depthOptions = depthLayersFor(first), depthKey = 'wavz-clock-depth-' + first;
   const savedDepth = localStorage.getItem(depthKey);
-  let depthSelection = depthOptions.some(o => o.id === savedDepth) ? savedDepth : 'front';
+  const depthSelection = depthOptions.some(o => o.id === savedDepth) ? savedDepth : 'front';
   const before = { title: document.title, bg: document.body.style.background, htmlBg: document.documentElement.style.background, overflow: document.documentElement.style.overflow, gutter: document.documentElement.style.scrollbarGutter };
   const textless = SCENES[first].textless === true;
   let name = first, L, k = 1, flight = null, closed = false, sound = null, on = false;
@@ -109,7 +118,7 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
     if (!long || !r.width) return;
     const s = (force || Math.min(MAXPX, long * devicePixelRatio)) / long, bw = Math.round(fw * s), bh = Math.round(fh * s);
     if (bw !== scene.width || bh !== scene.height) { scene.width = bw; scene.height = bh; }
-    if (bw !== foreground.width || bh !== foreground.height) { foreground.width = bw; foreground.height = bh; }
+    if (DEPTH_ENABLED && (bw !== foreground.width || bh !== foreground.height)) { foreground.width = bw; foreground.height = bh; }
     scene.style.width = final ? '' : fw + 'px'; scene.style.height = final ? '' : fh + 'px';
     foreground.style.width = scene.style.width; foreground.style.height = scene.style.height;
     const w = final ? bw : r.width * s, h = final ? bh : r.height * s, st = final || !mix ? cur : mix;
@@ -141,13 +150,27 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
   clock.id = 'wz-clock-' + ++clockId; clockToggle.setAttribute('aria-controls', clock.id);
   const clockFormat = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' });
   let clockOn = localStorage.getItem('wavz-clock') === '1', clockTimer = 0;
-  let clockColored = localStorage.getItem('wavz-clock-color') === 'palette', paletteAt = -Infinity;
-  let clockInk = null, clockFontsReady = false;
+  const colorKey = 'wavz-clock-ink-' + name;
+  let clockColor = { mode: localStorage.getItem('wavz-clock-color') === 'palette' ? 'adaptive' : 'white' };
+  let colouredChoice = { mode: 'adaptive' };
+  try {
+    const saved = JSON.parse(localStorage.getItem(colorKey));
+    clockColor = colorSetting(saved) ?? clockColor;
+    colouredChoice = colorSetting(saved?.choice) ?? colouredChoice;
+    if (colouredChoice.mode === 'white') colouredChoice = { mode: 'adaptive' };
+  } catch {}
+  if (clockColor.mode !== 'white') colouredChoice = clockColor;
+  let clockInk = null, clockFontsReady = false, paletteAt = -Infinity, colorPicker = null;
   const clockHue = SCENES[name].clockHue;
-  const samplePalette = makePaletteSampler(scene, clockFace);
-  clockFace.setAttribute('aria-pressed', String(clockColored));
+  const samplePalette = makePaletteSampler(scene, clockFace, SCENES[name].dark);
+  function syncClockChoice() {
+    clockFace.setAttribute('aria-pressed', String(clockColor.mode !== 'white'));
+    if (clockColor.mode === 'white') clockFace.style.color = '#fff';
+    else if (clockColor.rgb) clockFace.style.color = hex(clockColor.rgb);
+    colorPicker?.sync(clockColor);
+  }
   function updateClockColor(now, t) {
-    if (!clockColored || !clockOn || !clockFontsReady || !L || flight || positionAnimation || gesture?.drag) return;
+    if (clockColor.mode !== 'adaptive' || !clockOn || !clockFontsReady || !L || flight || positionAnimation || gesture?.drag) return;
     if (!clockInk) {
       // Read only a freshly drawn, settled poster at the clock's final placement.
       const chosen = samplePalette();
@@ -156,12 +179,16 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
     } else if (!clockHue || now - paletteAt < 100) return;
     paletteAt = now; clockFace.style.color = clockInk(clockHue?.(t));
   }
-  const toggleClockColor = () => {
-    clockColored = !clockColored; clockInk = null; paletteAt = -Infinity;
-    localStorage.setItem('wavz-clock-color', clockColored ? 'palette' : 'white');
-    clockFace.setAttribute('aria-pressed', String(clockColored));
-    if (!clockColored) clockFace.style.color = '#fff';
-  };
+  function selectClockColor(value) {
+    clockColor = value; clockInk = null; paletteAt = -Infinity;
+    if (value.mode !== 'white') colouredChoice = value;
+    localStorage.setItem(colorKey, JSON.stringify({ ...value, choice: colouredChoice }));
+    if (['adaptive', 'white'].includes(value.mode)) localStorage.setItem('wavz-clock-color', value.mode === 'adaptive' ? 'palette' : 'white');
+    if (value.mode === 'custom') localStorage.setItem('wavz-clock-custom', hex(value.rgb));
+    syncClockChoice();
+  }
+  const toggleClockColor = () => selectClockColor(clockColor.mode === 'white' ? colouredChoice : { mode: 'white' });
+  syncClockChoice();
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
   const savedNumber = (key, fallback, min, max) => {
     const saved = localStorage.getItem(key), value = saved === null ? fallback : Number(saved);
@@ -265,7 +292,7 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
     if (dragged) { localStorage.setItem(positionKey, JSON.stringify(position)); dragged = false; reassessPalette(); }
   };
   root.addEventListener('pointerdown', (e) => {
-    if (!clockOn || flight || e.button !== 0 || ui.contains(e.target) || depthPicker.element.contains(e.target)) return;
+    if (!clockOn || flight || e.button !== 0 || ui.contains(e.target) || colorPicker?.element.contains(e.target)) return;
     if (!clockFace.contains(e.target) && !fingers.size) return;
     if (fingers.size >= 2) return;
     if (!fingers.size) { cancelPositionAnimation(); clearTimeout(tapTimer); tap = { id: e.pointerId, x: e.clientX, y: e.clientY, time: performance.now() }; }
@@ -340,14 +367,11 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
   updateClock();
   document.fonts.ready.then(() => { if (!closed) { fitClock(); clockFontsReady = true; } });
 
-  // ---- depth: a scene's real foreground shapes can cover the clock, beneath the grain.
-  const depthPicker = makeDepthPicker({ root, face: clockFace, button: $('wz-depth-toggle'), title: SCENES[name].title,
-    options: depthOptions, selected: depthSelection,
-    onSelect(id) {
-      depthSelection = id;
-      if (id === 'front') { localStorage.removeItem(depthKey); foreground.hidden = true; }
-      else localStorage.setItem(depthKey, id);
-    },
+  // ---- colour: three prominent poster inks, any custom colour, white or adaptive ink.
+  colorPicker = makeColorPicker({ root, face: clockFace, button: $('wz-color-toggle'), title: SCENES[name].title,
+    selected: clockColor, getPalette: () => samplePalette()?.dominant,
+    customColor: colouredChoice.mode === 'custom' ? hex(colouredChoice.rgb) : localStorage.getItem('wavz-clock-custom'),
+    onSelect: selectClockColor,
     onOpen() {
       stopClockGesture(); clearTimeout(hide); ui.hidden = true;
       if (!clockOn) { clockOn = true; localStorage.setItem('wavz-clock', '1'); updateClock(); }
@@ -386,7 +410,7 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
   let last = performance.now(), fps = 60, ms = 0, n = 0;
   frame1 = (t) => {
     const paint = c => { c.setTransform(k, 0, 0, k, 0, 0); draw(c, t / LOOP, L, t); };
-    const active = clockOn && depthSelection !== 'front' && !flight;
+    const active = DEPTH_ENABLED && clockOn && depthSelection !== 'front' && !flight;
     foreground.hidden = !active;
     if (!active) { paint(ctx); return; }
     const art = scene.getBoundingClientRect(), text = clockFace.getBoundingClientRect();
@@ -399,7 +423,6 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
     flight?.(now);
     const t0 = performance.now(), t = now / 1000 + skip;
     frame1(t);
-    depthPicker.updateBounds();
     if (clockOn) updateClockColor(now, t);
     ms += (performance.now() - t0 - ms) * 0.05; fps += (1000 / Math.max(1, now - last) - fps) * 0.05; last = now;
     if (debug && ++n % 3 === 0) hud.textContent = `${scene.width} x ${scene.height}  ${fps.toFixed(0)} fps  draw ${ms.toFixed(1)} ms  t ${t.toFixed(0)} s` + (notes.length ? '\n' + notes.join('\n') : '');
@@ -408,7 +431,7 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
 
   // ---- controls: they show on any movement and fade after a few seconds
   let hide;
-  const show = (e) => { if (flight || depthPicker.active || (e && (clockFace.contains(e.target) || fingers.size))) return; ui.classList.remove('off'); clearTimeout(hide); hide = setTimeout(() => ui.classList.add('off'), 3500); };
+  const show = (e) => { if (flight || colorPicker.active || (e && (clockFace.contains(e.target) || fingers.size))) return; ui.classList.remove('off'); clearTimeout(hide); hide = setTimeout(() => ui.classList.add('off'), 3500); };
   for (const type of ['pointermove', 'pointerdown']) root.addEventListener(type, show);
   addEventListener('keydown', show);
   // Use DOM fullscreen where supported. On iPhone, keep the full-bleed page/PWA
@@ -421,11 +444,11 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
   // the screen is kept awake while a scene is up, where the browser allows it: these are made to be left running
   let awake = null; const wake2 = () => { if (!closed && document.visibilityState === 'visible') navigator.wakeLock?.request('screen').then((w) => { awake = w; }, () => {}); };
   wake2(); document.addEventListener('visibilitychange', wake2);
-  root.addEventListener('dblclick', (e) => { if (!depthPicker.active && !ui.contains(e.target) && !clockFace.contains(e.target)) toggleFull(); });
+  root.addEventListener('dblclick', (e) => { if (!colorPicker.active && !ui.contains(e.target) && !clockFace.contains(e.target)) toggleFull(); });
   if (home) $('wz-home').addEventListener('click', (e) => { e.preventDefault(); home(); });
   const esc = (e) => {
     if (e.key !== 'Escape' || e.defaultPrevented) return;
-    if (depthPicker.active) { e.preventDefault(); depthPicker.close(); }
+    if (colorPicker.active) { e.preventDefault(); colorPicker.close(); }
     else if (!isFull() && !flight) $('wz-home').click();
   };
   addEventListener('keydown', esc);
@@ -485,6 +508,7 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
   requestAnimationFrame(tick);
 
   function end() {
+    colorPicker.close(false);
     stopClockGesture();
     closed = true; awake?.release().catch(() => {}); document.removeEventListener('visibilitychange', wake2); sound?.stop(); clearTimeout(hide); clearTimeout(pending); clearTimeout(clockTimer); document.removeEventListener('visibilitychange', resumeClock);
     for (const [t, type] of listen) t.removeEventListener(type, refit);
