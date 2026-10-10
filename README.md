@@ -26,14 +26,16 @@ Open `http://localhost:8000/`. Open an individual poster using `?scene=beach`, f
 | Orbit | Earthrise, Ringed Giant, Space Station, Red Planet, Comet Pass |
 | Music (original) | Needle Drop, Tape Loop, Blue Hour, Brass Midnight, Signal Bloom |
 
-**Needle Drop** (`?scene=needledrop`) is an original animated vinyl scene: a spinning record with a rotating label, strobe dots and light glints, a gently swaying tonearm, breathing speaker cones, flowing wall bands and drifting clouds through a round window. Its warm rose, plum and teal inks use the collection's shared poster frame. This poster is intentionally silent: it creates no audio context, requests no audio files and hides the player audio controls.
+**Needle Drop** (`?scene=needledrop`) is an original animated listening-room scene: a detailed direct-drive turntable with vinyl grooves, strobe dots, a calibrated pitch fader and a cueing lever, flanked by cloth-front speakers. A shelf of records, rainy round window, pendant light, sleeve, plant and steaming mug establish the room. Its warm rose, plum and teal inks use the collection's shared poster frame. This poster is intentionally silent: it creates no audio context, requests no audio files and hides the player audio controls.
 
 The rest of the Music Series is also original and silent:
 
-- **Tape Loop** (`?scene=tapeloop`): counter-rotating cassette reels, drifting tape ribbon, a rolling counter and animated meter.
-- **Blue Hour** (`?scene=bluehour`): an upright piano with gently moving keys and shimmering strings beneath a rainy arched window.
-- **Brass Midnight** (`?scene=brassmidnight`): a golden saxophone with a traveling highlight, slow spotlights and floating graphic accents.
-- **Signal Bloom** (`?scene=signalbloom`): an analog synthesizer with a traveling scope waveform, moving faders, turning knobs and swaying patch cables.
+- **Tape Loop** (`?scene=tapeloop`): wound tape, turning reel hubs, guides and an inspection window; a stereo receiver with analog meters, slatted afternoon light, record shelves, a pencil and an open tape case.
+- **Blue Hour** (`?scene=bluehour`): an open-front upright piano with strings, dampers, hammer mechanisms, ivory keys, pedals and an upholstered bench. Marked scores, a working metronome and lamp sit beneath a rainy city window.
+- **Brass Midnight** (`?scene=brassmidnight`): a tapered saxophone with pearl keys, rods, bow guards and an engraved bell, resting on a padded stand. Velvet curtains, a rhythm section, ribbon microphone, near tables and moving stage light complete the jazz room.
+- **Signal Bloom** (`?scene=signalbloom`): a wood-sided analog synth with labeled modules, calibrated pots, patch-plug collars, faders and a phosphor-style scope. Test gear, circuit studies, a task lamp, headphones and a penciled patch sheet fill the workshop.
+
+The scenes use deterministic geometry for fine details and independent, slow clocks for environmental movement. Wood grain, metal fasteners, glass reflections and instrument mechanisms are drawn as vectors; there are no image or audio dependencies in the Music Series.
 
 All **132 audio files** are included in `live/audio/` (about 553 MB), so playback does not depend on WAVZ's CDN. Audio starts after browser interaction when autoplay restrictions apply. Ambience and music have separate volume and mute controls; available music tracks cycle as in the original.
 
