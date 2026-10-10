@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#f2e5c3">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -15,13 +15,13 @@
 <link rel="icon" type="image/png" sizes="32x32" href="./favicon/favicon-32x32.png?v=2">
 <link rel="icon" type="image/png" sizes="16x16" href="./favicon/favicon-16x16.png?v=2">
 <link rel="manifest" href="./site.webmanifest?v=2">
+<link rel="stylesheet" href="./live/fonts.css">
 <script>
   // cold: a scene's own address, so the scene covers the page at once. intro: the first visit of a session, when the
   // page prints itself in piece by piece; /?intro plays it every time, for looking at it.
-  // edge: the page may draw to the very edges of the screen, under a phone's clock and home bar. That is how it runs
-  // when opened from a home screen icon, where there are no browser bars; in a browser it is only for trying out (?edge).
+  // The artwork always covers the viewport. Only gallery content and player controls use safe-area padding.
   if (navigator.standalone || matchMedia('(display-mode: standalone)').matches || matchMedia('(display-mode: fullscreen)').matches || /[?&]edge\b/.test(location.search)) {
-    document.documentElement.classList.add('edge'); document.querySelector('meta[name=viewport]').content += ', viewport-fit=cover';
+    document.documentElement.classList.add('edge');
   }
   if (/[?&]scene=/.test(location.search)) document.documentElement.classList.add('cold');
   else if (/[?&]intro/.test(location.search)) document.documentElement.classList.add('intro');   // ?intro always plays it
@@ -37,7 +37,7 @@
   /* a scene's own address opens this same page with the scene already over it; the page stays out of sight until it is */
   html.cold main, html.cold body::after { visibility: hidden; }
   @view-transition { navigation: auto; }
-  :root { --cream: #f2e5c3; --navy: #0e1c3a; --orange: #dd7f45; --rust: #8f4520; --face: "Bahnschrift", "DIN Alternate", "Avenir Next Condensed", "Roboto Condensed", "Arial Narrow", system-ui, sans-serif; }
+  :root { --cream: #f2e5c3; --navy: #0e1c3a; --orange: #dd7f45; --rust: #8f4520; --face: "Inter", system-ui, sans-serif; --display: "Manrope", "Inter", system-ui, sans-serif; }
   /* room is kept for the scrollbar from the start, so the page does not step sideways when the posters give it height */
   html { background: var(--cream); scrollbar-gutter: stable; }
   /* The rows of posters run out to the edges of the page. They measure it by this box (100cqw), not by the window
@@ -49,10 +49,10 @@
   body::after { content: ""; position: absolute; inset: 0; background: var(--grain, none); background-size: var(--grain-size, 256px); pointer-events: none; }
   main { max-width: 1180px; margin: 0 auto; padding: clamp(20px, 4vw, 48px) clamp(16px, 4vw, 44px) 56px; }
   header { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
-  h1 { margin: 0; font-size: clamp(64px, 13vw, 150px); line-height: .82; font-weight: 700; letter-spacing: -.01em; }
+  h1 { margin: 0; font-family: var(--display); font-size: clamp(64px, 13vw, 150px); line-height: .82; font-weight: 700; letter-spacing: -.01em; }
   header p { margin: 0 0 6px; max-width: 21em; font-size: clamp(17px, 2vw, 22px); line-height: 1.3; font-weight: 600; text-align: right; }
   .rule { height: 6px; background: var(--orange); margin: clamp(14px, 2vw, 22px) 0; }
-  h2 { margin: 0 0 clamp(10px, 2vw, 18px); font-size: clamp(15px, 1.8vw, 20px); letter-spacing: .14em; text-transform: uppercase; color: var(--rust); }
+  h2 { margin: 0 0 clamp(10px, 2vw, 18px); font-family: var(--display); font-size: clamp(15px, 1.8vw, 20px); letter-spacing: .14em; text-transform: uppercase; color: var(--rust); }
   /* each series is a row of posters to slide through; it runs out to the edges of the screen */
   .series { margin-top: clamp(18px, 3vw, 34px); display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: clamp(4px, 1vw, 10px); }
   .series h2 { margin: 0; }
@@ -104,8 +104,9 @@
       // and V sit too far from each other). Each is pulled back by what the font would have kerned it, so the word is
       // the same width as if it were set whole.
       (() => { const h = document.currentScript.previousElementSibling, cs = getComputedStyle(h), c = document.createElement('canvas').getContext('2d'), k = [...h.children];
-        c.font = cs.fontWeight + ' 200px ' + cs.fontFamily; const w = (t) => c.measureText(t).width;
-        for (let i = 1; i < k.length; i++) k[i].style.marginLeft = (w(k[i - 1].textContent + k[i].textContent) - w(k[i - 1].textContent) - w(k[i].textContent)) / 200 + 'em'; })();
+        const kern = () => { c.font = cs.fontWeight + ' 200px ' + cs.fontFamily; const w = (t) => c.measureText(t).width;
+          for (let i = 1; i < k.length; i++) k[i].style.marginLeft = (w(k[i - 1].textContent + k[i].textContent) - w(k[i - 1].textContent) - w(k[i].textContent)) / 200 + 'em'; };
+        kern(); document.fonts.ready.then(kern); })();
     </script>
     <p>Living posters for your screen. Open one, go fullscreen, and leave it running.</p>
   </header>
@@ -205,6 +206,7 @@
     c.ctx.setTransform(c.k, 0, 0, c.k, 0, 0); draw(c.ctx, c.t / LOOP, c.L, c.t);
   } };
   let pending; addEventListener('resize', () => { clearTimeout(pending); pending = setTimeout(() => size(), 120); }); size();
+  document.fonts.ready.then(() => { for (const card of cards) card.paint(); });
 
   // Tapping a poster opens the scene over this page, growing out of the poster to fill the screen, and the address
   // becomes the scene's own. Going back shrinks it into the poster again. A scene's address opened directly, or

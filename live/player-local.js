@@ -1,0 +1,274 @@
+// Local viewer: edge-to-edge artwork, safe-area controls, and a persistent optional clock.
+// A full-screen poster is drawn live every frame and recomposed to the screen's shape, with its controls
+// and sound. The main page opens it over itself, growing out of the poster that was tapped, or at once for a scene's own address.
+// For checking: ?debug shows a readout, ?res=3840 forces the long side, ?t=40 starts the clock 40 s in.
+import './nozoom.js';
+import { draw, makeLayout, styleFor, SCENES } from './poster.js';
+
+const LOOP = 30, MAXPX = 3840, CREAM = '#f2e5c3', FLIGHT = 650;
+const FACE = '"Inter", system-ui, sans-serif';
+let clockId = 0;
+const CSS = `
+  .wz-player { position: fixed; inset: 0; z-index: 10; overflow: hidden; -webkit-user-select: none; user-select: none; --wz-safe-left: env(safe-area-inset-left, 0px); --wz-safe-right: env(safe-area-inset-right, 0px); --wz-safe-bottom: env(safe-area-inset-bottom, 0px); }
+  /* Artwork covers every edge, including the notch and home indicator. Only controls are inset. */
+  .wz-player canvas, .wz-grain { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+  .wz-grain { pointer-events: none; z-index: 2; }
+  .wz-clock { position: absolute; inset: 0; display: grid; place-items: center; z-index: 3; pointer-events: none; margin: 0; color: #fff; font: 500 clamp(40px, 14vmin, 180px)/1 "Manrope", "Inter", system-ui, sans-serif; font-variant-numeric: tabular-nums; letter-spacing: -.045em; white-space: nowrap; text-shadow: 0 2px 24px #0009, 0 1px 3px #000b; }
+  .wz-clock[hidden] { display: none; }
+  /* The bottom controls slide over the artwork and never reserve space in its canvas. */
+  .wz-ui { position: absolute; bottom: 0; z-index: 3; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; gap: 2px; color: var(--ink); transition: color .7s, transform .38s cubic-bezier(.2, .7, .2, 1) 0s; }
+  .wz-ui.off, .wz-ui.swap { pointer-events: none; }
+  /* The strip and its controls slide out of sight to reveal the artwork underneath. */
+  .wz-ui[data-mode=strip].off, .wz-ui[data-mode=strip].swap { transform: translateY(101%); transition-delay: .1s; }
+  .wz-it { transition: opacity .3s ease calc(var(--i) * 45ms + 110ms), transform .45s cubic-bezier(.2, .8, .2, 1) calc(var(--i) * 45ms + 110ms); }
+  .wz-ui.off .wz-it, .wz-ui.swap .wz-it { opacity: 0; transform: translateY(12px); transition-duration: .18s; transition-delay: calc((4 - var(--i)) * 22ms); }
+  .wz-ui input[type=range] { clip-path: inset(0 0 0 0); transition: opacity .25s, clip-path .55s cubic-bezier(.3, .7, .2, 1) calc(var(--i) * 45ms + 240ms); }
+  .wz-ui.off input[type=range], .wz-ui.swap input[type=range] { clip-path: inset(0 100% 0 0); transition-delay: 0s; transition-duration: .2s; }
+  @media (prefers-reduced-motion: reduce) { .wz-ui, .wz-ui .wz-it, .wz-ui input[type=range] { transition-duration: .01s !important; transition-delay: 0s !important; } }
+  .wz-ui[data-mode=strip] { background: var(--paper); border-top: 2px solid ${CREAM}; padding: 8px max(16px, var(--wz-safe-right)) calc(8px + var(--wz-safe-bottom)) max(16px, var(--wz-safe-left)); }
+  .wz-row { display: flex; align-items: center; justify-content: center; gap: 6px 22px; }
+  .wz-ui:not(.two) { flex-direction: row; align-items: center; gap: 22px; }
+  .wz-ui:not(.two) .wz-row { display: contents; }
+  .wz-ui:not(.two) .wz-clock-toggle { order: 3; } .wz-ui:not(.two) .wz-full { order: 4; } .wz-ui:not(.two) label { order: 2; }
+  .wz-ui.two .wz-r1 { justify-content: space-between; } .wz-ui.two .wz-r2 { gap: 14px; } .wz-ui.two label { flex: 1 1 0; }
+  .wz-ui.tight { gap: 14px; } .wz-ui.tight .wz-word { display: none; }
+  .wz-ui a, .wz-ui button { font: 600 13px/1 ${FACE}; letter-spacing: .06em; text-transform: uppercase; color: inherit; background: none; border: 0; padding: 11px 0 9px; border-bottom: 3px solid transparent; text-decoration: none; cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 7px; }
+  .wz-ui a:hover, .wz-ui button:not(:disabled):hover, .wz-ui a:focus-visible, .wz-ui button:focus-visible { border-bottom-color: #dd7f45; outline: none; }
+  .wz-ui em { font-style: normal; color: var(--sub); }
+  .wz-ui svg { width: 17px; height: 17px; display: block; fill: none; stroke: currentColor; stroke-width: 2.4; }
+  .wz-ui svg.wz-arrow { width: 21px; height: 12px; fill: currentColor; stroke: none; margin-top: -1px; transition: transform .2s; }
+  .wz-ui a:hover .wz-arrow { transform: translateX(-3px); }
+  .wz-ui label { display: flex; align-items: center; gap: 9px; min-width: 0; }
+  .wz-ui input[type=range] { color: inherit; -webkit-appearance: none; appearance: none; background: none; margin: 0; height: 30px; flex: 0 1 120px; width: 120px; min-width: 36px; cursor: pointer; }
+  .wz-ui.two input[type=range] { flex-grow: 1; }
+  .wz-ui.tight input[type=range] { flex-basis: 80px; }
+  .wz-ui input[type=range]::-webkit-slider-runnable-track { height: 3px; background: linear-gradient(to right, #dd7f45 var(--v, 70%), color-mix(in srgb, currentColor 28%, transparent) var(--v, 70%)); }
+  .wz-ui input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 13px; height: 13px; margin-top: -5px; border-radius: 50%; background: currentColor; }
+  .wz-ui input[type=range]::-moz-range-track { height: 3px; background: color-mix(in srgb, currentColor 28%, transparent); }
+  .wz-ui input[type=range]::-moz-range-progress { height: 3px; background: #dd7f45; }
+  .wz-ui input[type=range]::-moz-range-thumb { width: 13px; height: 13px; border: 0; border-radius: 50%; background: currentColor; }
+  .wz-ui [hidden], .wz-ui .wz-row[hidden], .wz-grain[hidden] { display: none; }
+  .wz-ui label button { transition: opacity .25s; }
+  .wz-ui button.wz-trk { width: 24px; height: 24px; padding: 1px 0 0; justify-content: center; border: 2px solid currentColor; border-radius: 50%; letter-spacing: 0; font-size: 12px; flex: none; }
+  .wz-ui button.wz-trk:not(:disabled):hover, .wz-ui button.wz-trk:focus-visible { border-color: #dd7f45; }
+  .wz-ui label.muted input, .wz-ui label.muted .wz-trk { opacity: .35; }
+  .wz-ui label.muted .wz-trk { cursor: default; }
+  .wz-ui label.muted .wz-mute { opacity: .5; text-decoration: line-through; }
+  .wz-hud { position: absolute; left: 10px; top: 8px; font: 12px ui-monospace, monospace; color: #0e1c3a; background: rgba(242, 229, 195, .85); padding: 3px 7px; border-radius: 4px; white-space: pre-wrap; max-width: 92%; z-index: 3; pointer-events: none; }
+`;
+const HTML = `<canvas class="wz-scene"></canvas><div class="wz-grain"></div><time class="wz-clock" hidden></time>
+  <nav class="wz-ui off" aria-label="Poster controls"><div class="wz-row wz-r1"><a class="wz-home wz-it" style="--i:0" href="./" aria-label="Back to all posters"><svg class="wz-arrow" viewBox="0 0 24 14"><path d="M0 7 9 0v4.6h15v4.8H9V14z"/></svg><span class="wz-word">Posters</span></a><button class="wz-clock-toggle wz-it" style="--i:3" aria-pressed="false">Clock<em class="wz-word">off</em></button><button class="wz-full wz-it" style="--i:4" aria-label="Fullscreen" title="Fullscreen"><svg viewBox="0 0 20 20"><path d="M2 7V2h5M13 2h5v5M18 13v5h-5M7 18H2v-5"/></svg></button></div>
+  <div class="wz-row wz-r2"><label class="wz-it" style="--i:1"><button class="wz-mute" data-bus="amb" title="Mute or unmute">Ambience</button><input class="wz-amb" type="range" min="0" max="1" step="0.01" aria-label="Ambience volume"></label><label class="wz-it" style="--i:2"><button class="wz-mute" data-bus="mus" title="Mute or unmute">Music</button><input class="wz-mus" type="range" min="0" max="1" step="0.01" aria-label="Music volume"><button class="wz-trk" title="Next track">A</button></label></div></nav><div class="wz-hud" hidden></div>`;
+const title = (scene) => 'WAVZ: ' + scene.title.toLowerCase().replace(/\b[a-z]+/g, (w, i) => (i && ['at', 'of', 'the', 'in'].includes(w) ? w : w[0].toUpperCase() + w.slice(1)));
+// Print grain: one small tile of noise, made once and repeated over the scene, so it costs nothing per frame or per size.
+let TILE;
+const tile = () => TILE ??= (() => {
+  const n = 512, c = Object.assign(document.createElement('canvas'), { width: n, height: n }), g = c.getContext('2d'), im = g.createImageData(n, n), px = new Uint32Array(im.data.buffer);
+  for (let i = 0; i < px.length; i++) { const v = (Math.random() + Math.random() + Math.random()) / 3 - 0.5; px[i] = ((Math.min(255, Math.abs(v) * 0.72 * 255) | 0) << 24) | (v > 0 ? 0xffffff : 0); }
+  g.putImageData(im, 0, 0); return c.toDataURL();
+})();
+const ease = (u) => (u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2);
+
+// from: the on-screen rectangle to grow out of (none: appear full screen at once). home: called for the back arrow
+// instead of following its link, when the page that opened the player is still underneath. at: the scene's clock, in
+// seconds, at the moment of opening, so a poster already moving on the page carries on without a jump.
+export function openScene(first, { from = null, home = null, at = null } = {}) {
+  if (!document.getElementById('wz-css')) document.head.append(Object.assign(document.createElement('style'), { id: 'wz-css', textContent: CSS }));
+  const q = new URLSearchParams(location.search), force = +q.get('res') || 0, skip = at === null ? +q.get('t') || 0 : at - performance.now() / 1000, debug = q.has('debug');
+  const root = Object.assign(document.createElement('div'), { className: 'wz-player', innerHTML: HTML }), $ = (c) => root.querySelector('.' + c);
+  const scene = $('wz-scene'), grain = $('wz-grain'), ui = $('wz-ui'), hud = $('wz-hud'), ctx = scene.getContext('2d');
+  const before = { title: document.title, bg: document.body.style.background, htmlBg: document.documentElement.style.background, overflow: document.documentElement.style.overflow, gutter: document.documentElement.style.scrollbarGutter, theme: document.querySelector('meta[name=theme-color]')?.content };
+  const textless = SCENES[first].textless === true;
+  let name = first, L, k = 1, flight = null, closed = false, sound = null, on = false;
+  document.body.append(root);
+  document.documentElement.style.overflow = 'hidden'; document.documentElement.style.scrollbarGutter = 'auto';   // the scene takes the scrollbar's room too
+
+  // ---- layout: the canvas takes the player's size; the poster is composed for that shape
+  let frame1 = null;
+  let mix = null;   // set during a flight: the title is part-way between the page poster's style and the full-screen one
+  // The gallery frame shrinks away during opening; playback always fills the viewport.
+  const cur = { f: 0, d: 1 };
+  // In flight the canvas keeps the full screen's worth of pixels the whole way and the poster is drawn into the part of
+  // it that shows, so nothing is allocated from frame to frame; the player's own box clips the rest.
+  function fit(final = true) {
+    const r = root.getBoundingClientRect(); let fw = final ? r.width : innerWidth, fh = final ? r.height : innerHeight;
+    const long = Math.max(fw, fh);
+    if (!long || !r.width) return;
+    const s = (force || Math.min(MAXPX, long * devicePixelRatio)) / long, bw = Math.round(fw * s), bh = Math.round(fh * s);
+    if (bw !== scene.width || bh !== scene.height) { scene.width = bw; scene.height = bh; }
+    scene.style.width = final ? '' : fw + 'px'; scene.style.height = final ? '' : fh + 'px';
+    const w = final ? bw : r.width * s, h = final ? bh : r.height * s, st = final || !mix ? cur : mix;
+    L = makeLayout(w / h, SCENES[name], { dark: st.d, frame: st.f, mix: final ? null : mix }); k = w / L.VW;
+    if (final) dock(r.width);
+  }
+  // Controls overlay the art and alone respect the notch and home indicator.
+  function dock(w) {
+    ui.dataset.mode = 'strip';
+    Object.assign(ui.style, { left: '0', width: '100%', height: '' });
+    const css = getComputedStyle(ui), room = w - parseFloat(css.paddingLeft) - parseFloat(css.paddingRight);
+    ui.classList.toggle('two', room < 640); ui.classList.toggle('tight', room >= 640 && room < 740);
+  }
+  grain.style.backgroundImage = `url(${tile()})`; grain.style.backgroundSize = 512 / devicePixelRatio + 'px';
+  grain.hidden = textless;
+  let pending;
+  const refit = () => { clearTimeout(pending); pending = setTimeout(() => { if (!flight && !closed) fit(); }, 120); };
+  const listen = [[window, 'resize'], [window, 'orientationchange'], [screen.orientation, 'change'], [window.visualViewport, 'resize'], [document, 'fullscreenchange'], [document, 'webkitfullscreenchange']].filter(([t]) => t);
+  for (const [t, type] of listen) t.addEventListener(type, refit);
+
+  function paint() {
+    const c = SCENES[name].dark, meta = document.querySelector('meta[name=theme-color]');
+    document.documentElement.style.background = document.body.style.background = c;
+    if (meta) meta.content = c;
+    root.style.setProperty('--ink', CREAM); root.style.setProperty('--sub', '#f0bd4d'); root.style.setProperty('--paper', c);
+  }
+
+  // ---- clock: local time, off by default, remembered across posters and sessions.
+  const clock = $('wz-clock'), clockToggle = $('wz-clock-toggle');
+  clock.id = 'wz-clock-' + ++clockId; clockToggle.setAttribute('aria-controls', clock.id);
+  const clockFormat = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' });
+  let clockOn = localStorage.getItem('wavz-clock') === '1', clockTimer = 0;
+  function updateClock() {
+    clearTimeout(clockTimer);
+    clock.hidden = !clockOn;
+    clockToggle.setAttribute('aria-pressed', String(clockOn));
+    clockToggle.querySelector('em').textContent = clockOn ? 'on' : 'off';
+    clockToggle.setAttribute('aria-label', 'Clock: ' + (clockOn ? 'on' : 'off'));
+    if (!clockOn || closed) return;
+    const now = new Date();
+    clock.textContent = clockFormat.format(now); clock.dateTime = now.toISOString();
+    clock.setAttribute('aria-label', 'Current time: ' + clock.textContent);
+    clockTimer = setTimeout(updateClock, 60000 - (now.getSeconds() * 1000 + now.getMilliseconds()) + 25);
+  }
+  clockToggle.addEventListener('click', () => { clockOn = !clockOn; localStorage.setItem('wavz-clock', clockOn ? '1' : '0'); updateClock(); });
+  const resumeClock = () => { if (document.visibilityState === 'visible') updateClock(); };
+  document.addEventListener('visibilitychange', resumeClock);
+  updateClock();
+
+  // ---- growing out of, and shrinking back into, a rectangle on the page. The poster is recomposed on every frame of
+  // the flight, so it reflows into the screen's shape as it travels rather than being stretched.
+  // landed: the scene has the screen (not in flight), which is when the space round it is filled in
+  const place = (r) => { root.classList.toggle('landed', !r); Object.assign(root.style, r ? { inset: 'auto', left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px' } : { inset: '', left: '', top: '', width: '', height: '' }); };
+  const full = () => ({ left: 0, top: 0, width: innerWidth, height: innerHeight });
+  // The grain is held still against the screen while the poster's window moves over it, so the texture is there the
+  // whole way and does not shift when the poster lands.
+  // small: which end of the flight is the poster on the page (it carries no wordmark), 'a' or 'b'
+  // b may be a function giving the rectangle afresh on every frame, for a poster the page is still moving under us
+  function fly(a, bIn, small, done) {
+    const target = typeof bIn === 'function' ? bIn : () => bIn; let b = target();
+    const style = (r, key) => styleFor(r.width / r.height, small !== key), from = style(a, 'a'), to = style(b, 'b');
+    const t0 = performance.now(), W = innerWidth, H = innerHeight, long = Math.max(W, H), s = (force || Math.min(MAXPX, long * devicePixelRatio)) / long;
+    ui.classList.add('off');
+    // The thumbnail frame fades away into completely edge-to-edge playback.
+    const page = { f: 1, d: localStorage.getItem('wavz-frame') === 'dark' ? 1 : 0 }, A = small === 'a' ? page : cur, B = small === 'a' ? cur : page;
+    flight = (now) => {
+      b = target();
+      const u = Math.min(1, (now - t0) / FLIGHT), e = ease(u), m = (key) => a[key] + (b[key] - a[key]) * e, r = { left: m('left'), top: m('top'), width: m('width'), height: m('height') };
+      mix = { from, to, e, f: A.f + (B.f - A.f) * e, d: A.d + (B.d - A.d) * e }; place(r); fit(false);
+      Object.assign(grain.style, { inset: 'auto', left: -r.left + 'px', top: -r.top + 'px', width: W + 'px', height: H + 'px' });
+      if (u === 1) { flight = null; mix = null; Object.assign(grain.style, { inset: '', left: '', top: '', width: '', height: '' }); done(); }
+    };
+    flight(t0);
+  }
+
+  // ---- drawing
+  const notes = [], note = (m) => { notes.push(((performance.now() / 1000) % 100).toFixed(1) + ' ' + m); if (notes.length > 14) notes.shift(); };   // shown with ?debug
+  let last = performance.now(), fps = 60, ms = 0, n = 0;
+  frame1 = (t) => { ctx.setTransform(k, 0, 0, k, 0, 0); draw(ctx, t / LOOP, L, t); };
+  function tick(now) {
+    if (closed) return;
+    flight?.(now);
+    const t0 = performance.now(), t = now / 1000 + skip;
+    frame1(t);
+    ms += (performance.now() - t0 - ms) * 0.05; fps += (1000 / Math.max(1, now - last) - fps) * 0.05; last = now;
+    if (debug && ++n % 3 === 0) hud.textContent = `${scene.width} x ${scene.height}  ${fps.toFixed(0)} fps  draw ${ms.toFixed(1)} ms  t ${t.toFixed(0)} s` + (notes.length ? '\n' + notes.join('\n') : '');
+    requestAnimationFrame(tick);
+  }
+
+  // ---- controls: they show on any movement and fade after a few seconds
+  let hide;
+  const show = () => { if (flight) return; ui.classList.remove('off'); clearTimeout(hide); hide = setTimeout(() => ui.classList.add('off'), 3500); };
+  for (const type of ['pointermove', 'pointerdown']) root.addEventListener(type, show);
+  addEventListener('keydown', show);
+  // Use DOM fullscreen where supported. On iPhone, keep the full-bleed page/PWA
+  // viewer so the OS video player cannot letterbox the art or replace its controls.
+  const enter = root.requestFullscreen ?? root.webkitRequestFullscreen, leaveFull = document.exitFullscreen ?? document.webkitExitFullscreen, isFull = () => document.fullscreenElement ?? document.webkitFullscreenElement;
+  const toggleFull = () => {
+    if (enter) Promise.resolve(isFull() ? leaveFull.call(document) : enter.call(root, { navigationUI: 'hide' })).catch((e) => note('fullscreen: ' + e.name));
+  };
+  $('wz-full').hidden = !enter; $('wz-full').addEventListener('click', toggleFull);
+  // the screen is kept awake while a scene is up, where the browser allows it: these are made to be left running
+  let awake = null; const wake2 = () => { if (!closed && document.visibilityState === 'visible') navigator.wakeLock?.request('screen').then((w) => { awake = w; }, () => {}); };
+  wake2(); document.addEventListener('visibilitychange', wake2);
+  root.addEventListener('dblclick', (e) => { if (!ui.contains(e.target)) toggleFull(); });
+  if (home) $('wz-home').addEventListener('click', (e) => { e.preventDefault(); home(); });
+  const esc = (e) => { if (e.key === 'Escape' && !isFull() && !flight) $('wz-home').click(); };
+  addEventListener('keydown', esc);
+
+  // ---- sound: on from the start. Ambience and music have their own volumes, and each is muted or brought back by
+  // pressing its name; both are remembered. With both muted nothing is fetched at all.
+  // Browsers only let sound start after a tap or a key: opened from the main page, the tap on the poster counts;
+  // opened cold from a link, it starts with the first tap or key anywhere on the scene.
+  const amb = $('wz-amb'), mus = $('wz-mus'), trk = $('wz-trk'), sliders = { amb, mus }, KEY = { amb: 'wavz-ambience', mus: 'wavz-music' };
+  const hasAudio = SCENES[name].audio !== false;
+  root.querySelector('.wz-r2').hidden = !hasAudio;
+  const muted = { amb: localStorage.getItem('wavz-ambience-off') === '1', mus: localStorage.getItem('wavz-music-off') === '1' };
+  amb.value = localStorage.getItem('wavz-ambience') ?? 0.7; mus.value = localStorage.getItem('wavz-music') ?? 0.7;
+  const levels = (gentle = false) => {
+    sound?.ambience(muted.amb ? 0 : +amb.value, gentle); sound?.music(muted.mus ? 0 : +mus.value, gentle);
+    for (const b of root.querySelectorAll('.wz-mute')) { const m = muted[b.dataset.bus]; b.parentNode.classList.toggle('muted', m); b.setAttribute('aria-label', (m ? 'Unmute ' : 'Mute ') + b.textContent.toLowerCase()); }
+    trk.disabled = muted.mus; for (const sl of [amb, mus]) sl.style.setProperty('--v', sl.value * 100 + '%');
+  };
+  async function startSound() {
+    if (!hasAudio) return;
+    const { makeSound } = await import('./sound.js');
+    sound?.stop(); sound = makeSound(name);
+    levels(); sound.onTrack((letter) => { trk.textContent = letter; trk.setAttribute('aria-label', 'Next track, now playing track ' + letter); });
+    sound.resume();
+  }
+  const setMuted = (bus, m) => {
+    muted[bus] = m; localStorage.setItem(KEY[bus] + '-off', m ? '1' : '0'); on = !(muted.amb && muted.mus); levels(true);
+    if (!on) { sound?.stop(); sound = null; } else if (!sound?.running()) startSound();
+  };
+  for (const b of root.querySelectorAll('.wz-mute')) b.addEventListener('click', (e) => { e.preventDefault(); setMuted(b.dataset.bus, !muted[b.dataset.bus]); });
+  // moving a muted slider brings its sound back
+  for (const bus of ['amb', 'mus']) sliders[bus].addEventListener('input', () => { localStorage.setItem(KEY[bus], sliders[bus].value); if (muted[bus]) setMuted(bus, false); else levels(); show(); });
+  // before any sound has started (a scene opened cold from a link) the button shows the track remembered for the scene,
+  // and a press on it moves that on, so the sound this same press sets going begins on the next track
+  trk.textContent = 'ABCD'[+localStorage.getItem('wavz-track-' + name) || 0] ?? 'A';
+  trk.addEventListener('click', (e) => { e.preventDefault(); if (sound) sound.nextTrack(); else localStorage.setItem('wavz-track-' + name, (+localStorage.getItem('wavz-track-' + name) || 0) + 1); });
+  // a press on the pill itself, between its parts, is not a press on the name
+  for (const l of root.querySelectorAll('.wz-ui label')) l.addEventListener('click', (e) => { if (e.target === l) e.preventDefault(); });
+  // the sound that was refused is made afresh on the tap, whatever it says of itself by then: the browser may have set
+  // its clock running again without ever starting the files it turned away
+  const wake = () => { removeEventListener('pointerup', wake); removeEventListener('keydown', wake); if (on && !closed) startSound(); };
+  const arm = () => { addEventListener('pointerup', wake); addEventListener('keydown', wake); };
+  on = hasAudio && !(muted.amb && muted.mus); levels();
+  // It is always tried at once: a browser that will not hear of it leaves the sound suspended, and then the first tap
+  // or key starts it. (Asking the browser first whether there has been a tap is no good: after a reload it says no,
+  // yet lets sound play because the page before had one.)
+  if (on) startSound().then(() => setTimeout(() => { if (on && !closed && !sound?.running()) arm(); }, 600));
+
+  // ---- open
+  hud.hidden = !debug; document.title = title(SCENES[name]);
+  if (from) { place(from); paint(); fly(from, full(), 'a', () => { place(null); fit(); show(); }); }
+  else { place(null); fit(); paint(); show(); }
+  requestAnimationFrame(tick);
+
+  function end() {
+    closed = true; awake?.release().catch(() => {}); document.removeEventListener('visibilitychange', wake2); sound?.stop(); clearTimeout(hide); clearTimeout(pending); clearTimeout(clockTimer); document.removeEventListener('visibilitychange', resumeClock);
+    for (const [t, type] of listen) t.removeEventListener(type, refit);
+    removeEventListener('keydown', show); removeEventListener('keydown', esc); root.remove();
+  }
+  return {
+    get name() { return name; },
+    get time() { return performance.now() / 1000 + skip; },
+    // to: a rectangle to shrink back into before going; the page's own look is put back first so it shows through
+    close({ to = null } = {}) {
+      document.title = before.title; document.body.style.background = before.bg; document.documentElement.style.background = before.htmlBg; document.documentElement.style.overflow = before.overflow; document.documentElement.style.scrollbarGutter = before.gutter; document.documentElement.style.transition = document.body.style.transition = '';
+      const meta = document.querySelector('meta[name=theme-color]'); if (meta && before.theme) meta.content = before.theme;
+      if (isFull()) leaveFull.call(document);
+      on = false; sound?.stop(); sound = null;   // the sound starts fading as the scene starts to leave
+      if (to && !closed) fly(root.getBoundingClientRect(), to, 'b', end); else end();
+    },
+  };
+}

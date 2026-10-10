@@ -105,6 +105,33 @@ def adapt_for_local_hosting():
         text = text.replace('  async function startSound() {', '  async function startSound() {\n    if (!hasAudio) return;')
         text = text.replace('  on = !(muted.amb && muted.mus); levels();', '  on = hasAudio && !(muted.amb && muted.mus); levels();')
         path.write_text(text)
+    if (ROOT / 'live/player-local.js').exists():
+        adapt_local_viewer()
+
+def adapt_local_viewer():
+    """Retain full-bleed playback, the clock and variable fonts during a source refresh."""
+    (ROOT / 'live/player.js').write_text("// Local viewer overrides are retained when refreshing the upstream WAVZ snapshot.\nexport { openScene } from './player-local.js';\n")
+    path = ROOT / 'live/kit.js'
+    text = re.sub(r"export const FONT = '[^']*';", "export const FONT = '\"Manrope\", \"Inter\", system-ui, sans-serif';", path.read_text(), count=1)
+    path.write_text(text)
+    path = ROOT / 'index.html'
+    text = path.read_text()
+    text = re.sub(r'(<meta name="viewport" content=")([^"]+)(">)', lambda m: m[1] + m[2] + ('' if 'viewport-fit=cover' in m[2] else ', viewport-fit=cover') + m[3], text, count=1)
+    text = text.replace(" document.querySelector('meta[name=viewport]').content += ', viewport-fit=cover';", '')
+    if 'href="./live/fonts.css"' not in text:
+        text = text.replace('</head>', '<link rel="stylesheet" href="./live/fonts.css">\n</head>')
+    text = re.sub(r'--face: [^;]+;', '--face: "Inter", system-ui, sans-serif;', text, count=1)
+    if '--display:' not in text:
+        text = text.replace('--face: "Inter", system-ui, sans-serif;', '--face: "Inter", system-ui, sans-serif; --display: "Manrope", "Inter", system-ui, sans-serif;')
+    for tag in ['h1', 'h2']:
+        if tag + ' { margin: 0; font-family: var(--display);' not in text:
+            text = text.replace(tag + ' { margin: 0;', tag + ' { margin: 0; font-family: var(--display);')
+    if 'document.fonts.ready.then(() => { for (const card of cards) card.paint(); });' not in text:
+        text = text.replace(' }); size();', ' }); size();\n  document.fonts.ready.then(() => { for (const card of cards) card.paint(); });')
+    old_kern = "        c.font = cs.fontWeight + ' 200px ' + cs.fontFamily; const w = (t) => c.measureText(t).width;\n        for (let i = 1; i < k.length; i++) k[i].style.marginLeft = (w(k[i - 1].textContent + k[i].textContent) - w(k[i - 1].textContent) - w(k[i].textContent)) / 200 + 'em'; })();"
+    new_kern = "        const kern = () => { c.font = cs.fontWeight + ' 200px ' + cs.fontFamily; const w = (t) => c.measureText(t).width;\n          for (let i = 1; i < k.length; i++) k[i].style.marginLeft = (w(k[i - 1].textContent + k[i].textContent) - w(k[i - 1].textContent) - w(k[i].textContent)) / 200 + 'em'; };\n        kern(); document.fonts.ready.then(kern); })();"
+    text = text.replace(old_kern, new_kern)
+    path.write_text(text)
 
 if __name__ == '__main__':
     main()

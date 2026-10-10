@@ -16,6 +16,12 @@ python3 -m http.server 8000
 
 Open `http://localhost:8000/`. Open an individual poster using `?scene=beach`, for example. The page also works beneath a path such as `/art/`: navigation, icons and audio are relative to the site. `.nojekyll` supports static GitHub Pages hosting.
 
+Opening a poster fills the entire viewport with artwork, including the safe areas beneath a phone's status bar, notch and home indicator. The bottom controls overlay the artwork and respect those safe areas; hiding them leaves no reserved strip. This applies to browser playback, native fullscreen and the standalone PWA. The gallery-to-player transition removes the thumbnail's frame. Browsers with the DOM Fullscreen API can hide their browser chrome; iPhone Safari keeps its own browser bars, while the installed PWA fills the screen. The old iPhone video-player workaround is removed to avoid its letterboxing and preserve the app's controls.
+
+The bottom bar's **Clock** button toggles a local-time clock centered over the artwork. It is off by default, remembers the setting across posters and reloads, updates on the minute and refreshes when the app resumes. The frame chooser has been replaced by the clock toggle so playback always stays edge to edge. [View the clock and edge-to-edge artwork](docs/player-clock-preview.png).
+
+**Inter** (weights 100–900) and **Manrope** (weights 200–800) are variable Google Fonts. The Latin WOFF2 files are self-hosted under [`live/fonts/`](live/fonts/) with their SIL Open Font Licenses and source URLs. Inter supplies interface text; Manrope supplies headings, gallery poster titles and the clock. Font loading requires no Google connection at runtime.
+
 ## Included posters
 
 | Series | Posters |
@@ -77,4 +83,4 @@ python3 import-wavz.py
 python3 import-audio.py
 ```
 
-The first script follows same-site browser dependencies, reapplies hosting adaptations and retains the Music and Essentials Series. The second fetches all audio referenced by scenes that support audio, skips files already downloaded and records files unavailable at the source. Neither changes the preserved Lantern Cove page.
+The first script follows same-site browser dependencies, reapplies hosting adaptations and retains the Music and Essentials Series, local player, clock and variable fonts. [`live/player-local.js`](live/player-local.js) is the maintained viewer; `live/player.js` re-exports it after an upstream refresh. The second fetches all audio referenced by scenes that support audio, skips files already downloaded and records files unavailable at the source. Neither changes the preserved Lantern Cove page.

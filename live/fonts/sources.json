@@ -1,0 +1,16 @@
+{
+  "catalogue": "https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Manrope:wght@200..800&display=swap",
+  "retrieved": "2026-10-10",
+  "fonts": [
+    {
+      "family": "Inter",
+      "source": "https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2",
+      "bytes": 48256
+    },
+    {
+      "family": "Manrope",
+      "source": "https://fonts.gstatic.com/s/manrope/v20/xn7gYHE41ni1AdIRggexSg.woff2",
+      "bytes": 24836
+    }
+  ]
+}
