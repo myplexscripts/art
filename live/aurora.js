@@ -55,6 +55,7 @@ export function paint(ctx, p, t, G) {
   layer(0.14, () => range(G.m2, A.shade, A.rock2, 14));
   layer(0.2, () => F(ctx, (c) => { for (let x = -60; x <= W + 60; x += 22) pine(c, x + 8 * hash(x, 1), GY + 3, 26 + 34 * hash(x, 2), 20 + 8 * hash(x, 3), 0, 3); c.rect(-60, GY - 3, W + 120, 8); }, A.wood));
 
+  ctx.depthLayer?.('lake');
   // the lake: the curtains again, upside down and dimmer, cut through by the ice's dark seams
   ctx.fillStyle = A.lake; ctx.fillRect(0, GY + 3, W, H - GY);
   ctx.save(); ctx.beginPath(); ctx.rect(0, GY + 4, W, H - GY); ctx.clip();
@@ -63,6 +64,7 @@ export function paint(ctx, p, t, G) {
   for (let k = 0; k < 9; k++) { const y = GY + 14 + k * (12 + k * 5); ctx.lineWidth = 4 + k * 1.3; ctx.setLineDash([180 + 60 * hash(k, 1), 26 + 40 * hash(k, 2)]); ctx.lineDashOffset = k * 137 + (8 + 3 * k) * t * (k % 2 ? 1 : -1); ctx.beginPath(); ctx.moveTo(-40, y); ctx.lineTo(W + 40, y); ctx.stroke(); }
   ctx.restore();
 
+  ctx.depthLayer?.('cabin');
   // near bank: lit snow over a band of shade, the cabin and its smoke
   layer(0.6, () => {
     F(ctx, (c) => { c.moveTo(-90, H + 60); for (let x = -90; x <= W + 90; x += 12) c.lineTo(x, G.snowY(x) - 16 - 10 * nS(x / 90 + 5)); c.lineTo(W + 90, H + 60); c.closePath(); }, A.shade);
@@ -82,6 +84,7 @@ export function paint(ctx, p, t, G) {
     ctx.restore();
   });
 
+  ctx.depthLayer?.('pines');
   // pines either side; they tip a little in the wind
   layer(1, () => F(ctx, (c) => { for (const q of G.PINES) pine(c, q.x, H + q.h * 0.15, q.h, q.h * 0.36, q.h * 0.035 * osc(p, q.c, q.ph) + q.h * 0.012 * osc(p, 9, q.ph), 6); }, A.ink));
 

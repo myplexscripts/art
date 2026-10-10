@@ -127,6 +127,7 @@ export function paint(ctx, p, t, G) {
     if (q() < 0.65) { const u = (t - (n * 19 + 1 + q() * 12)) / 5.5, dir = q() < 0.5 ? -1 : 1, off = -70 + 150 * q();
       if (u >= 0 && u <= 1) [[0, 0], [-58, 26], [-104, -20]].forEach(([ox, oy], i) => { const x = dir > 0 ? -80 + u * (W + 300) + ox : W + 80 - u * (W + 300) - ox; bat(ctx, x, my + off + oy - 46 * Math.sin(u * Math.PI), 1.25, -3 + 9 * Math.sin(t * 15 + i * 1.7)); }); } }
 
+  ctx.depthLayer?.('falls');
   // far ridge, mist, then the cliff and its waterfall
   layer(0.15, () => mist(true));
   layer(0.2, () => {
@@ -160,6 +161,7 @@ export function paint(ctx, p, t, G) {
   });
   layer(0.4, () => mist(false));
 
+  ctx.depthLayer?.('pool');
   // pool: slow bands, the moon's path, ripples spreading from the foot of the fall
   layer(0.5, () => {
     for (let j = 0; j < G.POOL; j++) {
@@ -179,6 +181,7 @@ export function paint(ctx, p, t, G) {
 
   flies(false);
 
+  ctx.depthLayer?.('trees');
   // trunks, canopy and vines
   layer(0.7, () => { for (const l of G.MID) { const lit = l.tone < 0.22; leaf(ctx, l, l.a + 0.04 * osc(p, l.c, l.ph), lit ? J.lit : J.mid, J.cliff); } });
   layer(0.85, () => F(ctx, (c) => { for (const tr of G.TRUNKS) poly(c, tr); }, J.ink));
@@ -212,6 +215,7 @@ export function paint(ctx, p, t, G) {
   // the toucan on its perch sits in front of the canopy, so the leaves never hide it
   toucan();
 
+  ctx.depthLayer?.('leaves');
   // foreground: big leaves, ferns and the bank
   layer(1, () => {
     for (const l of G.LOW) { const lit = l.tone > 0.74; leaf(ctx, l, l.a + 0.035 * osc(p, l.c, l.ph), lit ? J.lit : l.tone < 0.4 ? J.dark : J.ink, lit ? J.cliff : l.tone < 0.4 ? J.cliff : J.dark); }

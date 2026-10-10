@@ -174,7 +174,9 @@ export function paint(c, p, t, G) {
   c.beginPath();c.moveTo(x+r*.95,y+r*.99);
   c.bezierCurveTo(W*.94,H*.90,W*.42,H*.92+Math.sin(t*.35)*7,W*.36,H);
   c.strokeStyle=K.ink;c.lineWidth=r*.035;c.lineCap='round';c.stroke();
+  c.depthLayer?.('turntable');
   c.save(); c.translate(x,y); c.rotate(-.085); deck(c,r,t); c.restore();
+  c.depthLayer?.('sleeve');
   // A graphic record sleeve and sleeve sticker sit in the foreground.
   c.save(); c.translate(W*.14,H*.88); c.rotate(-.20);
   const size=r*.72; round(c,-size*.45,-size*.45,size,size,size*.015,C.cream);
@@ -182,6 +184,7 @@ export function paint(c, p, t, G) {
   disc(c,size*.16,-size*.04,size*.41,K.teal);disc(c,size*.16,-size*.04,size*.30,K.plum);disc(c,size*.16,-size*.04,size*.15,C.orange);
   for(let i=0;i<4;i++)round(c,-size*.45,size*(.15+i*.085),size*.95,size*.038,0,i%2?K.brick:C.gold);
   c.restore();c.restore();
+  c.depthLayer?.('mug');
   // Sleeve seams, a warm mug and its fine drifting steam sit in the near plane.
   c.save();c.translate(W*.81,H*.89);c.scale(r/300,r/300);
   c.beginPath();c.ellipse(0,19,62,13,0,0,TAU);c.fillStyle=K.plum;c.fill();

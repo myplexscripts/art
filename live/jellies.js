@@ -75,11 +75,14 @@ export function paint(ctx, p, t, G) {
     ctx.strokeStyle = b; ctx.lineWidth = Math.max(2, 9 * s); ctx.stroke(arms);
     ctx.fillStyle = a; ctx.fill(bell); ctx.fillStyle = b; ctx.fill(inner);
   };
+  ctx.depthLayer?.('far');
   // far jellies share their paths; the nearer ones are drawn one at a time, smallest first
   { const P = [new Path2D(), new Path2D(), new Path2D(), new Path2D()]; for (const j of G.FAR) jelly(j, t, W, H, ...P); strokeFill(...P, K.far[0], K.far[1], 0.3 * big); }
   snow(0, 1.8);
+  ctx.depthLayer?.('middle');
   for (const j of G.MIDS) { const P = [new Path2D(), new Path2D(), new Path2D(), new Path2D()], c = MID[j.col % MID.length]; jelly(j, t, W, H, ...P); strokeFill(...P, c[0], c[1], j.s); }
   snow(1.8, 2.6);
+  ctx.depthLayer?.('near');
   for (const j of G.NEARS) { const P = [new Path2D(), new Path2D(), new Path2D(), new Path2D()], c = NEAR[j.col % NEAR.length]; jelly(j, t, W, H, ...P); strokeFill(...P, c[0], c[1], j.s); }
   snow(2.6, 9);
 }

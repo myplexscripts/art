@@ -78,8 +78,10 @@ export function paint(ctx, p, t, G) {
   layer(0.06, () => ridge(G.m1, P.m1));
   layer(0.1, () => ridge(G.m2, P.m2));
 
+  ctx.depthLayer?.('fields');
   const WALL = [P.j1, P.j2, P.j3], RIM = [P.j0, P.j1, P.j2];
   for (let j = 0; j <= N; j++) {
+    if (j === Math.floor(N / 2)) ctx.depthLayer?.('near-fields');
     const L = LV[j], u = L.u, dx = sway(p, L.d);
     ctx.save(); ctx.translate(dx, 0);
     below(L.rim, RIM[L.tone]); below(L.bank, WALL[L.tone]); below(L.water, j % 2 ? P.r1 : P.r2);
@@ -122,6 +124,7 @@ export function paint(ctx, p, t, G) {
     }, C.cream);
   }
 
+  ctx.depthLayer?.('palms');
   // foreground: a dark bank with tall palms at the edges and grass along it
   layer(1, () => {
     F(ctx, (c) => { c.moveTo(-90, H + 60); for (let x = -90; x <= W + 90; x += 12) c.lineTo(x, G.fgY(x)); c.lineTo(W + 90, H + 60); c.closePath(); }, P.ink);

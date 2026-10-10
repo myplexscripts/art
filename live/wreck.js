@@ -134,6 +134,7 @@ export function paint(ctx, p, t, G) {
   F(ctx, (c) => school(c, G.SCHOOLS[1][0], t), G.SCHOOLS[1][1]);
   layer(0.15, () => F(ctx, ridge(G.bed1), K.bed1));
 
+  ctx.depthLayer?.('ship');
   layer(0.4, () => {
     // the gold school keeps to the ship: drawn once behind her, then again through the hole in her side
     F(ctx, (c) => school(c, G.SCHOOLS[0][0], t), C.gold);
@@ -163,6 +164,7 @@ export function paint(ctx, p, t, G) {
     }
     ctx.stroke(); }
 
+  ctx.depthLayer?.('anchor');
   layer(0.55, () => {
     F(ctx, ridge(G.bed2), K.bed2);
     anchorAt(ctx, G.anchor.x, G.anchor.y, G.anchor.s);
@@ -172,6 +174,7 @@ export function paint(ctx, p, t, G) {
   // a ray glides along over the sand in some of the slots
   { const slot = 48, n = Math.floor(t / slot), q = mulberry(n * 2161 + 3), go = q() < 0.7, dir = q() < 0.5 ? -1 : 1, u = (t - n * slot - 2 - q() * 8) / 34;
     if (go && u >= 0 && u <= 1) { const x = dir > 0 ? -200 + u * (W + 400) : W + 200 - u * (W + 400); ray(ctx, x, G.bed2(x) - (40 + 20 * q()) * big + 14 * Math.sin(t * 0.5), 1.5 * big, dir, t); } }
+  ctx.depthLayer?.('weed');
   layer(0.9, () => { F(ctx, ridge(G.bed3), K.ink); weed(ctx, G, p, true, (x) => G.bed3(x), K.ink); });
   F(ctx, (c) => { for (const f of G.SPECK) circle(c, frac(f.x + f.d * t + (26 * surge(p, f.lag)) / W) * W, frac(f.y - f.v * t) * H, f.r * big); }, C.cream);
 }

@@ -139,11 +139,13 @@ export function paint(ctx, p, t, G) {
     ctx.stroke(); }
   ctx.restore();
 
+  ctx.depthLayer?.('window');
   // the room: wall, frame and bars, sill and counter
   ctx.beginPath(); ctx.rect(0, 0, W, H); ctx.rect(O.x, O.y, O.w, O.h); ctx.fillStyle = P.wall; ctx.fill('evenodd');
   F(ctx, (c) => { c.rect(O.x - 16, O.y - 16, O.w + 32, 16); c.rect(O.x - 16, O.y, 16, O.h); c.rect(O.x + O.w, O.y, 16, O.h); for (const x of G.BARS) c.rect(x - 7, O.y, 14, O.h); if (G.transom) c.rect(O.x, G.transom - 6, O.w, 12); c.rect(0, B + 20 * big, W, H); }, P.wood);
   F(ctx, (c) => c.rect(O.x - 34, B, O.w + 68, 20 * big), P.woodHi);
 
+  ctx.depthLayer?.('curtain');
   // curtain tied back at the right
   { const x1 = O.x + O.w + 16, w = clamp(O.w * 0.12, 110, 190) * big, yt = B - O.h * 0.34, sw = 6 * osc(p, 3, 0.3), n = 5;
     F(ctx, (c) => { c.moveTo(x1, O.y - 16); c.lineTo(x1 - w, O.y - 16); c.bezierCurveTo(x1 - w - 10 + sw, lerp(O.y, yt, 0.5), x1 - w * 0.6 + sw, yt - 60 * big, x1 - 26 * big, yt); c.bezierCurveTo(x1 - w * 0.5, yt + 60 * big, x1 - w * 0.62 + sw, B - 60 * big, x1 - w * 0.6 + sw * 1.4, B + 6);
@@ -167,6 +169,7 @@ export function paint(ctx, p, t, G) {
     F(ctx, (c) => { c.moveTo(ux - 40 * k, uy - 62 * k); c.lineTo(ux + 40 * k, uy - 62 * k); c.bezierCurveTo(ux + 40 * k, uy - 10 * k, ux + 22 * k, uy - 2 * k, ux, uy - 2 * k); c.bezierCurveTo(ux - 22 * k, uy - 2 * k, ux - 40 * k, uy - 10 * k, ux - 40 * k, uy - 62 * k); c.closePath(); }, C.cream);
     F(ctx, (c) => el(c, ux, uy - 62 * k, 40 * k, 8 * k), C.rust); F(ctx, (c) => c.rect(ux - 40 * k, uy - 36 * k, 80 * k, 7 * k), C.orange); }
 
+  ctx.depthLayer?.('plant');
   // a plant in a pot at the left
   { const x = O.x + 110 * big, y = B + 70 * big, k = big;
     F(ctx, (c) => { for (let i = 0; i < 9; i++) { const a = -2.75 + i * 0.3 + 0.05 * osc(p, 4 + (i % 3), i * 0.17), l = (130 + 70 * hash(i, 61)) * k, tx = x + Math.cos(a) * l, ty = y - 70 * k + Math.sin(a) * l * 1.15, nx = -Math.sin(a) * 20 * k, ny = Math.cos(a) * 20 * k; c.moveTo(x, y - 70 * k); c.quadraticCurveTo((x + tx) / 2 + nx, (y - 70 * k + ty) / 2 + ny - 16 * k, tx, ty); c.quadraticCurveTo((x + tx) / 2 - nx, (y - 70 * k + ty) / 2 - ny - 16 * k, x, y - 70 * k); c.closePath(); } }, P.wall);

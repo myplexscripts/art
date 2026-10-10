@@ -72,6 +72,7 @@ export function paint(ctx, p, t, G) {
     if (go && u >= 0 && u <= 1) for (let i = 0; i < k; i++) { const back = Math.ceil(i / 2) * 44 * big, x = (dir > 0 ? -260 + u * (W + 520) : W + 260 - u * (W + 520)) - dir * back + 8 * nB(t * 0.5 + i * 7); bird(ctx, x, y0 - HY * 0.12 * u + (i % 2 ? 1 : -1) * Math.ceil(i / 2) * 22 * big + 10 * nB(t * 0.3 + i * 11), 9 * big, 0.2 + 0.5 * Math.max(0, Math.sin(t * 3.4 + i * 1.3))); } }
   ctx.stroke(); ctx.lineJoin = 'miter';
 
+  ctx.depthLayer?.('hills');
   // the hills, with clumps of trees, and a cottage on the middle range
   for (let i = 0; i < 5; i++) layer(0.06 + 0.1 * i, () => {
     if (i === 3) { const { x, s } = G.cot, y = G.hill(2, x) + 6; ctx.save(); ctx.translate(x, y); ctx.scale(s, s); F(ctx, (c) => c.rect(-40, -44, 80, 44), C.cream); F(ctx, (c) => { poly(c, [[-48, -42], [48, -42], [30, -74], [-30, -74]]); c.rect(14, -86, 12, 18); }, C.orange); F(ctx, (c) => { c.rect(-28, -30, 14, 14); c.rect(12, -30, 14, 14); c.rect(-7, -26, 12, 26); }, R.ink); ctx.restore(); }
@@ -88,6 +89,7 @@ export function paint(ctx, p, t, G) {
     for (const d of G.DRIPS) { const s = ((t / d.T + d.ph) % 1) * d.T; for (let i = 0; i < 3; i++) { const v = (s - i * 0.45) / 2.4; if (v <= 0 || v >= 1 || t < d.T) continue; ctx.lineWidth = Math.max(0.6, 5 * big * (1 - v)); ctx.beginPath(); el(ctx, d.x, d.py, (6 + v * 0.8 * d.rx), (6 + v * 0.8 * d.rx) * 0.21); ctx.stroke(); } }
   });
 
+  ctx.depthLayer?.('grass');
   // verges of dark grass either side, stirring
   layer(0.9, () => F(ctx, (c) => {
     const vy = (x) => H * 1.01 - H * 0.12 * Math.pow(clamp((Math.abs(x - G.lc(0)) - G.lh(0) * 0.8) / (W * 0.45)), 1.2) + 6 * nH(x / 130 + 60);
@@ -95,6 +97,7 @@ export function paint(ctx, p, t, G) {
     for (const q of G.TUFTS) { const gy = vy(q.x) + 5; if (gy > H + 4) continue; for (let k = 0; k < q.n; k++) { const bx = q.x + k * 7, h = q.h * (0.6 + 0.4 * hash(k, q.n)), sw = h * (0.12 * osc(p, q.c, q.ph + k * 0.05) + (k - q.n / 2) * 0.14); c.moveTo(bx - 3, gy); c.quadraticCurveTo(bx + sw * 0.2, gy - h * 0.6, bx + sw, gy - h); c.quadraticCurveTo(bx + 3 + sw * 0.2, gy - h * 0.6, bx + 3, gy); c.closePath(); } }
   }, R.ink));
 
+  ctx.depthLayer?.('branch');
   // the overhanging branch: wet leaves hang from it and stir; three of them drip
   layer(1, () => {
     const [A, B, D] = G.BR, Lp = [], Rp = [];

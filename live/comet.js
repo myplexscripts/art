@@ -84,12 +84,14 @@ export function paint(ctx, p, t, G) {
     F(ctx, (c) => half(c, 0), K.i1);
     if (Math.sin(th) >= 0) F(ctx, (c) => circle(c, mx, my, r * 0.17), K.i1); }
 
+  ctx.depthLayer?.('comet');
   // the tails, the coma and the head
   ION.forEach(([bend, ls, wm, fill], k) => F(ctx, (c) => streamer(c, hx, hy, L * ls, bend, wm, 7 * big, t, k + 20), fill));
   DUST.forEach(([bend, ls, wm, fill], k) => F(ctx, (c) => streamer(c, hx, hy, L * ls, bend, wm, 13 * big, t, k), fill));
   F(ctx, (c) => circle(c, hx, hy, 30 * big), C.gold);
   F(ctx, (c) => { circle(c, hx, hy, 17 * big); star4(c, hx, hy, (52 + 7 * osc(p, 7, 0.2)) * big); }, C.cream);
 
+  ctx.depthLayer?.('ice');
   // the ice: a low broken horizon, the frozen plain, a nearer shelf
   layer(0.08, () => {
     F(ctx, (c) => { c.moveTo(-90, H + 60); for (let x = -90; x <= W + 90; x += 6.5) c.lineTo(x, G.farY(x)); c.lineTo(W + 90, H + 60); c.closePath(); }, K.i2);
@@ -111,5 +113,6 @@ export function paint(ctx, p, t, G) {
     // frost winks on the shelf
     F(ctx, (c) => { for (let k = 0; k < 12; k++) { const a = osc(p, [4, 5, 7][k % 3], hash(k, 3)); if (a > 0.25) star4(c, W * hash(k, 5), G.midY(W * hash(k, 5)) + 14 + D * 0.3 * hash(k, 6), 9 * a * big); } }, K.i1);
   });
+  ctx.depthLayer?.('shards');
   layer(0.95, () => spikes(G.NEAR, K.ink, K.i4));
 }

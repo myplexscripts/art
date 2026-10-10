@@ -47,6 +47,7 @@ export function paint(ctx, p, t, G) {
   F(ctx, (c) => { circle(c, mx - 34, my - 26, 20); circle(c, mx + 30, my + 22, 28); circle(c, mx + 40, my - 44, 11); circle(c, mx - 28, my + 48, 13); }, '#e6ab42');
   bars(ctx, CLOUDS, W, t, (y) => y * HY);
 
+  ctx.depthLayer?.('mesas');
   // tableland on the horizon, then the buttes standing out on the plain
   layer(0.08, () => F(ctx, (c) => { c.moveTo(-90, HY + 6); let last = G.farY(-90); for (let x = -90; x <= W + 90; x += 6) { const y = G.farY(x); if (y !== last) { c.lineTo(x - 5, last); c.lineTo(x + 5, y); last = y; } } c.lineTo(W + 90, last); c.lineTo(W + 90, HY + 6); c.closePath(); }, D.far));
   layer(0.16, () => F(ctx, (c) => { for (const b of G.BUTTES) butte(c, b.x, HY + 6, b.w, b.h, b.sk); }, D.mid));
@@ -63,6 +64,7 @@ export function paint(ctx, p, t, G) {
   layer(0.6, () => floor(0.5, 18, D.f3));
   bars(ctx, [DUST[2]], W, t, (y) => HY + (H - HY) * y * 0.6);
 
+  ctx.depthLayer?.('cacti');
   // foreground: the wind pump, saguaros and dry grass on a dark rise
   layer(0.9, () => {
     const { x, s } = G.pump, y = G.groundY(x) + 10, wind = 1.1 * t + 2.4 * nW(t * 0.07), top = -300;

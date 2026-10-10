@@ -52,6 +52,7 @@ export function paint(ctx, p, t, G) {
     F(ctx, (c) => { for (const q of G.BLADES) { const by = G.hillY(q.x) + 5, lean = q.h * (0.55 + 0.4 * Math.sin(q.x / 190 - t * 2.1) * (0.6 + 0.4 * nB(q.x / 500 + t * 0.08)) + 0.08 * osc(p, 11, q.ph)); c.moveTo(q.x - 3, by); c.quadraticCurveTo(q.x + lean * 0.2, by - q.h * 0.7, q.x + lean, by - q.h * (1 - 0.25 * lean / q.h)); c.quadraticCurveTo(q.x + 3 + lean * 0.2, by - q.h * 0.6, q.x + 4, by); c.closePath(); } }, A.hill);
     ridge(G.hillY, A.hill);
 
+    ctx.depthLayer?.('tree');
     // the tree: trunk, a few boughs, then the crown from the back forward
     const B = [tx, ty], T = [tx + (46 + 16 * gust) * ts, ty - 250 * ts], M = [tx - 14 * ts, ty - 150 * ts], cx = T[0] + (36 + 30 * gust) * ts, cy = T[1] - 80 * ts;
     const at = (q) => { const sh = 0.4 + gust; return [cx + q.ox + ((30 + 70 * gust) * Math.pow(q.s, 1.3) + Math.max(0, q.ox) * 0.16 * gust) * ts + 4 * sh * Math.sin(t * q.f + q.ph) * ts, cy + q.oy + 3 * sh * Math.sin(t * q.f * 1.3 + q.ph * 2) * ts]; };
@@ -70,6 +71,7 @@ export function paint(ctx, p, t, G) {
       c.lineTo(W + 90, H + 60); c.closePath();
     }, fill));
 
+    ctx.depthLayer?.('fence');
     // fence, the swinging gate, and the kite tied to a post
     const P = G.POSTS, ph = 64 * big, gy = (x) => G.hillY(x) + 6;
     if (P.length > 1) {
@@ -106,6 +108,7 @@ export function paint(ctx, p, t, G) {
     } }, LEAF[tone]);
   }
 
+  ctx.depthLayer?.('grass');
   // the near slope and its long grass
   layer(1, () => {
     F(ctx, (c) => {

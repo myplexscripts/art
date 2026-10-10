@@ -118,6 +118,9 @@ def adapt_for_local_hosting():
     if (ROOT / 'live/player-local.js').exists():
         adapt_local_viewer()
         adapt_scenes()
+    if (ROOT / 'live/clock-depth.js').exists():
+        from scene_depth import apply_depth
+        apply_depth(ROOT)
 
 def adapt_local_viewer():
     """Retain full-bleed playback, the clock and variable fonts during a source refresh."""

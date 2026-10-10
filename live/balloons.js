@@ -83,6 +83,7 @@ export function paint(ctx, p, t, G) {
       for (let k = 0; k < cnt; k++) { const s = 9 * big, e = u * (W + 300) - 60 - k * 34 * big + 12 * nB(t * 0.3 + k * 5), x = dir > 0 ? e : W - e, y = y0 + (k % 2 ? 1 : -1) * Math.ceil(k / 2) * 15 * big + 8 * nB(t * 0.25 + k * 9), fl = s * 0.7 * Math.sin(t * 5 + k * 1.9); ctx.moveTo(x - s, y - fl); ctx.lineTo(x, y); ctx.lineTo(x + s, y - fl); }
       ctx.stroke(); } }
 
+  ctx.depthLayer?.('valley');
   // far tableland, then the three bands of the valley
   layer(0.06, () => F(ctx, (c) => { c.moveTo(-90, HY + 30); for (let x = -90; x <= W + 90; x += 10) c.lineTo(x, G.farY(x)); c.lineTo(W + 90, HY + 30); c.closePath(); }, P.t1));
   const INK = [P.t2, P.t3, P.t4], LIT = [P.t1, P.t2, P.t3];
@@ -103,8 +104,10 @@ export function paint(ctx, p, t, G) {
     if (j === 0) { bars(ctx, MIST.slice(0, 2), W, t, (y) => HY + y * gh); fly(G.FLEET[2]); }
     if (j === 1) bars(ctx, MIST.slice(2), W, t, (y) => HY + y * gh);
   }
+  ctx.depthLayer?.('balloon');
   fly(G.FLEET[3]);
 
+  ctx.depthLayer?.('spires');
   // foreground: dark spires at the edges and dry grass along the rim
   layer(1, () => {
     ground(G.fgY, P.ink);

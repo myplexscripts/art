@@ -52,6 +52,7 @@ export function paint(ctx, p, t, G) {
   if (sn > 0 && acs < 0.3) F(ctx, (c) => circle(c, lh.light[0], lh.light[1], 8 + 34 * (1 - acs / 0.3)), C.gold);
   F(ctx, (c) => poly(c, lh.tower), C.cream); F(ctx, (c) => poly(c, lh.lamp), C.gold); F(ctx, (c) => poly(c, lh.roof), C.orange);
   F(ctx, (c) => G.headland(c, p, G.HN), C.ink);
+  ctx.depthLayer?.('water');
   for (let j = 0; j < G.BANDS; j++) {
     const e = G.seaEdge(p, j, shapes.sine), b = G.bandInfo(j);
     F(ctx, (c) => { edge(c, e); c.lineTo(W + 90, H + 60); c.lineTo(-90, H + 60); c.closePath(); }, seaColor(j));
@@ -61,8 +62,10 @@ export function paint(ctx, p, t, G) {
     ctx.setLineDash([b.lam * 0.3, b.lam * 0.7]); ctx.lineDashOffset = -G.bandShift(p, j) - b.lam * 0.1 + 90; ctx.stroke(); ctx.restore();
   }
   for (let k = 0; k < G.GLINTS.length; k += 2) { const q = G.glint(G.GLINTS[k], p, mx), w = q.w * (0.5 + 0.9 * q.a); F(ctx, (c) => pill(c, q.x - w / 2, q.y - 4, w, 8), C.gold); }
+  ctx.depthLayer?.('shore');
   F(ctx, (c) => G.foam(c, p), C.cream); F(ctx, (c) => G.wet(c, p), C.rust); F(ctx, (c) => G.sand(c, p), C.orange);
   F(ctx, (c) => G.grass(c, p), C.ink);
+  ctx.depthLayer?.('palm');
   const P = G.palm(p);
   F(ctx, (c) => { poly(c, P.trunk); G.palmFronds(c, P); }, C.ink);
 }

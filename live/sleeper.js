@@ -98,6 +98,7 @@ export function paint(ctx, p, t, G) {
     F(ctx, (c) => { for (let i = Math.floor(s / step) - 1; i <= Math.ceil((s + W) / step); i++) { const x = at(i); c.rect(x - 5 * k, py - 14 * k, 10 * k, ph + 20); c.rect(x - 34 * k, py, 68 * k, 7 * k); c.rect(x - 26 * k, py + 25 * k, 52 * k, 7 * k); } c.rect(0, B - 16 * k, W, 40 * k); }, S.ink);
   }
 
+  ctx.depthLayer?.('room');
   // ---- the compartment, rocking on its springs
   ctx.save();
   ctx.translate(W / 2 + 1.6 * Math.sin(t * 2.3) + 0.8 * Math.sin(t * 5.9), H + 2.4 * Math.sin(t * 2.9 + 1) + 1.2 * Math.sin(t * 4.7)); ctx.rotate(0.0035 * Math.sin(t * 1.7) + 0.0015 * Math.sin(t * 3.7 + 2)); ctx.translate(-W / 2, -H);
@@ -107,6 +108,7 @@ export function paint(ctx, p, t, G) {
   F(ctx, (c) => { if (G.vent) for (const w of G.WINS) c.rect(w.x, G.vent - 6, w.w, 12); c.rect(-60, B + 40 * big, W + 120, 8); }, S.wood);
   F(ctx, (c) => c.rect(-60, B + 48 * big, W + 120, H), S.panel);
 
+  ctx.depthLayer?.('curtains');
   // curtains on a brass rod; their hems swing with the carriage, a beat behind it
   { const sw = (12 * Math.sin(t * 1.7 - 0.9) + 5 * Math.sin(t * 3.7 + 1.2) + 7 * nR(t * 0.4)) * big, cw = clamp(O.w * 0.09, 90, 150) * big, y0 = O.y - 30, y1 = B + 26 * big;
     curtain(ctx, O.x - 22, y0, y1, cw, 1, sw, t); curtain(ctx, bw + 22, y0, y1, cw * 0.8, -1, sw * 0.9, t + 3);
@@ -117,6 +119,7 @@ export function paint(ctx, p, t, G) {
     F(ctx, (c) => { rr(c, -40, sy, sw + 40, H, 40 * k); rr(c, W - sw, sy, sw + 40, H, 40 * k); }, S.ink);
     F(ctx, (c) => { rr(c, 10, sy - 6, sw - 70 * k, 60 * k, 12 * k); rr(c, W - sw + 60 * k, sy - 6, sw - 70 * k, 60 * k, 12 * k); }, C.cream); }
 
+  ctx.depthLayer?.('table');
   // the table: lamp, book, and a glass that shivers
   { const { x, y } = G.table, k = big, g = 0.5 + 0.5 * nR(t * 0.9 + 20);
     F(ctx, (c) => { poly(c, [[x - 30 * k, y + 16 * k], [x + 30 * k, y + 16 * k], [x + 12 * k, H + 20], [x - 12 * k, H + 20]]); }, S.ink);

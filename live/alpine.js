@@ -68,6 +68,7 @@ export function paint(ctx, p, t, G) {
   ctx.strokeStyle = P.lake; ctx.lineCap = 'butt';
   const rows = clamp(Math.round(lakeH / 34), 9, 22);
   for (let k = 0; k < rows; k++) { const u = k / rows, y = GY + 12 + lakeH * 0.92 * Math.pow(u, 1.25); ctx.lineWidth = 3 + 9 * u; ctx.setLineDash([150 + 90 * hash(k, 1), 30 + 60 * hash(k, 2)]); ctx.lineDashOffset = k * 137 + (5 + 5 * u) * t * (k % 2 ? 1 : -1) + 30 * Math.sin(t * 0.21 + k); ctx.beginPath(); ctx.moveTo(-40, y); ctx.lineTo(W + 40, y); ctx.stroke(); }
+  ctx.depthLayer?.('water');
   // the near water is darker, and carries a few pale ripples and the sun's path
   F(ctx, (c) => { const y0 = GY + lakeH * 0.66; c.moveTo(-20, H + 20); for (let x = -20; x <= W + 20; x += 16) c.lineTo(x, y0 + 7 * Math.sin(x / 130 + t * 0.25) + 5 * nW(x / 200 + t * 0.03)); c.lineTo(W + 20, H + 20); c.closePath(); }, P.lake2);
   ctx.strokeStyle = C.cream; ctx.lineCap = 'round';
@@ -78,6 +79,7 @@ export function paint(ctx, p, t, G) {
 
   bars(ctx, MIST.slice(0, 3), W, t, (y) => GY + y * lakeH - 8);
 
+  ctx.depthLayer?.('trees');
   // a wooded spit runs in from the right, with its shadow on the water
   layer(0.3, () => {
     const { x0, y } = G.spit;
@@ -90,6 +92,7 @@ export function paint(ctx, p, t, G) {
   { const slot = 16, n = Math.floor(t / slot), q = mulberry(n * 4409 + 3), go = q() < 0.7, u = (t - n * slot - 1 - q() * 8) / 5.5, x = W * (0.3 + 0.55 * q()), y = GY + lakeH * (0.42 + 0.4 * q());
     if (go && u > 0 && u < 1) { ctx.strokeStyle = C.cream; for (let k = 0; k < 2; k++) { const v = u - k * 0.22; if (v <= 0) continue; ctx.lineWidth = Math.max(0.3, 3.4 * big * (1 - v) * (1 - v)); ctx.beginPath(); el(ctx, x, y, (10 + 90 * v) * big, (3 + 22 * v) * big); ctx.stroke(); } } }
 
+  ctx.depthLayer?.('jetty');
   // near bank: the jetty, the boat on its painter, and the pines
   layer(0.9, () => {
     const J = G.jetty, jy = J.y, x1 = J.x0 + J.len, wl = jy + 46 * big, bx = x1 + 96 * big, bob = 3 * osc(p, 7) + 1.5 * osc(p, 11, 0.3), rock = 0.035 * osc(p, 5, 0.2) + 0.02 * osc(p, 11, 0.6);

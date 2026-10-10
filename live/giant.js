@@ -79,6 +79,7 @@ export function paint(ctx, p, t, G) {
   F(ctx, (c) => circle(c, px, py, R * 3.5), A.r1); F(ctx, (c) => circle(c, px, py, R * 2.55), A.r2);
   paintStars(ctx, G.STARS, p);
 
+  ctx.depthLayer?.('planet');
   ctx.save(); ctx.translate(px, py); ctx.rotate(TILT);
   const moons = (front) => { for (const [d, T, ph, s, fill] of MOONS) { const th = TAU * (t / T + ph), sn = Math.sin(th); if ((sn < 0) !== front) continue; const mx = d * R * Math.cos(th), my = -d * R * FLAT * sn, ms = s * big; F(ctx, (c) => circle(c, mx, my, ms), fill); ctx.save(); ctx.translate(mx, my); ctx.rotate(0.14); F(ctx, (c) => night(c, ms, 0.3), A.night); ctx.restore(); } };
   moons(false); ringHalf(ctx, R, false); disc(ctx, R, t); ringHalf(ctx, R, true); moons(true);
@@ -95,6 +96,7 @@ export function paint(ctx, p, t, G) {
     // frost glints wink on the plain
     F(ctx, (c) => { for (const g of G.GLINTS) { const a = osc(p, g.c, g.ph); if (a > 0.2) star4(c, g.x, g.y, 9 * a * big); } }, C.cream);
   });
+  ctx.depthLayer?.('geyser');
   layer(0.45, () => {
     // the geyser: a puff leaves the vent many times a second, rises, slows and falls back; how hard it blows follows
     // a slow noise, so it comes in bursts and sometimes stops
@@ -109,5 +111,6 @@ export function paint(ctx, p, t, G) {
     }, fill);
     ridge(tops[1], A.i2, A.i4, 16, 11);
   });
+  ctx.depthLayer?.('ice');
   layer(0.9, () => ridge(tops[2], A.i4, A.ink, 14, 23));
 }

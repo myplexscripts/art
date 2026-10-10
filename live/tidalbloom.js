@@ -15,7 +15,10 @@ function loop(path,r,t,phase,reverse=false) {
 export function paint(c,p,t,G) {
   c.save(); setup(c,G,'#f5f3e4');
   const colors=['#00ded9','#00c6d6','#05ebda','#00b2cb','#18d4c0','#00e9e5'];
+  c.depthLayer?.('loops');
   for(let i=0;i<6;i++) {
+    if (i === 3) c.depthLayer?.('middle-loops');
+    if (i === 5) c.depthLayer?.('near-loop');
     c.save(); c.rotate(i*.23+Math.sin(t*.075+i)*.09);
     c.translate(Math.cos(i*1.1+t*.09)*.017,Math.sin(i*1.1+t*.09)*.017);
     const path=new Path2D(); loop(path,.32+i*.006,t,i*.95); loop(path,.205+i*.003,t,i*.7,true);

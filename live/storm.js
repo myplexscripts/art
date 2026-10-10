@@ -58,6 +58,7 @@ export function paint(ctx, p, t, G) {
     F(ctx, (c) => c.rect(0, yB - 12, W, d * 0.34), C.orange); F(ctx, (c) => c.rect(0, yB - 12 + d * 0.34, W, d * 0.3), C.gold); F(ctx, (c) => c.rect(0, yB - 12 + d * 0.64, W, d * 0.4), C.cream);
     F(ctx, (c) => { for (const s of G.SHAFTS) { const span = W + 500, x = frac(s.fx + (s.v * t) / 2300) * span - 300, dx = d * 0.5; poly(c, [[x, yB - 12], [x + s.w, yB - 12], [x + s.w * 0.8 + dx, HY + 4], [x + s.w * 0.2 + dx, HY + 4]]); } }, S.shaft); }
 
+  ctx.depthLayer?.('clouds');
   // the anvil: each pill breathes sideways a little at its own pace
   layer(0.04, () => {
     for (const tone of [1, 2, 3]) F(ctx, (c) => { for (const q of G.PARTS) if (q.tone === tone) pill(c, q.x - q.w / 2 + 12 * osc(p, q.c, q.ph) + 5 * osc(p, 7, q.ph), q.y, q.w, q.h); }, TONES[tone]);
@@ -101,6 +102,7 @@ export function paint(ctx, p, t, G) {
     ctx.restore();
   });
 
+  ctx.depthLayer?.('wheat');
   // wheat: rows whose toothed top edges carry waves downwind, bigger and faster the nearer they are
   const fills = [S.f2, C.gold, S.f3];
   for (let j = 0; j < G.ROWS; j++) {
@@ -116,6 +118,7 @@ export function paint(ctx, p, t, G) {
     if (j === 1) rain(ctx, G, t, 2, yB, 44, 3, 26, 50, 760, S.c2);
   }
 
+  ctx.depthLayer?.('stalks');
   // the nearest stalks, bowing as each gust passes along them
   layer(1, () => {
     for (const back of [true, false]) F(ctx, (c) => {

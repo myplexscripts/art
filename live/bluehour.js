@@ -44,6 +44,7 @@ export function paint(c,p,t,{W,H,s}) {
   box(c,0,H*.78,W,H*.22,K.night);
   for(let i=0;i<9;i++)stroke(c,q=>{q.moveTo(W*.5,H*.78);q.lineTo((i-1)*W*.16,H);},K.blue,2*s);
   for(let i=1;i<8;i++){const yy=H*.78+(H*.22)*(i/8)**1.7;stroke(c,q=>{q.moveTo(0,yy);q.lineTo(W,yy);},K.wood,2*s);}
+  c.depthLayer?.('piano');
   c.save();c.translate(W*.5,H*.65);c.scale(s,s);
   oval(c,0,225,475,52,'#0c202e');
   box(c,-410,95,44,185,K.wood,8);box(c,366,95,44,185,K.wood,8);
@@ -73,6 +74,7 @@ export function paint(c,p,t,{W,H,s}) {
   for(const xx of [-345,345]){box(c,xx-19,192,38,52,K.night,4);box(c,xx-14,197,28,42,K.wood,3);}
   for(const xx of [-37,0,37]){stroke(c,q=>{q.moveTo(xx,242);q.lineTo(xx,280);},K.dim,5);oval(c,xx,283,13,7,K.gold,-.08);}
   for(const xx of [-395,395])screw(c,xx,14,4,K.night,K.gold);
+  c.depthLayer?.('sheets');
   // A small music stand, two open pages, and a warm shaded lamp.
   polygon(c,[[-140,-287],[140,-287],[158,-163],[-158,-163]],K.night);
   polygon(c,[[-129,-277],[-5,-264],[-5,-176],[-137,-181]],paper);polygon(c,[[5,-264],[129,-277],[137,-181],[5,-176]],paper);
@@ -95,6 +97,7 @@ export function paint(c,p,t,{W,H,s}) {
   oval(c,195,-311,27,6,K.night);box(c,174,-332,40,22,K.mint,4);oval(c,194,-332,20,5,paper);oval(c,194,-331,16,3,K.wood);
   stroke(c,q=>{q.moveTo(214,-327);q.bezierCurveTo(231,-331,231,-311,214,-314);},K.mint,4);
   steam(c,194,-334,59,t);
+  c.depthLayer?.('bench');
   // The upholstered bench has turned legs, piping and shallow tufting.
   box(c,-205,304,410,44,K.night,9);box(c,-198,304,396,19,K.blue,6);
   for(let i=0;i<8;i++)disc(c,-173+i*49,315,2.3,K.night);

@@ -48,6 +48,7 @@ export function paint(ctx, p, t, G) {
   meteor(ctx, t, W, H * 0.5, 9, 13);
   crescent(ctx, W * 0.84 + sway(p, 0.03), H * 0.1 + 6 * Math.sin((TAU * t) / 360), 46, C.gold, -0.5);
 
+  ctx.depthLayer?.('mountains');
   // the ranges, far to near, with mist lying in the valleys between
   RANGES.forEach(([fy, rel, lam, n, fill], i) => {
     layer(0.06 + 0.07 * i, () => {
@@ -59,6 +60,7 @@ export function paint(ctx, p, t, G) {
     if (i < 3) bars(ctx, [MIST[i]], W, t, (y) => y * H);
   });
 
+  ctx.depthLayer?.('camp');
   // the ridge, the fire's light on it, and the tent
   const f = G.fire, fy = G.groundY(f.x) + 16, fl = 0.5 + 0.5 * nF(t * 3.3), fl2 = 0.5 + 0.5 * nF(t * 5.1 + 40);
   layer(0.8, () => {
@@ -91,6 +93,7 @@ export function paint(ctx, p, t, G) {
     for (const [fill, odd] of [[C.gold, 0], [C.orange, 1]]) F(ctx, (c) => { G.SPARKS.forEach((q, i) => { if (i % 2 !== odd) return; const u = (t / q.T + q.ph) % 1; circle(c, f.x + (q.dx * u + q.w * Math.sin(u * 9 + q.ph * 20)) * f.s, fy - (70 + q.up * u) * f.s, Math.max(0.3, q.r * (1 - u * u) * f.s)); }); }, fill);
   });
 
+  ctx.depthLayer?.('pines');
   // pines either side
   layer(1, () => F(ctx, (c) => { for (const q of G.PINES) pine(c, q.x, H + q.h * 0.15, q.h, q.h * 0.36, q.h * 0.03 * osc(p, q.c, q.ph) + q.h * 0.01 * osc(p, 9, q.ph), 6); }, C.ink));
 }

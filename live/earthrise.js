@@ -101,11 +101,14 @@ export function paint(ctx, p, t, G) {
   { const slot = 48, n = Math.floor(t / slot), q = mulberry(n * 6007 + 2), go = q() < 0.8, dir = q() < 0.5 ? -1 : 1, u = (t - n * slot - 2 - q() * 8) / 34, y0 = HY * (0.1 + 0.35 * q());
     if (go && u >= 0 && u <= 1) { const x = dir > 0 ? -30 + u * (W + 60) : W + 30 - u * (W + 60), y = y0 - HY * 0.07 * Math.sin(Math.PI * u); F(ctx, (c) => star4(c, x, y, 7 * big), C.gold); F(ctx, (c) => circle(c, x, y, 2.6 * big), C.cream); } }
 
+  ctx.depthLayer?.('earth');
   earth(ctx, ex, ey, R, t);
 
+  ctx.depthLayer?.('ground');
   // the ground, far to near: each layer carries its own craters and boulders
   const ground = (j, fill) => F(ctx, (c) => { c.moveTo(-90, H + 60); for (let x = -90; x <= W + 90; x += 10) c.lineTo(x, tops[j](x)); c.lineTo(W + 90, H + 60); c.closePath(); }, fill);
   for (let j = 0; j < 4; j++) layer(DEPTH[j], () => {
+    if (j === 2) ctx.depthLayer?.('near');
     ground(j, SURF[j]);
     F(ctx, (c) => { for (const q of G.CRATERS[j]) el(c, q.x, q.y, q.rx, q.ry); }, LIT[j]);
     F(ctx, (c) => {
@@ -114,6 +117,7 @@ export function paint(ctx, p, t, G) {
     }, SHADE[j]);
     F(ctx, (c) => { for (const b of G.ROCKS[j]) poly(c, [[b.x - b.w * 0.5, b.y + 2], [b.x - b.w * 0.36, b.y - b.h * 0.6], [b.x + b.w * 0.02, b.y - b.h], [b.x + b.w * 0.1, b.y + 2]]); }, LIT[j]);
     if (j !== 1) return;
+    ctx.depthLayer?.('lander');
     const { x, y, s } = G.LANDER;
     ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
     lander(ctx, t, p, SHADE[1]);

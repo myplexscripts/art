@@ -65,9 +65,11 @@ export function paint(ctx, p, t, G) {
     if (u >= 0 && u <= 1) F(ctx, (c) => { for (let k = 0; k < cnt; k++) { const s = (k === 2 ? 0.62 : 0.85 + 0.25 * hash(k, n)) * big, e = u * (W + 700) - 120 - k * (70 + 40 * hash(k, n + 3)) * big, x = dir > 0 ? e : W - e; giraffe(c, x, HY + 5, s, dir, (e / (11 * s)) + k * 1.3); } }, P.g3);
   });
 
+  ctx.depthLayer?.('plain');
   // the plain: each band ends in a fringe of blades, and the wind runs along it
   for (let j = 0; j < BANDS.length; j++) {
     layer(0.18 + 0.2 * j, () => {
+      if (j === BANDS.length - 1) ctx.depthLayer?.('acacias');
       const st = 9 + 5 * j, bh = (9 + 9 * j) * big;
       F(ctx, (c) => { c.moveTo(-60, H + 60); for (let i = Math.floor(-60 / st); i * st <= W + 60; i++) { const x = i * st, y = G.bandY(j, x), h = bh * (0.5 + 0.9 * hash(i, j)), ln = h * (0.55 * Math.sin(x / 170 - t * 0.7 + j * 1.9) + 0.25 * Math.sin(x / 61 + t * 0.43 + j)); c.lineTo(x, y); c.lineTo(x + st * 0.5 + ln, y - h); } c.lineTo(W + 60, H + 60); c.closePath(); }, BANDS[j][1]);
       trees(j);
@@ -75,6 +77,7 @@ export function paint(ctx, p, t, G) {
     bars(ctx, DUST.filter((d) => d[1] >= BANDS[j][0] && d[1] < (j + 1 < BANDS.length ? BANDS[j + 1][0] : 2)), W, t, (y) => HY + gh * y);
   }
 
+  ctx.depthLayer?.('grass');
   // tall seed heads along the bottom, nodding; a few paler ones stand behind
   layer(1, () => {
     for (const back of [true, false]) {

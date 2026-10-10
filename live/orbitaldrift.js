@@ -32,12 +32,15 @@ export function paint(c,p,t,G) {
   glow(c,0,cy,R*1.2,'#508dac20');
   c.beginPath(); c.arc(0,cy,R*.976,0,TAU); c.strokeStyle='#a1d4e518'; c.lineWidth=.004; c.stroke();
   c.save(); c.translate(0,cy); c.scale(1,.13); glow(c,0,2.7,R*1.3,'#e2fcff60'); c.restore();
+  c.depthLayer?.('shell');
   // Two independently turning layers retain depth without rebuilding 7,200 arcs.
   G.shells.forEach((shell,i)=>{
+    if (i === 1) c.depthLayer?.('near-shell');
     c.save(); c.translate(0,cy); c.rotate(t*(i?.028:-.021));
     const ripple=1+Math.sin(t*.19+i)*.008; c.scale(ripple,ripple);
     c.drawImage(shell,-.5,-.5,1,1); c.restore();
   });
+  c.depthLayer?.('meridians');
   // Fine, broken meridians give the shell depth without drawing a solid sphere.
   c.save(); c.translate(0,cy); c.rotate(.12*Math.sin(t*.09));
   for(let i=0;i<11;i++) {

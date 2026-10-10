@@ -120,6 +120,7 @@ export function paint(ctx, p, t, G) {
   ctx.stroke();
   ctx.restore();
 
+  ctx.depthLayer?.('window');
   // the room in shade: wall, the white reveal round the opening, the sill
   ctx.beginPath(); ctx.rect(0, 0, W, H); ctx.rect(O.x, O.y, O.w, O.h); ctx.fillStyle = M.wall; ctx.fill('evenodd');
   F(ctx, (c) => { c.rect(O.x - 14, O.y - 14, O.w + 28, 14); c.rect(O.x - 14, O.y, 14, O.h); c.rect(R, O.y, 14, O.h); }, M.shade);
@@ -130,6 +131,7 @@ export function paint(ctx, p, t, G) {
   F(ctx, (c) => c.rect(O.x - 46, B, O.w + 92, 26 * k), C.cream);
   F(ctx, (c) => c.rect(O.x - 46, B + 26 * k, O.w + 92, 9 * k), M.shade);
 
+  ctx.depthLayer?.('flowers');
   // geraniums: leaves, then heads of bloom nodding on their stalks
   { ctx.strokeStyle = M.cyp; ctx.lineWidth = 4 * k; ctx.lineCap = 'round'; ctx.beginPath();
     const heads = [];
@@ -142,6 +144,7 @@ export function paint(ctx, p, t, G) {
     F(ctx, (c) => { for (const x of G.pots) poly(c, [[x - 52 * k, B - 62 * k], [x + 52 * k, B - 62 * k], [x + 40 * k, B + 4 * k], [x - 40 * k, B + 4 * k]]); }, C.rust);
     F(ctx, (c) => { for (const x of G.pots) c.rect(x - 58 * k, B - 72 * k, 116 * k, 16 * k); }, C.orange); }
 
+  ctx.depthLayer?.('curtain');
   // the sheer curtain: hung from the rod at the left, its free edge and hem carried on waves that travel
   { const x0 = O.x - 24, y0 = O.y - 30, yb = B + 12 * k, w0 = clamp(O.w * 0.26, 240, 460 * k), g = 0.5 + 0.5 * nC(t * 0.13), A = O.w * 0.07 * (1 + tallK(G));
     const xe = (s, f = 1) => x0 + (w0 * (1 - 0.3 * s) + A * g * Math.sin(Math.PI * s * 0.8) * (0.4 + s) + 20 * k * s * Math.sin(s * 7 - t * 1.4 - f * 3) + 10 * k * s * Math.sin(s * 13 - t * 2.2 + 1 + f * 5)) * f;

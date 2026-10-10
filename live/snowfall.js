@@ -67,6 +67,7 @@ export function paint(ctx, p, t, G) {
   crescent(ctx, W * 0.82 + sway(p, 0.03), GY * 0.2 + 8 * Math.sin((TAU * t) / 400), 44 * big, C.cream, -0.5);
   bars(ctx, CLOUDS, W, t, (y) => y * GY);
 
+  ctx.depthLayer?.('town');
   // wooded hill behind the town
   layer(0.08, () => F(ctx, (c) => { c.moveTo(-90, GY); for (let x = -90; x <= W + 90; x += 12) c.lineTo(x, G.hillY(x)); c.lineTo(W + 90, GY); c.closePath(); for (let x = -90; x <= W + 90; x += 30) pine(c, x + 12 * hash(x, 1), G.hillY(x) + 6, (30 + 40 * hash(x, 2)) * big, (22 + 10 * hash(x, 3)) * big, 0, 3); }, N.hill));
   flakes(ctx, G, t, 0, N.shade);
@@ -105,6 +106,7 @@ export function paint(ctx, p, t, G) {
     F(ctx, (c) => { for (const d of G.DRIFTS) { const y = GY + (H - GY) * d.f; pill(c, d.x - d.w / 2, y, d.w * big, (8 + 14 * d.f) * big); } }, N.shade);
   });
 
+  ctx.depthLayer?.('lamp');
   // the lamp's glow: flat discs that breathe with the flame, and its light lying on the snow
   const fl = 0.5 + 0.5 * Math.sin(t * 4.7) * Math.sin(t * 2.9) + 0.25 * nW(t * 1.3 + 50);
   layer(0.7, () => {
@@ -130,6 +132,7 @@ export function paint(ctx, p, t, G) {
     ctx.restore();
   });
 
+  ctx.depthLayer?.('trees');
   // bare trees, rocking a little; the flatter branches carry a line of snow
   for (const q of G.TREES) layer(0.9, () => {
     ctx.save(); ctx.translate(q.x, q.y); ctx.rotate(0.012 * osc(p, q.c, q.ph) + 0.005 * osc(p, 11, q.ph)); ctx.lineCap = 'round';

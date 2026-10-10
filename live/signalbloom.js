@@ -30,6 +30,7 @@ export function paint(c,p,t,{W,H,s}) {
   polygon(c,[[68,-reach-8],[121,-reach-17],[153,-reach+21],[60,-reach+39]],K.ink);oval(c,107,-reach+29,49,9,K.gold,-.2);
   c.save();c.globalAlpha=.07;polygon(c,[[66,-reach+32],[150,-reach+18],[289,78],[-101,78]],paper);c.restore();c.restore();
   wood(c,0,H*.78,W,H*.22,K.ink,K.green);
+  c.depthLayer?.('synth');
   c.save();c.translate(W*.50,H*.54);c.scale(s,s);c.rotate(.045);
   box(c,-441,-292,900,630,K.ink,22);box(c,-458,-317,916,625,K.orange,20);box(c,-436,-317,872,601,paper,16);
   wood(c,-456,-298,20,592,K.orange,K.ink,true);wood(c,436,-299,20,592,K.orange,K.ink,true);
@@ -78,8 +79,10 @@ export function paint(c,p,t,{W,H,s}) {
   word(c,'ANALOG / 24',226,273,8,K.ink);for(let i=0;i<16;i++)box(c,-128+i*15,262,6,10,K.green,2);
   for(const xx of [-424,425])for(const yy of [-306,274])screw(c,xx,yy,4,K.ink,paper);
   c.restore();
+  c.depthLayer?.('cable');
   // Coiled output cord rests on the desk with a subtle wave in the loose end.
   stroke(c,q=>{q.moveTo(W*.90,H*.70);q.bezierCurveTo(W*1.03,H*.84,W*.80,H*.96,W*.64,H*.91);q.bezierCurveTo(W*.54,H*.87,W*.58,H*.83,W*.67,H*.87);q.bezierCurveTo(W*.83,H*.94,W*.44,H*(.96+.006*Math.sin(t*.25)),W*.18,H*.94);},K.orange,8*s);
+  c.depthLayer?.('headphones');
   // Over-ear headphones, a penciled patch sheet and a spare brass jack.
   c.save();c.translate(W*.14,H*.88);c.scale(s,s);c.rotate(-.18);
   stroke(c,q=>{q.moveTo(-62,20);q.bezierCurveTo(-87,-105,88,-105,61,20);},K.ink,13);

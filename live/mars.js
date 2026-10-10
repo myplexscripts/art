@@ -74,6 +74,7 @@ export function paint(ctx, p, t, G) {
   for (const [T, ph, yb, w, h] of [[170, 0.3, 0.2, 8, 6], [610, 0.62, 0.11, 3.5, 3.5]]) { const u = (((t / T + ph) % 1) + 1) % 1, x = -40 + u * (W + 80), y = HY * (yb - 0.07 * Math.sin(Math.PI * u)); F(ctx, (c) => { el(c, x, y, w * big, h * big, 0.5); if (w > 5) circle(c, x + 3 * big, y + 2 * big, 4.5 * big); }, C.cream); }
   bars(ctx, HAZE, W, t, (y) => y * HY);
 
+  ctx.depthLayer?.('volcano');
   // the volcano, with a darker foot, and thin haze drifting across its flank
   layer(0.04, () => {
     F(ctx, (c) => { c.moveTo(VOL.x - VOL.w, HY + 4); for (let x = VOL.x - VOL.w; x <= VOL.x + VOL.w; x += 12) c.lineTo(x, G.volY(x)); c.lineTo(VOL.x + VOL.w, HY + 4); c.closePath(); }, R.vol);
@@ -83,6 +84,7 @@ export function paint(ctx, p, t, G) {
   layer(0.1, () => F(ctx, (c) => { for (const b of G.FARM) butte(c, b.x, HY + 6, b.w, b.h, b.sk); }, R.m1));
   layer(0.18, () => F(ctx, (c) => { for (const b of G.MIDM) butte(c, b.x, HY + 8, b.w, b.h, b.sk); }, R.m2));
 
+  ctx.depthLayer?.('plain');
   // the plain in three bands, with the base on the far one and the rover on the next
   const band = (j, fill) => F(ctx, (c) => { c.moveTo(-90, H + 60); for (let x = -90; x <= W + 90; x += 16) c.lineTo(x, G.plain[j](x)); c.lineTo(W + 90, H + 60); c.closePath(); }, fill);
   const rocks = (lo, hi, fill) => F(ctx, (c) => { for (const q of G.ROCKS) if (q.y >= lo && q.y < hi) poly(c, [[q.x - q.w, q.y], [q.x - q.w * 0.5, q.y - q.w * 0.8], [q.x + q.w * 0.4, q.y - q.w * 0.6], [q.x + q.w * 2.2, q.y]]); }, fill);
@@ -111,6 +113,7 @@ export function paint(ctx, p, t, G) {
   devil(11, 89, HY + D * 0.3, 1);
   layer(0.45, () => { band(2, R.p3); rocks(HY + D * 0.34, H, R.d1); });
 
+  ctx.depthLayer?.('dunes');
   // dunes: each a lit crest over its shaded body, with ripples that creep along it and sand streaming low in between
   const cols = [[R.ochre, R.d1], [R.p1, R.d2], [R.d1, R.ink]];
   G.DUNES.forEach((top, j) => {

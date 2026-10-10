@@ -30,6 +30,7 @@ export function paint(c,p,t,{W,H,s}) {
   c.restore();
   // Loose ribbon loops slowly change their curvature behind the deck.
   stroke(c,q=>{q.moveTo(W*.15,H*.85);q.bezierCurveTo(-W*.12,H*.55,W*.28,H*.19,W*.40,H*.35);q.bezierCurveTo(W*.48,H*.48,W*.02,H*.38,W*.12,H*.21);q.bezierCurveTo(W*.23,H*(.07+.02*Math.sin(t*.3)),W*.57,H*.13,W*.79,H*.32);q.bezierCurveTo(W*1.08,H*.55,W*.91,H*.90,W*.64,H*.84);},K.ink,9*s);
+  c.depthLayer?.('tape');
   c.save();c.translate(W*.5,H*.53);c.scale(s,s);c.rotate(-.055);
   box(c,-439,-258,900,554,K.ink,32);box(c,-450,-280,900,554,paper,32);box(c,-430,-260,860,514,K.sun,22);
   // Injection-molded seams, ribs, corner screws and a handwritten label.
@@ -59,6 +60,7 @@ export function paint(c,p,t,{W,H,s}) {
   for(let i=0;i<10;i++)box(c,-151+i*25,208,16,15,Math.sin(t*.9+i*.33)>.12?K.rust:K.blue,2);
   box(c,130,190,74,48,K.ink,6);polygon(c,[[157,200],[157,226],[184,213]],paper);
   box(c,219,190,74,48,K.ink,6);box(c,242,202,26,24,paper,2);c.restore();
+  c.depthLayer?.('receiver');
   // A compact silver receiver supports the cassette; its two needles move smoothly.
   c.save();c.translate(W*.51,H*.82);c.scale(s,s);c.rotate(-.055);
   box(c,-405,-42,810,102,K.ink,9);box(c,-414,-52,810,101,paper,9);box(c,-400,-42,780,75,K.dim,4);
@@ -70,6 +72,7 @@ export function paint(c,p,t,{W,H,s}) {
   for(let i=0;i<17;i++)box(c,80+i*8,-21,3,17,K.ink,1);
   for(const xx of [41,274,344]){disc(c,xx,-3,xx===274?27:17,K.ink);disc(c,xx,-3,xx===274?22:13,paper);stroke(c,q=>{q.moveTo(xx,-16);q.lineTo(xx,-9);},K.ink,2);}
   word(c,'STEREO / MONITOR',-349,29,8,K.ink);c.restore();
+  c.depthLayer?.('case');
   // A pencil, open tape case and label sheet provide small foreground stories.
   c.save();c.translate(W*.15,H*.93);c.scale(s,s);c.rotate(.12);
   polygon(c,[[-54,-37],[94,-37],[113,28],[-37,28]],paper);polygon(c,[[-44,-31],[88,-31],[101,21],[-32,21]],K.dim);

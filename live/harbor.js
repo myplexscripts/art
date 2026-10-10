@@ -83,6 +83,7 @@ export function paint(ctx, p, t, G) {
     F(ctx, (c) => { for (const h of G.HILL) if (h.lit && lit(h.id + 900, t, 0.7)) c.rect(h.x + h.w * 0.3, h.y - h.h * 0.7, 7, 8); }, C.gold);
   });
 
+  ctx.depthLayer?.('quay');
   // the quay: houses shoulder to shoulder, the clock tower, lamps along the wall
   layer(0.25, () => {
     for (const b of G.ROW) {
@@ -108,6 +109,7 @@ export function paint(ctx, p, t, G) {
     F(ctx, (c) => { for (const lx of G.LAMPS) circle(c, lx, WY - 94 * big, 7 * big); }, C.gold);
   });
 
+  ctx.depthLayer?.('water');
   // the harbor: slow bands, each quay lamp drawn out down the water
   layer(0.4, () => {
     for (let j = 0; j < G.POOL; j++) {
@@ -125,6 +127,7 @@ export function paint(ctx, p, t, G) {
   });
   for (const b of G.BOATS) layer(0.45 + 0.1 * b.i, () => boat(ctx, b, p, t));
 
+  ctx.depthLayer?.('pier');
   // the pier in the near corner, with a lantern on its tallest post
   layer(0.9, () => {
     const { x1, y } = G.pier, posts = [[0.08, 150], [0.42, 96], [0.74, 190], [0.97, 84]].map(([f, h]) => [lerp(-40, x1, f), lerp(y, y + 26, f), h * big]);
@@ -139,6 +142,7 @@ export function paint(ctx, p, t, G) {
     lantern(ctx, px + 50 * big, py - ph + 26, 1.25 * big, 0.14 * osc(p, 5, 0.2) + 0.05 * osc(p, 11, 0.6), 1, 0.5 + 0.5 * Math.sin(t * 4.1) * Math.sin(t * 2.3));
   });
 
+  ctx.depthLayer?.('lanterns');
   // lanterns strung across the top; the strings lift and settle and every lantern swings on its own
   G.STRINGS.forEach(([ax, ay, bx, by, sag, n], si) => {
     const at = (u) => [lerp(ax, bx, u) + 8 * osc(p, 2, si * 0.4) * Math.sin(Math.PI * u), lerp(ay, by, u) + (sag + 7 * osc(p, 3, si * 0.3)) * 4 * u * (1 - u)];

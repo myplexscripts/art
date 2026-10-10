@@ -47,6 +47,9 @@ const stacks = scene('Stacks', '01', '#1d2939', 'openblue', (c, t, G) => {
   c.fillStyle = ink(hue, 16); c.fillRect(0, 0, W, H);
   // Each rectangle is a single flat fill: no bevels, borders, shadows or end marks.
   for (let i = Math.ceil(H / state.height) + 2; i >= 0; i--) {
+    if (i === 2) c.depthLayer?.('three-bars');
+    if (i === 1) c.depthLayer?.('two-bars');
+    if (i === 0) c.depthLayer?.('newest-bar');
     const birth = state.born - i, side = birth % 2 === 0 ? -1 : 1;
     const slide = i === 0 ? side * (1 - smooth(state.phase / .82)) * W : 0;
     const y = state.surface + i * state.height;
@@ -96,6 +99,9 @@ const blooms = scene('Blooms', '02', '#482c43', 'lavender', (c, t, G) => {
   const count = Math.ceil(state.life / state.cadence) + 1;
   // Old blooms cover the corners before leaving; a new bloom starts at exactly zero radius.
   for (let i = count; i >= 0; i--) {
+    if (i === 6) c.depthLayer?.('outer-petals');
+    if (i === 3) c.depthLayer?.('middle-petals');
+    if (i === 0) c.depthLayer?.('newest-bloom');
     const birth = state.born - i, age = t - birth * state.cadence;
     const radius = state.unit * Math.expm1(age * state.growth);
     if (radius <= 0) continue;
@@ -129,6 +135,9 @@ const deepwaves = scene('Deep Waves', '03', '#183340', 'openblue', (c, t, G) => 
   // Like Stacks, the layers stay within one hue: deeper outer water is darker,
   // and inner layers step up in shade. Deep Waves never cycles around the colour wheel.
   for (let i = Math.ceil(state.cover / state.spacing) + 1; i >= 0; i--) {
+    if (i === 4) c.depthLayer?.('near-ripples');
+    if (i === 2) c.depthLayer?.('inner-ripples');
+    if (i === 0) c.depthLayer?.('centre-ripple');
     const radius = (i + state.phase) * state.spacing;
     if (radius <= 0) continue;
     const light = 49 - clamp(radius / state.cover) * 30;

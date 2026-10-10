@@ -85,6 +85,7 @@ export function paint(ctx, p, t, G) {
     if (go && u >= 0 && u <= 1) satellite(ctx, dir > 0 ? -50 + u * (W + 100) : W + 50 - u * (W + 100), y0 + HY * 0.06 * u, (0.8 + 0.5 * q()) * big, t * 0.07 * dir + seed);
   }
 
+  ctx.depthLayer?.('planet');
   // the planet: two thin lines of air, the globe, its bands, then the night side as one flat shape
   const px = PL.x + sway(p, 0.1), py = PL.y + 5 * osc(p, 2, 0.3);
   F(ctx, (c) => circle(c, px, py, RP + 20), S.air2); F(ctx, (c) => circle(c, px, py, RP + 8), S.air); F(ctx, (c) => circle(c, px, py, RP), C.deep);
@@ -104,10 +105,12 @@ export function paint(ctx, p, t, G) {
   F(ctx, (c) => circle(c, px + RP * (0.62 + 0.05 * Math.sin((TAU * t) / 720)), py + RP * 0.12, RP), S.night);
   ctx.restore();
 
+  ctx.depthLayer?.('station');
   // the station
   const stx = ST.x + sway(p, 0.35), sty = ST.y + 6 * osc(p, 1, 0.2);
   ctx.save(); ctx.translate(stx, sty); ctx.rotate(-0.3 + 0.012 * osc(p, 2, 0.6)); station(ctx, ST.R, t); ctx.restore();
 
+  ctx.depthLayer?.('shuttle');
   // the shuttle: in one slot it arrives from the right and holds off the dock, in the next it leaves to the left
   { const slot = 80, n = Math.floor(t / slot), u = clamp((t - n * slot - 8) / 52), e = u * u * (3 - 2 * u), arriving = n % 2 === 0, s = 0.9 * big;
     const dock = [stx + ST.R * 0.45, sty + ST.R * 0.95], far = arriving ? [W + 120, dock[1] - HY * 0.2] : [-140, dock[1] + HY * 0.08];

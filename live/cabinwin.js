@@ -117,6 +117,7 @@ export function paint(ctx, p, t, G) {
   frost(1, K.shade); frost(0.62, K.snow);
   ctx.restore();
 
+  ctx.depthLayer?.('window');
   // the log wall, the frame and its glazing bars, the sill
   ctx.beginPath(); ctx.rect(0, 0, W, H); ctx.rect(O.x, O.y, O.w, O.h); ctx.fillStyle = K.log2; ctx.fill('evenodd');
   ctx.save(); ctx.beginPath(); ctx.rect(0, 0, W, H); ctx.rect(O.x, O.y, O.w, O.h); ctx.clip('evenodd');
@@ -125,6 +126,7 @@ export function paint(ctx, p, t, G) {
   F(ctx, (c) => { c.rect(O.x - 22, O.y - 22, O.w + 44, 22); c.rect(O.x - 22, O.y, 22, O.h); c.rect(O.x + O.w, O.y, 22, O.h); for (let i = 1; i < G.cols; i++) c.rect(O.x + i * cw - 6, O.y, 12, O.h); for (let j = 1; j < G.rows; j++) c.rect(O.x, O.y + j * ch - 6, O.w, 12); c.rect(O.x - 46, B, O.w + 92, 26 * big); }, K.frame);
   F(ctx, (c) => c.rect(O.x - 46, B + 26 * big, O.w + 92, 10 * big), K.log1);
 
+  ctx.depthLayer?.('curtains');
   // knitted curtains tied back at either side, stirring in the draught
   for (const sd of [-1, 1]) {
     const x1 = sd < 0 ? O.x - 22 : O.x + O.w + 22, w = clamp(O.w * 0.09, 86, 190) * big * (sd < 0 ? 1 : 0.85), yt = B - O.h * (0.32 + 0.04 * sd), sw = 5 * osc(p, 3, 0.3 + sd * 0.2) * big, X = (v) => x1 - sd * v, y0 = O.y - 30, n = 5;
@@ -142,6 +144,7 @@ export function paint(ctx, p, t, G) {
   }
   F(ctx, (c) => pill(c, O.x - 60, O.y - 42, O.w + 120, 12), K.log1);
 
+  ctx.depthLayer?.('candle');
   // candle in a brass dish; its light lies on the sill and shifts with the flame
   { const k = big, x = W * (0.3 + 0.02 * tallOf(G)), y = B + 14 * k, fl = 0.5 + 0.5 * nF(t * 3.1);
     F(ctx, (c) => el(c, x, B + 14 * k, (190 + 18 * fl) * k, (10 + 1.5 * fl) * k), C.orange);

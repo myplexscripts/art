@@ -41,6 +41,7 @@ export function paint(c,p,t,{W,H,s}) {
     c.save();c.globalAlpha=.20;polygon(c,[[x,0],[center-W*.28,H*.83],[center+W*.28,H*.83]],K.light);c.restore();
     box(c,x-22*s,0,44*s,35*s,K.night,5*s);oval(c,x,34*s,24*s,8*s,K.gold);
   }
+  c.depthLayer?.('saxophone');
   const cx=W*.49,cy=H*.51;
   c.save();c.translate(cx,cy);c.scale(s,s);c.rotate(-.18);
   oval(c,15,340,220,32,K.night);
@@ -79,6 +80,7 @@ export function paint(c,p,t,{W,H,s}) {
   stroke(c,q=>{q.moveTo(80,291);q.lineTo(80,380);q.moveTo(80,362);q.lineTo(-27,401);q.moveTo(80,362);q.lineTo(176,399);q.moveTo(80,362);q.lineTo(113,419);},K.night,8);
   stroke(c,q=>{q.moveTo(33,267);q.quadraticCurveTo(79,320,135,268);},K.night,10);
   c.restore();
+  c.depthLayer?.('tables');
   // A vintage ribbon microphone, a coiled lead and near cafe tables set the scale.
   c.save();c.translate(W*.27,H*.64);c.scale(s*.83,s*.83);
   stroke(c,q=>{q.moveTo(0,230);q.lineTo(0,-200);},K.night,7);oval(c,0,233,74,13,K.night);

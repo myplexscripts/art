@@ -51,6 +51,7 @@ export function paint(ctx, p, t, G) {
   layer(0.06, () => F(ctx, (c) => { c.moveTo(-90, WY + 6); for (let x = -90; x <= W + 90; x += 10) c.lineTo(x, G.farY(x)); c.lineTo(W + 90, WY + 6); c.closePath(); }, K.far));
   fog(ctx, G, BACK, t, p, K.f3);
 
+  ctx.depthLayer?.('bay');
   // the bay: slow bands, with pale streaks sliding along them
   for (let j = 0; j < G.POOL; j++) {
     const b = G.band(j), s = 0.9 * p * b.lam + j * 71, e = [];
@@ -63,6 +64,7 @@ export function paint(ctx, p, t, G) {
   layer(0.14, () => F(ctx, (c) => { c.moveTo(-90, WY + 10); for (let x = -90; x <= W + 90; x += 10) c.lineTo(x, Math.min(WY + 10, G.headY(x))); c.lineTo(W + 90, WY + 10); c.closePath(); }, K.head));
   fog(ctx, G, BACK, t, p, K.f2);
 
+  ctx.depthLayer?.('bridge');
   // the bridge
   layer(0.22, () => {
     // each tower stands in the water as a broken column of red
@@ -108,6 +110,7 @@ export function paint(ctx, p, t, G) {
   });
   ctx.stroke(); ctx.lineJoin = 'miter';
 
+  ctx.depthLayer?.('pines');
   // the near shore: a dark point with three pines
   layer(1, () => {
     F(ctx, (c) => { for (const q of G.PINES) pine(c, q.x, G.shoreY(q.x) + 10, q.h, q.h * 0.34, q.h * 0.03 * osc(p, q.c, q.ph) + q.h * 0.01 * osc(p, 9, q.ph), 6); c.moveTo(-90, H + 60); for (let x = -90; x <= W + 90; x += 12) c.lineTo(x, G.shoreY(x)); c.lineTo(W + 90, H + 60); c.closePath(); }, K.ink);

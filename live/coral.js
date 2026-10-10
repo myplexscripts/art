@@ -186,12 +186,15 @@ export function paint(ctx, p, t, G) {
     ctx.stroke();
   });
 
+  ctx.depthLayer?.('garden');
   for (const it of G.ITEMS) {
+    if (it.u > .65) ctx.depthLayer?.('near');
     ctx.save(); ctx.translate(it.x + sway(p, 0.3 + 0.55 * it.u), it.y); ctx.scale(it.s, it.s);
     DRAW[it.kind](ctx, it, p, t); ctx.restore();
   }
   for (const k of [2, 3]) F(ctx, (c) => school(c, G.SCHOOLS[k][0], t), G.SCHOOLS[k][1]);
 
+  ctx.depthLayer?.('bubbles');
   { const span = H + 60; ctx.strokeStyle = C.cream; ctx.lineWidth = 2.5; ctx.beginPath();
     G.BUB.forEach((b, i) => { const d = b.u + b.v * t, n = Math.floor(d); circle(ctx, hash(i, n) * W + 12 * Math.sin(TAU * (t * b.f + b.ph)), H + 30 - (d - n) * span, b.r * big); });
     ctx.stroke(); }

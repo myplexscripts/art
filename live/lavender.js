@@ -64,6 +64,7 @@ export function paint(ctx, p, t, G) {
   layer(0.06, () => ridge(G.h1, P.h1));
   layer(0.1, () => ridge(G.h2, P.h2));
 
+  ctx.depthLayer?.('field');
   // the field: wedges from the vanishing point, then the tufts on their edges
   layer(0.3, () => {
     ctx.fillStyle = P.v1; ctx.fillRect(-60, VP.y, W + 120, H - VP.y + 20);
@@ -76,6 +77,7 @@ export function paint(ctx, p, t, G) {
       for (let j = 0; j < s.length; j += 240) { ctx.beginPath(); for (let i = j; i < Math.min(s.length, j + 240); i += 4) { const rr = s[i + 2], ph = s[i + 3], ln = 0.36 * Math.sin(ph - t * 0.9) + 0.14 * Math.sin(ph * 2.3 + t * 0.57), x = s[i] + rr * 9 * ln, y = s[i + 1], h = rr * 2.6, k = ln * h * 0.5; ctx.moveTo(x - k, y + h); ctx.lineTo(x + rr, y); ctx.lineTo(x + k, y - h); ctx.lineTo(x - rr, y); ctx.closePath(); } ctx.fill(); } }
   });
 
+  ctx.depthLayer?.('farm');
   // the meadow closes the far end of the rows: a hedge, the farmhouse and its cypresses
   layer(0.16, () => {
     F(ctx, (c) => { c.moveTo(-60, HY); c.lineTo(W + 60, HY); for (let x = W + 60; x >= -60; x -= 12) c.lineTo(x, G.fy(x)); c.closePath(); }, P.h2);
@@ -106,6 +108,7 @@ export function paint(ctx, p, t, G) {
     }, P.ink);
   }
 
+  ctx.depthLayer?.('sprigs');
   // near sprigs along the bottom edge, nodding
   layer(1, () => {
     const tip = [];

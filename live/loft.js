@@ -94,6 +94,7 @@ export function paint(ctx, p, t, G) {
     F(ctx, (c) => { c.rect(x - 50 * k, y - 190 * k, 100 * k, 4 * k); c.rect(x - 50 * k, y - 140 * k, 100 * k, 4 * k); }, L.near); }
   ctx.restore();
 
+  ctx.depthLayer?.('window');
   // the room: brick wall, steel frame and glazing bars, a concrete sill
   ctx.beginPath(); ctx.rect(0, 0, W, H); ctx.rect(O.x, O.y, O.w, O.h); ctx.fillStyle = L.wall; ctx.fill('evenodd');
   F(ctx, (c) => { for (let y = B + 44 * big, j = 0; y < H; y += 26 * big, j++) for (let x = (j % 2) * 40 * big - 20 + 61 * hash(j, 3), n = 0; x < W; n++, x += 80 * big * (1 + 2 * Math.floor(hash(n, j + 20) * 3))) c.rect(x, y, 64 * big, 4); for (let y = 16, j = 0; y < H; y += 26 * big, j++) { if (hash(j, 8) < 0.5) c.rect(8, y, 44, 4); if (hash(j, 9) < 0.5) c.rect(W - 54, y, 44, 4); } }, L.brick);
@@ -101,6 +102,7 @@ export function paint(ctx, p, t, G) {
   F(ctx, (c) => c.rect(O.x - 40, B, O.w + 80, 22 * big), L.brick);
   F(ctx, (c) => c.rect(O.x - 40, B + 22 * big, O.w + 80, 8 * big), L.ink);
 
+  ctx.depthLayer?.('plants');
   // plants: pots on the sill, one hanging; stems first, then leaves in two inks
   { const k = big, h = G.hang, ha = 0.02 * osc(p, 3, 0.2);
     F(ctx, (c) => { c.rect(h.x - 1.5, 0, 3, h.len); poly(c, [[h.x, h.len - 40 * k], [h.x + 52 * k, h.len + 6 * k], [h.x + 48 * k, h.len + 8 * k], [h.x, h.len - 34 * k], [h.x - 48 * k, h.len + 8 * k], [h.x - 52 * k, h.len + 6 * k]]); }, L.ink);
@@ -112,6 +114,7 @@ export function paint(ctx, p, t, G) {
     F(ctx, (c) => { for (const x of G.pots) c.rect(x - 56 * k, B - 70 * k, 112 * k, 15 * k); poly(c, [[h.x - 54 * k, h.len], [h.x + 54 * k, h.len], [h.x + 36 * k, h.len + 54 * k], [h.x - 36 * k, h.len + 54 * k]]); }, C.orange);
     void ha; }
 
+  ctx.depthLayer?.('bulb');
   // a bare bulb on its cord, swinging slowly
   { const { x, len } = G.bulb, k = big, a = 0.045 * osc(p, 3, 0.4) + 0.02 * osc(p, 7, 0.1), g = 0.5 + 0.5 * nB(t * 0.5 + 50);
     ctx.save(); ctx.translate(x, 0); ctx.rotate(a);

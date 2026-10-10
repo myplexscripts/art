@@ -97,6 +97,7 @@ export function paint(ctx, p, t, G) {
   for (let k = 0; k < 4; k++) { const y = H * (0.085 + 0.034 * k) + 4 * osc(p, 5, k * 0.3); ctx.lineWidth = (7 - k) * big; ctx.setLineDash([(70 - 12 * k) * big, (150 + 60 * hash(k, 1)) * big]); ctx.lineDashOffset = (k * 133 + (14 + 5 * k) * t * (k % 2 ? 1 : -1)) * big; /* scaled like the dashes, so the pattern holds still as big changes */ ctx.beginPath(); ctx.moveTo(-40, y); ctx.lineTo(W + 40, y); ctx.stroke(); }
   ctx.restore();
 
+  ctx.depthLayer?.('fish');
   // the bait ball: every fish circles the middle, and the middle wanders and the outline keeps changing
   { const cx = W * (0.46 + 0.2 * Math.sin(t * 0.023 + 1) + 0.08 * Math.sin(t * 0.041)), cy = H * (0.68 + 0.08 * Math.sin(t * 0.031) + 0.03 * Math.sin(t * 0.057 + 2)), R = Math.min(W, H) * 0.2 * (1 + 0.12 * Math.sin(t * 0.045)), sq = 0.6 * (1 + 0.18 * Math.sin(t * 0.05 + 1));
     for (const hot of [false, true]) F(ctx, (c) => { for (const f of G.BALL) { if (f.hot !== hot) continue;
@@ -107,12 +108,14 @@ export function paint(ctx, p, t, G) {
   { const slot = 41, n = Math.floor(t / slot), q = mulberry(n * 3301 + 7), go = q() < 0.75, dir = q() < 0.5 ? -1 : 1, u = (t - n * slot - 1 - q() * 5) / 34, y0 = H * (0.2 + 0.25 * q()), kind = q();
     if (go && u >= 0 && u <= 1) { const x = dir > 0 ? -220 + u * (W + 440) : W + 220 - u * (W + 440), y = y0 + 20 * Math.sin(t * 0.4) - H * 0.05 * u; kind < 0.55 ? ray(ctx, x, y, 1.3 * big, dir, t) : turtle(ctx, x, y, 1.2 * big, dir, t); } }
 
+  ctx.depthLayer?.('whale');
   // the whale: one long slot at a time, most of them with a whale in, some of those with a calf keeping station below
   { const slot = 140, n = Math.floor(t / slot), q = mulberry(n * 9151 + 11), go = q() < 0.85, dir = q() < 0.5 ? -1 : 1, u = (t - n * slot - 4 - q() * 30) / 95, y0 = H * (0.36 + 0.14 * q()), calf = q() < 0.5, L = G.whaleL, sc = L / 1000;
     if (go && u >= 0 && u <= 1) { const span = W + 2.4 * L, x = dir > 0 ? -1.2 * L + u * span : W + 1.2 * L - u * span, y = y0 + H * 0.03 * Math.sin(t * 0.13) + H * 0.04 * (u - 0.5);
       if (calf) whale(ctx, x - dir * L * 0.2, y + L * 0.3 + 10 * Math.sin(t * 0.3), sc * 0.42, dir, t * 1.35, 2, K.w[4]);
       whale(ctx, x, y, sc, dir, t, 0, K.w[5]); } }
 
+  ctx.depthLayer?.('bubbles');
   { const span = H + 60; ctx.strokeStyle = C.cream; ctx.lineWidth = 2.5; ctx.beginPath();
     G.BUB.forEach((b, i) => { const d = b.u + b.v * t, n = Math.floor(d); circle(ctx, hash(i, n) * W + 12 * Math.sin(TAU * (t * b.f + b.ph)), H + 30 - (d - n) * span, b.r * big); });
     ctx.stroke(); }

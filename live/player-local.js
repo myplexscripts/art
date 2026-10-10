@@ -5,6 +5,8 @@
 import './nozoom.js';
 import { draw, makeLayout, styleFor, SCENES } from './poster.js';
 import { makeClockColor, makePaletteSampler } from './clock-palette.js';
+import { depthLayersFor, makeDepthRenderer } from './clock-depth.js';
+import { DEPTH_CSS, makeDepthPicker } from './clock-depth-picker.js';
 
 const LOOP = 30, MAXPX = 3840, CREAM = '#f2e5c3', FLIGHT = 650;
 const FACE = '"Inter", system-ui, sans-serif';
@@ -13,7 +15,9 @@ const CSS = `
   .wz-player { position: fixed; inset: 0; z-index: 10; overflow: hidden; -webkit-user-select: none; user-select: none; --wz-safe-left: env(safe-area-inset-left, 0px); --wz-safe-right: env(safe-area-inset-right, 0px); --wz-safe-bottom: env(safe-area-inset-bottom, 0px); }
   /* Artwork covers every edge, including the notch and home indicator. Only controls are inset. */
   .wz-player canvas, .wz-grain { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
-  .wz-grain { pointer-events: none; z-index: 2; }
+  .wz-foreground { pointer-events: none; z-index: 2; }
+  .wz-foreground[hidden], .wz-ui[hidden] { display: none; }
+  .wz-grain { pointer-events: none; z-index: 3; }
   .wz-clock { position: absolute; inset: 0; display: grid; place-items: center; z-index: 1; pointer-events: none; margin: 0; color: #fff; opacity: 1; font: 800 clamp(40px, 14vmin, 180px)/1 "Inter", system-ui, sans-serif; letter-spacing: -.04em; white-space: nowrap; text-shadow: none; }
   /* Shape the whole time as one text run: the colon and AM/PM space keep their natural widths. */
   .wz-clock-face { position: absolute; left: 50%; top: 50%; width: max-content; transform: translate(-50%, -50%); pointer-events: auto; touch-action: none; -webkit-touch-callout: none; padding: 20px; cursor: ew-resize; display: inline-block; font-kerning: normal; opacity: 1; }
@@ -21,12 +25,12 @@ const CSS = `
   .wz-clock-face:focus-visible { outline: 1px solid currentColor; outline-offset: -10px; border-radius: 12px; }
   .wz-clock[hidden] { display: none; }
   /* The bottom controls slide over the artwork and never reserve space in its canvas. */
-  .wz-ui { position: absolute; bottom: 0; z-index: 3; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; gap: 2px; color: var(--ink); transition: color .7s, transform .38s cubic-bezier(.2, .7, .2, 1) 0s; }
+  .wz-ui { position: absolute; bottom: 0; z-index: 4; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; gap: 2px; color: var(--ink); transition: color .7s, transform .38s cubic-bezier(.2, .7, .2, 1) 0s; }
   .wz-ui.off, .wz-ui.swap { pointer-events: none; }
   /* The strip and its controls slide out of sight to reveal the artwork underneath. */
   .wz-ui[data-mode=strip].off, .wz-ui[data-mode=strip].swap { transform: translateY(101%); transition-delay: .1s; }
   .wz-it { transition: opacity .3s ease calc(var(--i) * 45ms + 110ms), transform .45s cubic-bezier(.2, .8, .2, 1) calc(var(--i) * 45ms + 110ms); }
-  .wz-ui.off .wz-it, .wz-ui.swap .wz-it { opacity: 0; transform: translateY(12px); transition-duration: .18s; transition-delay: calc((4 - var(--i)) * 22ms); }
+  .wz-ui.off .wz-it, .wz-ui.swap .wz-it { opacity: 0; transform: translateY(12px); transition-duration: .18s; transition-delay: calc((5 - var(--i)) * 22ms); }
   .wz-ui input[type=range] { clip-path: inset(0 0 0 0); transition: opacity .25s, clip-path .55s cubic-bezier(.3, .7, .2, 1) calc(var(--i) * 45ms + 240ms); }
   .wz-ui.off input[type=range], .wz-ui.swap input[type=range] { clip-path: inset(0 100% 0 0); transition-delay: 0s; transition-duration: .2s; }
   @media (prefers-reduced-motion: reduce) { .wz-ui, .wz-ui .wz-it, .wz-ui input[type=range] { transition-duration: .01s !important; transition-delay: 0s !important; } }
@@ -34,8 +38,8 @@ const CSS = `
   .wz-row { display: flex; align-items: center; justify-content: center; gap: 6px 22px; }
   .wz-ui:not(.two) { flex-direction: row; align-items: center; gap: 22px; }
   .wz-ui:not(.two) .wz-row { display: contents; }
-  .wz-ui:not(.two) .wz-clock-toggle { order: 3; } .wz-ui:not(.two) .wz-full { order: 4; } .wz-ui:not(.two) label { order: 2; }
-  .wz-ui.two .wz-r1 { justify-content: space-between; } .wz-ui.two .wz-r2 { gap: 14px; } .wz-ui.two label { flex: 1 1 0; }
+  .wz-ui:not(.two) .wz-clock-toggle { order: 3; } .wz-ui:not(.two) .wz-depth-toggle { order: 4; } .wz-ui:not(.two) .wz-full { order: 5; } .wz-ui:not(.two) label { order: 2; }
+  .wz-ui.two .wz-r1 { justify-content: space-between; gap: 10px; } .wz-ui.two .wz-r2 { gap: 14px; } .wz-ui.two label { flex: 1 1 0; }
   .wz-ui.tight { gap: 14px; } .wz-ui.tight .wz-word { display: none; }
   .wz-ui a, .wz-ui button { font: 600 13px/1 ${FACE}; letter-spacing: .06em; text-transform: uppercase; color: inherit; background: none; border: 0; padding: 11px 0 9px; border-bottom: 3px solid transparent; text-decoration: none; cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 7px; }
   .wz-ui a:hover, .wz-ui button:not(:disabled):hover, .wz-ui a:focus-visible, .wz-ui button:focus-visible { border-bottom-color: #dd7f45; outline: none; }
@@ -59,10 +63,10 @@ const CSS = `
   .wz-ui label.muted input, .wz-ui label.muted .wz-trk { opacity: .35; }
   .wz-ui label.muted .wz-trk { cursor: default; }
   .wz-ui label.muted .wz-mute { opacity: .5; text-decoration: line-through; }
-  .wz-hud { position: absolute; left: 10px; top: 8px; font: 12px ui-monospace, monospace; color: #0e1c3a; background: rgba(242, 229, 195, .85); padding: 3px 7px; border-radius: 4px; white-space: pre-wrap; max-width: 92%; z-index: 3; pointer-events: none; }
-`;
-const HTML = `<canvas class="wz-scene"></canvas><div class="wz-grain"></div><time class="wz-clock" hidden><span class="wz-clock-face" role="button" tabindex="0" aria-pressed="false" title="Tap for white or palette color. Hold to move. Triple tap to center. Pinch to resize. Swipe for weight. Keyboard: Enter for color; Home to center; + / − for size; left / right arrows for weight."></span></time>
-  <nav class="wz-ui off" aria-label="Scene controls"><div class="wz-row wz-r1"><a class="wz-home wz-it" style="--i:0" href="./" aria-label="Back to all scenes"><svg class="wz-arrow" viewBox="0 0 24 14"><path d="M0 7 9 0v4.6h15v4.8H9V14z"/></svg><span class="wz-word">Scenes</span></a><button class="wz-clock-toggle wz-it" style="--i:3" aria-pressed="false">Clock<em class="wz-word">off</em></button><button class="wz-full wz-it" style="--i:4" aria-label="Fullscreen" title="Fullscreen"><svg viewBox="0 0 20 20"><path d="M2 7V2h5M13 2h5v5M18 13v5h-5M7 18H2v-5"/></svg></button></div>
+  .wz-hud { position: absolute; left: 10px; top: 8px; font: 12px ui-monospace, monospace; color: #0e1c3a; background: rgba(242, 229, 195, .85); padding: 3px 7px; border-radius: 4px; white-space: pre-wrap; max-width: 92%; z-index: 4; pointer-events: none; }
+` + DEPTH_CSS;
+const HTML = `<canvas class="wz-scene"></canvas><canvas class="wz-foreground" hidden aria-hidden="true"></canvas><div class="wz-grain"></div><time class="wz-clock" hidden><span class="wz-clock-face" role="button" tabindex="0" aria-pressed="false" title="Tap for white or palette color. Hold to move. Triple tap to center. Pinch to resize. Swipe for weight. Keyboard: Enter for color; Home to center; + / − for size; left / right arrows for weight."></span></time>
+  <nav class="wz-ui off" aria-label="Scene controls"><div class="wz-row wz-r1"><a class="wz-home wz-it" style="--i:0" href="./" aria-label="Back to all scenes"><svg class="wz-arrow" viewBox="0 0 24 14"><path d="M0 7 9 0v4.6h15v4.8H9V14z"/></svg><span class="wz-word">Scenes</span></a><button class="wz-clock-toggle wz-it" style="--i:3" aria-pressed="false">Clock<em class="wz-word">off</em></button><button class="wz-depth-toggle wz-it" style="--i:4" aria-label="Choose clock depth" title="Choose clock depth"><svg viewBox="0 0 20 20"><path d="m2 6 8-4 8 4-8 4-8-4Zm0 4 8 4 8-4M2 14l8 4 8-4"/></svg><span class="wz-word">Depth</span><em class="wz-word">off</em></button><button class="wz-full wz-it" style="--i:5" aria-label="Fullscreen" title="Fullscreen"><svg viewBox="0 0 20 20"><path d="M2 7V2h5M13 2h5v5M18 13v5h-5M7 18H2v-5"/></svg></button></div>
   <div class="wz-row wz-r2"><label class="wz-it" style="--i:1"><button class="wz-mute" data-bus="amb" title="Mute or unmute">Ambience</button><input class="wz-amb" type="range" min="0" max="1" step="0.01" aria-label="Ambience volume"></label><label class="wz-it" style="--i:2"><button class="wz-mute" data-bus="mus" title="Mute or unmute">Music</button><input class="wz-mus" type="range" min="0" max="1" step="0.01" aria-label="Music volume"><button class="wz-trk" title="Next track">A</button></label></div></nav><div class="wz-hud" hidden></div>`;
 const title = (scene) => 'Scenes: ' + scene.title.toLowerCase().replace(/\b[a-z]+/g, (w, i) => (i && ['at', 'of', 'the', 'in'].includes(w) ? w : w[0].toUpperCase() + w.slice(1)));
 // Print grain: one small tile of noise, made once and repeated over the scene, so it costs nothing per frame or per size.
@@ -82,6 +86,10 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
   const q = new URLSearchParams(location.search), force = +q.get('res') || 0, skip = at === null ? +q.get('t') || 0 : at - performance.now() / 1000, debug = q.has('debug');
   const root = Object.assign(document.createElement('div'), { className: 'wz-player', innerHTML: HTML }), $ = (c) => root.querySelector('.' + c);
   const scene = $('wz-scene'), grain = $('wz-grain'), ui = $('wz-ui'), hud = $('wz-hud'), ctx = scene.getContext('2d');
+  const foreground = $('wz-foreground'), renderDepth = makeDepthRenderer(ctx, foreground.getContext('2d'), SCENES[first].dark);
+  const depthOptions = depthLayersFor(first), depthKey = 'wavz-clock-depth-' + first;
+  const savedDepth = localStorage.getItem(depthKey);
+  let depthSelection = depthOptions.some(o => o.id === savedDepth) ? savedDepth : 'front';
   const before = { title: document.title, bg: document.body.style.background, htmlBg: document.documentElement.style.background, overflow: document.documentElement.style.overflow, gutter: document.documentElement.style.scrollbarGutter };
   const textless = SCENES[first].textless === true;
   let name = first, L, k = 1, flight = null, closed = false, sound = null, on = false;
@@ -101,7 +109,9 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
     if (!long || !r.width) return;
     const s = (force || Math.min(MAXPX, long * devicePixelRatio)) / long, bw = Math.round(fw * s), bh = Math.round(fh * s);
     if (bw !== scene.width || bh !== scene.height) { scene.width = bw; scene.height = bh; }
+    if (bw !== foreground.width || bh !== foreground.height) { foreground.width = bw; foreground.height = bh; }
     scene.style.width = final ? '' : fw + 'px'; scene.style.height = final ? '' : fh + 'px';
+    foreground.style.width = scene.style.width; foreground.style.height = scene.style.height;
     const w = final ? bw : r.width * s, h = final ? bh : r.height * s, st = final || !mix ? cur : mix;
     L = makeLayout(w / h, SCENES[name], { dark: st.d, frame: st.f, mix: final ? null : mix }); k = w / L.VW;
     if (final) { dock(r.width); fitClock(); }
@@ -111,7 +121,7 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
     ui.dataset.mode = 'strip';
     Object.assign(ui.style, { left: '0', width: '100%', height: '' });
     const css = getComputedStyle(ui), room = w - parseFloat(css.paddingLeft) - parseFloat(css.paddingRight);
-    ui.classList.toggle('two', room < 640); ui.classList.toggle('tight', room >= 640 && room < 740);
+    ui.classList.toggle('two', room < 740); ui.classList.toggle('tight', room < 320 || room >= 740 && room < 860);
   }
   grain.style.backgroundImage = `url(${tile()})`; grain.style.backgroundSize = 512 / devicePixelRatio + 'px';
   grain.hidden = textless && SCENES[first].grain !== true;
@@ -255,7 +265,7 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
     if (dragged) { localStorage.setItem(positionKey, JSON.stringify(position)); dragged = false; reassessPalette(); }
   };
   root.addEventListener('pointerdown', (e) => {
-    if (!clockOn || flight || e.button !== 0 || ui.contains(e.target)) return;
+    if (!clockOn || flight || e.button !== 0 || ui.contains(e.target) || depthPicker.element.contains(e.target)) return;
     if (!clockFace.contains(e.target) && !fingers.size) return;
     if (fingers.size >= 2) return;
     if (!fingers.size) { cancelPositionAnimation(); clearTimeout(tapTimer); tap = { id: e.pointerId, x: e.clientX, y: e.clientY, time: performance.now() }; }
@@ -330,6 +340,21 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
   updateClock();
   document.fonts.ready.then(() => { if (!closed) { fitClock(); clockFontsReady = true; } });
 
+  // ---- depth: a scene's real foreground shapes can cover the clock, beneath the grain.
+  const depthPicker = makeDepthPicker({ root, face: clockFace, button: $('wz-depth-toggle'), title: SCENES[name].title,
+    options: depthOptions, selected: depthSelection,
+    onSelect(id) {
+      depthSelection = id;
+      if (id === 'front') { localStorage.removeItem(depthKey); foreground.hidden = true; }
+      else localStorage.setItem(depthKey, id);
+    },
+    onOpen() {
+      stopClockGesture(); clearTimeout(hide); ui.hidden = true;
+      if (!clockOn) { clockOn = true; localStorage.setItem('wavz-clock', '1'); updateClock(); }
+    },
+    onClose() { ui.hidden = false; show(); },
+  });
+
   // ---- growing out of, and shrinking back into, a rectangle on the page. The poster is recomposed on every frame of
   // the flight, so it reflows into the screen's shape as it travels rather than being stretched.
   // landed: the scene has the screen (not in flight), which is when the space round it is filled in
@@ -359,12 +384,22 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
   // ---- drawing
   const notes = [], note = (m) => { notes.push(((performance.now() / 1000) % 100).toFixed(1) + ' ' + m); if (notes.length > 14) notes.shift(); };   // shown with ?debug
   let last = performance.now(), fps = 60, ms = 0, n = 0;
-  frame1 = (t) => { ctx.setTransform(k, 0, 0, k, 0, 0); draw(ctx, t / LOOP, L, t); };
+  frame1 = (t) => {
+    const paint = c => { c.setTransform(k, 0, 0, k, 0, 0); draw(c, t / LOOP, L, t); };
+    const active = clockOn && depthSelection !== 'front' && !flight;
+    foreground.hidden = !active;
+    if (!active) { paint(ctx); return; }
+    const art = scene.getBoundingClientRect(), text = clockFace.getBoundingClientRect();
+    const x = scene.width / art.width, y = scene.height / art.height;
+    renderDepth(paint, depthSelection, { x: (text.left - art.left - 2) * x, y: (text.top - art.top - 2) * y,
+      width: (text.width + 4) * x, height: (text.height + 4) * y });
+  };
   function tick(now) {
     if (closed) return;
     flight?.(now);
     const t0 = performance.now(), t = now / 1000 + skip;
     frame1(t);
+    depthPicker.updateBounds();
     if (clockOn) updateClockColor(now, t);
     ms += (performance.now() - t0 - ms) * 0.05; fps += (1000 / Math.max(1, now - last) - fps) * 0.05; last = now;
     if (debug && ++n % 3 === 0) hud.textContent = `${scene.width} x ${scene.height}  ${fps.toFixed(0)} fps  draw ${ms.toFixed(1)} ms  t ${t.toFixed(0)} s` + (notes.length ? '\n' + notes.join('\n') : '');
@@ -373,7 +408,7 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
 
   // ---- controls: they show on any movement and fade after a few seconds
   let hide;
-  const show = (e) => { if (flight || (e && (clockFace.contains(e.target) || fingers.size))) return; ui.classList.remove('off'); clearTimeout(hide); hide = setTimeout(() => ui.classList.add('off'), 3500); };
+  const show = (e) => { if (flight || depthPicker.active || (e && (clockFace.contains(e.target) || fingers.size))) return; ui.classList.remove('off'); clearTimeout(hide); hide = setTimeout(() => ui.classList.add('off'), 3500); };
   for (const type of ['pointermove', 'pointerdown']) root.addEventListener(type, show);
   addEventListener('keydown', show);
   // Use DOM fullscreen where supported. On iPhone, keep the full-bleed page/PWA
@@ -386,9 +421,13 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
   // the screen is kept awake while a scene is up, where the browser allows it: these are made to be left running
   let awake = null; const wake2 = () => { if (!closed && document.visibilityState === 'visible') navigator.wakeLock?.request('screen').then((w) => { awake = w; }, () => {}); };
   wake2(); document.addEventListener('visibilitychange', wake2);
-  root.addEventListener('dblclick', (e) => { if (!ui.contains(e.target) && !clockFace.contains(e.target)) toggleFull(); });
+  root.addEventListener('dblclick', (e) => { if (!depthPicker.active && !ui.contains(e.target) && !clockFace.contains(e.target)) toggleFull(); });
   if (home) $('wz-home').addEventListener('click', (e) => { e.preventDefault(); home(); });
-  const esc = (e) => { if (e.key === 'Escape' && !isFull() && !flight) $('wz-home').click(); };
+  const esc = (e) => {
+    if (e.key !== 'Escape' || e.defaultPrevented) return;
+    if (depthPicker.active) { e.preventDefault(); depthPicker.close(); }
+    else if (!isFull() && !flight) $('wz-home').click();
+  };
   addEventListener('keydown', esc);
 
   // ---- sound: on from the start. Ambience and music have their own volumes, and each is muted or brought back by

@@ -2,6 +2,16 @@
 import { make as geometry, setup, gradient, glow, disc, hash, TAU } from './art-kit.js';
 export const title='Afterglow Arcade', no='No. 09', text='#d7d2fc', dark='#18102d', audio=false, textless=true;
 let archSurface, stageSurface;
+const depthMasks = new Map();
+function depthMaskFor(id, G) {
+  if (!['near-arches', 'front-arch', 'sculptures'].includes(id)) return null;
+  if (!depthMasks.has(id)) {
+    const canvas = new OffscreenCanvas(1200, 1200), c = canvas.getContext('2d');
+    c.scale(1200, 1200); c.translate(.5, .5); stage(c, 0, G, id);
+    depthMasks.set(id, canvas);
+  }
+  return depthMasks.get(id);
+}
 function polishedArch() {
   if(archSurface) return archSurface;
   archSurface=new OffscreenCanvas(720,1064);
@@ -36,19 +46,28 @@ export function paint(c,p,t,G) {
     c.save(); c.translate(x,y); c.scale(1,.55); glow(c,0,0,.16+hash(i,15)*.13,'#fff1daaa'); c.restore();
   }
   c.drawImage(G.stage,-.5,-.5,1,1);
+  if (c.depthSelection) {
+    const mask = depthMaskFor(c.depthSelection, G);
+    if (mask) c.depthMask(c.depthSelection, mask, -.5, -.5, 1, 1);
+  }
   // A moving highlight glides over the nearest arch while its geometry stays still.
   arch(c,-.02,-.073,.19,.372,`hsla(${180+Math.sin(t*.15)*30} 90% 70% / ${.22+.15*Math.sin(t*.22)})`,.0016);
   c.restore();
 }
 
-function stage(c,t,G) {
-  c.fillStyle='#060d20'; c.fillRect(-.36,-.4,.72,.82);
-  for(const [x,y,r] of G.stars)disc(c,(x-.5)*.7,y*.52-.39,.0005+r*.0007,`rgba(164,225,255,${.3+r*.45+.12*Math.sin(t*.4+x*20)})`);
-  c.fillStyle=gradient(c,0,.03,0,.42,[[0,'#f2bcb6'],[.25,'#c299bc'],[1,'#8982b4']]); c.fillRect(-.36,.03,.72,.39);
+function stage(c,t,G,from=null) {
+  let visible = from === null;
+  if (visible) {
+    c.fillStyle='#060d20'; c.fillRect(-.36,-.4,.72,.82);
+    for(const [x,y,r] of G.stars)disc(c,(x-.5)*.7,y*.52-.39,.0005+r*.0007,`rgba(164,225,255,${.3+r*.45+.12*Math.sin(t*.4+x*20)})`);
+    c.fillStyle=gradient(c,0,.03,0,.42,[[0,'#f2bcb6'],[.25,'#c299bc'],[1,'#8982b4']]); c.fillRect(-.36,.03,.72,.39);
+  }
   // The vanishing point is shared by every arch and its floor shadow.
   const vx=-.02+Math.sin(t*.07)*.007, horizon=.052;
-  glow(c,vx,horizon-.02,.09,'#ecedf8a0');
+  if (visible) glow(c,vx,horizon-.02,.09,'#ecedf8a0');
   for(let i=11;i>=0;i--) {
+    if (from === 'near-arches' && i === 2 || from === 'front-arch' && i === 0) visible = true;
+    if (!visible) continue;
     const s=Math.pow(.79,i), x=vx, y=horizon-.125*s, r=.18*s, bottom=horizon+.32*s, thick=.043*s;
     c.save(); c.translate(x,bottom); c.scale(1,.18); glow(c,0,0,r*1.5,'#32224c55'); c.restore();
     // Bake the 24 polished bands once; only reflected light changes each frame.
@@ -58,6 +77,8 @@ function stage(c,t,G) {
     c.fillRect(x-r-thick/2,bottom-.02*s,thick,.023*s); c.fillRect(x+r-thick/2,bottom-.02*s,thick,.023*s);
   }
   // Tiny sculptural tree and porcelain orb keep the scale readable.
+  if (from === 'sculptures') visible = true;
+  if (!visible) return;
   c.save(); c.translate(.286,.08); c.rotate(Math.sin(t*.17)*.018);
   c.beginPath(); c.moveTo(-.005,.085); c.bezierCurveTo(.009,.045,-.006,.026,0,-.014); c.strokeStyle='#977130'; c.lineWidth=.007; c.stroke();
   for(let j=0;j<4;j++){c.beginPath();c.moveTo(0,.035);c.lineTo((j-1.5)*.013,-.012);c.strokeStyle='#b69742';c.lineWidth=.002;c.stroke();}

@@ -79,6 +79,7 @@ export function paint(ctx, p, t, G) {
     }, fill);
   }
 
+  ctx.depthLayer?.('train');
   // the train, drawn about its front buffer and scaled a little on a tall screen
   ctx.save(); ctx.translate(x0, TY); ctx.scale(big, big);
   const rock = (i) => 1.3 * Math.sin(t * 7.3 + i * 2.1) + 0.8 * Math.sin(t * 11.7 + i);
@@ -117,6 +118,7 @@ export function paint(ctx, p, t, G) {
   F(ctx, (c) => c.rect(-20, TY - 3, W + 40, WY - TY + 12), C.ink);
   { const s = V * t; ctx.save(); ctx.strokeStyle = C.deep; ctx.lineWidth = 6; ctx.setLineDash([26, 30]); ctx.lineDashOffset = s; ctx.beginPath(); ctx.moveTo(-60, TY + 16); ctx.lineTo(W + 60, TY + 16); ctx.stroke(); ctx.restore(); }
 
+  ctx.depthLayer?.('lake');
   // lake: bands that slide back faster the nearer they are, the train's windows, the moon's path
   for (let j = 0; j < G.POOL; j++) {
     const b = G.band(j), s = -(V * (0.25 + 0.75 * b.u)) * t, e = [];
@@ -136,6 +138,7 @@ export function paint(ctx, p, t, G) {
   { const span = H - WY, r = (k) => hash(k, 9);
     for (let k = 0; k < 14; k++) { const y = WY + 22 + (k / 14) * span * 0.8, a = 0.5 + 0.5 * osc(p, 5 + (k % 5), r(k)), w = (22 + k * 9) * (0.5 + 0.8 * r(k + 40)) * (0.5 + 0.9 * a); F(ctx, (c) => pill(c, mx + (r(k + 80) - 0.5) * (10 + k * 5) + 4 * osc(p, 3, r(k)) - w / 2, y - 4, w, 8), C.gold); } }
 
+  ctx.depthLayer?.('reeds');
   // reeds on the near shore whip past
   { const s = V * 1.6 * t;
     F(ctx, (c) => along(s, W, 120, 200, (x, i) => {

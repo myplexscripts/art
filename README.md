@@ -28,6 +28,10 @@ On the first visit, a short welcome splash leads to the app's features and an an
 
 **Inter** (weights 100–900) is the global variable Google Font for the interface, headings, poster lettering and clock. Its WOFF2 file is self-hosted under [`live/fonts/`](live/fonts/) with its SIL Open Font License and source URL. Font loading needs no Google connection at runtime. The previously supplied Manrope asset remains available.
 
+The toolbar's **Depth** button opens a live clock editor. Horizontal marks on the right select the clock's place among each poster's actual artwork layers, from **In front** through objects such as palms, instruments, ribbons, petals or ripples. The selected layer and anything painted in front of it cover the clock. A light outline shows the clock's touch area while editing, so it can still be held and moved even when obscured. Size, weight, colour and centring gestures remain available. **Done** returns to playback; **In front** turns depth off. Opening the editor turns the clock on if needed. Each poster remembers its own depth choice across reloads, independently of its saved clock position. Arrow keys select layer marks; Tab stays within the editor and Escape closes it. Grain stays above the clock and its foreground artwork.
+
+Depth uses a foreground coverage mask clipped to the clock's area, captured during the existing Canvas 2D drawing pass. The finished poster is shown through that mask so its colours and translucent details stay unchanged. All 44 scenes have authored boundaries; gallery previews use the original rendering without depth. [`scene_depth.py`](scene_depth.py) maintains their labels and reapplies the original scene boundaries during an upstream refresh. Geometry and the cached Afterglow Arcade stage supply their own boundaries. No segmentation service, image downloads or WebGL are required. [View the depth editor](docs/clock-depth-preview.png).
+
 ## Included posters
 
 | Series | Posters |
@@ -90,4 +94,4 @@ python3 import-wavz.py
 python3 import-audio.py
 ```
 
-The first script follows same-site browser dependencies, reapplies hosting adaptations and retains the Music and Geometry collections, Scenes branding, footer removal, reused audio sources, local player, movable clock, welcome guide, variable Inter, Geometry grain and untinted browser chrome. [`live/player-local.js`](live/player-local.js) is the maintained viewer; `live/player.js` re-exports it after an upstream refresh. The second fetches all audio referenced by scenes that support audio, skips files already downloaded and records files unavailable at the source. Neither changes the preserved Lantern Cove page.
+The first script follows same-site browser dependencies, reapplies hosting adaptations and retains the Music and Geometry collections, Scenes branding, footer removal, reused audio sources, local player, movable clock with per-poster depth, welcome guide, variable Inter, Geometry grain and untinted browser chrome. [`live/player-local.js`](live/player-local.js) is the maintained viewer; `live/player.js` re-exports it after an upstream refresh. The second fetches all audio referenced by scenes that support audio, skips files already downloaded and records files unavailable at the source. Neither changes the preserved Lantern Cove page.

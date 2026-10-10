@@ -27,9 +27,11 @@ export function paint(c,p,t,G) {
   rear.moveTo(-.26,-.29); rear.bezierCurveTo(-.05,-.39,-.01,-.2,.19,-.15);
   rear.bezierCurveTo(.48,-.08,.86,-.17,1.2,-.19); rear.lineTo(1.2,.25);
   rear.bezierCurveTo(.72,.16,.26,.1,-.11,.13); rear.bezierCurveTo(-.39,.15,-.47,-.11,-.26,-.29); rear.closePath();
+  c.depthLayer?.('rear');
   surface(c,rear,t,false);
   c.save(); c.globalCompositeOperation='screen';
   glow(c,-.23,-.08,.23,'#b0eaff50'); c.restore();
+  c.depthLayer?.('orb');
   const orb=c.createRadialGradient(-.29,-.17,.014,-.22,-.07,.18);
   orb.addColorStop(0,'#e1ffff'); orb.addColorStop(.22,'#9cf0ff'); orb.addColorStop(.65,'#78c9ed'); orb.addColorStop(1,'#7195e590');
   disc(c,-.23,-.075,.178,orb);
@@ -38,6 +40,7 @@ export function paint(c,p,t,G) {
   front.moveTo(-.28,-.29); front.bezierCurveTo(-.51,-.12,-.43,.09,-.28,.28);
   front.bezierCurveTo(-.03,.59,.28,.33,.71,.56); front.lineTo(1.2,.93); front.lineTo(1.2,.47);
   front.bezierCurveTo(.6,.26,.21,.47,-.04,.21); front.bezierCurveTo(-.19,.03,-.34,-.11,-.28,-.29); front.closePath();
+  c.depthLayer?.('front-ribbon');
   surface(c,front,t,true);
   c.beginPath(); c.moveTo(-.28,-.29); c.bezierCurveTo(-.15,-.35,-.1,-.29,-.03,-.22);
   c.strokeStyle='#d4ffffb0'; c.lineWidth=.0028; c.stroke();

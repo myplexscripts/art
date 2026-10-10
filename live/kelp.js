@@ -104,6 +104,7 @@ export function paint(ctx, p, t, G) {
 
   layer(0.12, () => { kelp(ctx, G.FAR, p, t, K.far, K.far, K.far); F(ctx, (c) => ridge(c, W, H, G.farTop), K.rock1); });
   F(ctx, (c) => school(c, G.ORANGE, t), C.orange);
+  ctx.depthLayer?.('middle');
   layer(0.4, () => {
     kelp(ctx, G.MID, p, t, K.mid, K.mid, K.light);
     F(ctx, (c) => ridge(c, W, H, G.midTop), K.rock2);
@@ -114,6 +115,7 @@ export function paint(ctx, p, t, G) {
     F(ctx, (c) => { for (const u of G.URCHINS) circle(c, u.x, u.y, u.r); }, K.ink);
     F(ctx, (c) => { for (const s of G.STARS) { const pts = [], a0 = s.a + 0.25 * osc(p, 1, s.ph); for (let k = 0; k < 10; k++) { const a = a0 + (k * TAU) / 10, rr = k % 2 ? s.r * 0.42 : s.r; pts.push([s.x + Math.cos(a) * rr, s.y + Math.sin(a) * rr]); } poly(c, pts); } }, C.orange);
   });
+  ctx.depthLayer?.('fish');
   F(ctx, (c) => school(c, G.GOLD, t), C.gold);
 
   // bubbles climb in loose columns and come in again somewhere else
@@ -121,6 +123,7 @@ export function paint(ctx, p, t, G) {
     G.BUB.forEach((b, i) => { const d = b.u + b.v * t, n = Math.floor(d); circle(ctx, hash(i, n) * W + 12 * Math.sin(TAU * (t * b.f + b.ph)), H + 30 - (d - n) * span, b.r * big); });
     ctx.stroke(); }
 
+  ctx.depthLayer?.('near');
   layer(0.9, () => { kelp(ctx, G.NEAR, p, t, K.near, K.near, K.mid); F(ctx, (c) => ridge(c, W, H, G.nearTop), K.ink); });
   // specks in the water ride the surge back and forth
   F(ctx, (c) => { for (const f of G.SPECK) circle(c, frac(f.x + f.d * t + (30 * surge(p, f.lag)) / W) * W, frac(f.y - f.v * t) * H, f.r * big); }, C.cream);
