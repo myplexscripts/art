@@ -7,6 +7,7 @@ const smooth = x => { x = clamp(x); return x * x * (3 - 2 * x); };
 const hash = (n, seed) => { const x = Math.sin(n * 127.1 + seed * 311.7) * 43758.5453; return x - Math.floor(x); };
 const ink = (h, l) => `hsl(${h} 36% ${l}%)`;
 const hueAt = (t, start) => start + t * .32;
+const stacksHue = t => hueAt(t, 218), bloomsHue = t => hueAt(t, 334);
 const make = (W, H) => ({ W, H, S: Math.min(W, H) });
 function noise(t, seed) {
   const n = Math.floor(t), u = t - n, a = hash(n, seed), b = hash(n + 1, seed);
@@ -36,13 +37,13 @@ export function stackState(t, { H, S }) {
     surface: H * .08 + range * drift.value + phase * height,
     scrollSpeed: range * drift.derivative * camera.rate + height * arrival.rate };
 }
-function scene(title, no, dark, audio, render) {
+function scene(title, no, dark, audio, render, clockHue) {
   // The gallery uses the same framed title and number band as the original posters.
-  return { title, no: 'No. ' + no, dark, text: '#0e1c3a', audio, grain: true, make,
+  return { title, no: 'No. ' + no, dark, text: '#0e1c3a', audio, grain: true, clockHue, make,
     paint(c, p, t, G) { c.save(); render(c, t, G); c.restore(); } };
 }
 const stacks = scene('Stacks', '01', '#1d2939', 'openblue', (c, t, G) => {
-  const { W, H } = G, hue = hueAt(t, 218), state = stackState(t, G);
+  const { W, H } = G, hue = stacksHue(t), state = stackState(t, G);
   c.fillStyle = ink(hue, 16); c.fillRect(0, 0, W, H);
   // Each rectangle is a single flat fill: no bevels, borders, shadows or end marks.
   for (let i = Math.ceil(H / state.height) + 2; i >= 0; i--) {
@@ -53,7 +54,7 @@ const stacks = scene('Stacks', '01', '#1d2939', 'openblue', (c, t, G) => {
     c.fillStyle = ink(hue, 51 - depth * 30);
     c.fillRect(slide, y, W, state.height + 1);
   }
-});
+}, stacksHue);
 
 // Each flower keeps the shape and shade it was born with as it expands across the canvas.
 // Cached unit paths make repeated scaling inexpensive on mobile Safari.
@@ -89,7 +90,7 @@ export function bloomState(t, { W, H, S }) {
 }
 export const bloomShape = (birth, state) => mod(Math.floor(birth / state.shapeBirths), bloomShapes.length);
 const blooms = scene('Blooms', '02', '#482c43', 'lavender', (c, t, G) => {
-  const { W, H } = G, hue = hueAt(t, 334), state = bloomState(t, G);
+  const { W, H } = G, hue = bloomsHue(t), state = bloomState(t, G);
   c.fillStyle = ink(hue, 18); c.fillRect(0, 0, W, H);
   c.translate(W / 2, H / 2);
   const count = Math.ceil(state.life / state.cadence) + 1;
@@ -102,7 +103,7 @@ const blooms = scene('Blooms', '02', '#482c43', 'lavender', (c, t, G) => {
     c.fillStyle = ink(hue, bloomShades[mod(birth, bloomShades.length)]);
     bloom(c, radius, bloomShape(birth, state)); c.restore();
   }
-});
+}, bloomsHue);
 
 export function waveState(t, { W, H, S }) {
   // A slow vertical camera scroll reveals different parts of the same ripple field.

@@ -4,7 +4,7 @@
 // For checking: ?debug shows a readout, ?res=3840 forces the long side, ?t=40 starts the clock 40 s in.
 import './nozoom.js';
 import { draw, makeLayout, styleFor, SCENES } from './poster.js';
-import { makePaletteSampler } from './clock-palette.js';
+import { makeClockColor, makePaletteSampler } from './clock-palette.js';
 
 const LOOP = 30, MAXPX = 3840, CREAM = '#f2e5c3', FLIGHT = 650;
 const FACE = '"Inter", system-ui, sans-serif';
@@ -132,17 +132,25 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
   const clockFormat = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' });
   let clockOn = localStorage.getItem('wavz-clock') === '1', clockTimer = 0;
   let clockColored = localStorage.getItem('wavz-clock-color') === 'palette', paletteAt = -Infinity;
+  let clockInk = null, clockFontsReady = false;
+  const clockHue = SCENES[name].clockHue;
   const samplePalette = makePaletteSampler(scene, clockFace);
-  function updateClockColor(now) {
-    clockFace.setAttribute('aria-pressed', String(clockColored));
-    if (!clockColored) { clockFace.style.color = '#fff'; return; }
-    if (!clockOn || !L || now - paletteAt < 1000) return;
-    paletteAt = now; clockFace.style.color = samplePalette(now);
+  clockFace.setAttribute('aria-pressed', String(clockColored));
+  function updateClockColor(now, t) {
+    if (!clockColored || !clockOn || !clockFontsReady || !L || flight || positionAnimation || gesture?.drag) return;
+    if (!clockInk) {
+      // Read only a freshly drawn, settled poster at the clock's final placement.
+      const chosen = samplePalette();
+      if (!chosen) return;
+      clockInk = makeClockColor(chosen.rgb, clockHue?.(t) ?? null);
+    } else if (!clockHue || now - paletteAt < 100) return;
+    paletteAt = now; clockFace.style.color = clockInk(clockHue?.(t));
   }
   const toggleClockColor = () => {
-    clockColored = !clockColored; paletteAt = -Infinity; samplePalette.reset();
+    clockColored = !clockColored; clockInk = null; paletteAt = -Infinity;
     localStorage.setItem('wavz-clock-color', clockColored ? 'palette' : 'white');
-    updateClockColor(performance.now());
+    clockFace.setAttribute('aria-pressed', String(clockColored));
+    if (!clockColored) clockFace.style.color = '#fff';
   };
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
   const savedNumber = (key, fallback, min, max) => {
@@ -170,9 +178,10 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
     if (freeze) position = { x: p.x / root.clientWidth, y: p.y / root.clientHeight };
     placeClock();
   }
-  const reassessPalette = () => { samplePalette.reset(); paletteAt = -Infinity; };
+  const reassessPalette = () => { clockInk = null; paletteAt = -Infinity; };
   function centerClock() {
     cancelPositionAnimation();
+    reassessPalette();
     const from = clockCenter(), x = root.clientWidth / 2, y = root.clientHeight / 2;
     const { halfW, halfH } = clockSize();
     position = { x: .5, y: .5 }; localStorage.removeItem(positionKey); placeClock();
@@ -217,7 +226,6 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
     clock.dateTime = now.toISOString();
     clock.setAttribute('aria-label', 'Current time: ' + clockFace.textContent);
     fitClock();
-    paletteAt = -Infinity; updateClockColor(performance.now());
     clockTimer = setTimeout(updateClock, 60000 - (now.getSeconds() * 1000 + now.getMilliseconds()) + 25);
   }
   // Capture gestures that start on the clock; a second finger may land beside it.
@@ -320,7 +328,7 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
   const resumeClock = () => { if (document.visibilityState === 'visible') updateClock(); };
   document.addEventListener('visibilitychange', resumeClock);
   updateClock();
-  document.fonts.ready.then(() => { if (!closed) fitClock(); });
+  document.fonts.ready.then(() => { if (!closed) { fitClock(); clockFontsReady = true; } });
 
   // ---- growing out of, and shrinking back into, a rectangle on the page. The poster is recomposed on every frame of
   // the flight, so it reflows into the screen's shape as it travels rather than being stretched.
@@ -357,7 +365,7 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
     flight?.(now);
     const t0 = performance.now(), t = now / 1000 + skip;
     frame1(t);
-    if (clockOn) updateClockColor(now);
+    if (clockOn) updateClockColor(now, t);
     ms += (performance.now() - t0 - ms) * 0.05; fps += (1000 / Math.max(1, now - last) - fps) * 0.05; last = now;
     if (debug && ++n % 3 === 0) hud.textContent = `${scene.width} x ${scene.height}  ${fps.toFixed(0)} fps  draw ${ms.toFixed(1)} ms  t ${t.toFixed(0)} s` + (notes.length ? '\n' + notes.join('\n') : '');
     requestAnimationFrame(tick);
