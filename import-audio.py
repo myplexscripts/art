@@ -11,7 +11,7 @@ from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parent
 STORE = 'https://cdn.wavz.us/'
-scene_names = json.loads(subprocess.check_output(['node', '--input-type=module', '-e', "import { SCENES } from './live/poster.js'; console.log(JSON.stringify(Object.keys(SCENES)))"], cwd=ROOT))
+scene_names = json.loads(subprocess.check_output(['node', '--input-type=module', '-e', "import { SCENES } from './live/poster.js'; console.log(JSON.stringify(Object.keys(SCENES).filter(name => SCENES[name].audio !== false)))"], cwd=ROOT))
 sound = (ROOT / 'live/sound.js').read_text()
 layers = {name: re.findall(r"'([^']+\.mp3)'", layer) for name, layer in re.findall(r'^  (\w+): (\[.*\]),$', sound, re.M)}
 names = []

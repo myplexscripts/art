@@ -78,6 +78,21 @@ def adapt_for_local_hosting():
     for icon in manifest['icons']:
         icon['src'] = './' + icon['src'].lstrip('/')
     path.write_text(json.dumps(manifest, indent=2) + '\n')
+    # Retain the locally authored Music Series when refreshing the WAVZ snapshot.
+    if (ROOT / 'live/s-music.js').exists():
+        path = ROOT / 'index.html'
+        path.write_text(path.read_text().replace('Made by <a href="https://nicksaulino.com" rel="author">Nick Saulino</a>', 'WAVZ originals by <a href="https://nicksaulino.com" rel="author">Nick Saulino</a> · Original Music Series made for this collection'))
+        path = ROOT / 'live/poster.js'
+        text = path.read_text().replace("import * as orbit from './s-orbit.js';", "import * as orbit from './s-orbit.js';\nimport * as music from './s-music.js';")
+        text = text.replace('[nocturne, weather, windows, daybreak, deep, orbit]', '[nocturne, weather, windows, daybreak, deep, orbit, music]')
+        path.write_text(text)
+        path = ROOT / 'live/player.js'
+        text = path.read_text().replace('.wz-ui [hidden], .wz-mark[hidden]', '.wz-ui [hidden], .wz-ui .wz-row[hidden], .wz-mark[hidden]')
+        marker = "  const muted = { amb: localStorage.getItem('wavz-ambience-off')"
+        text = text.replace(marker, "  const hasAudio = SCENES[name].audio !== false;\n  root.querySelector('.wz-r2').hidden = !hasAudio;\n" + marker)
+        text = text.replace('  async function startSound() {', '  async function startSound() {\n    if (!hasAudio) return;')
+        text = text.replace('  on = !(muted.amb && muted.mus); levels();', '  on = hasAudio && !(muted.amb && muted.mus); levels();')
+        path.write_text(text)
 
 if __name__ == '__main__':
     main()

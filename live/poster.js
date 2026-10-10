@@ -6,10 +6,11 @@ import * as windows from './s-window.js';
 import * as daybreak from './s-daybreak.js';
 import * as deep from './s-deep.js';
 import * as orbit from './s-orbit.js';
+import * as music from './s-music.js';
 import { C, M, FONT } from './kit.js';
 
 // Each series lists its own scenes; a series with none yet is left out.
-export const SERIES = [nocturne, weather, windows, daybreak, deep, orbit].filter((s) => Object.keys(s.scenes).length);
+export const SERIES = [nocturne, weather, windows, daybreak, deep, orbit, music].filter((s) => Object.keys(s.scenes).length);
 export const SCENES = Object.assign({}, ...SERIES.map((s) => s.scenes));
 export const seriesLine = (scene) => `${LABEL.get(scene)}  ·  ${scene.no}`;   // "NOCTURNE SERIES  ·  No. 03", as printed under a title
 const LABEL = new Map(SERIES.flatMap((s) => Object.values(s.scenes).map((scene) => [scene, s.name.toUpperCase()])));

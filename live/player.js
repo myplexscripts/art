@@ -61,7 +61,7 @@ const CSS = `
   .wz-ui input[type=range]::-moz-range-track { height: 3px; background: color-mix(in srgb, currentColor 28%, transparent); }
   .wz-ui input[type=range]::-moz-range-progress { height: 3px; background: #dd7f45; }
   .wz-ui input[type=range]::-moz-range-thumb { width: 13px; height: 13px; border: 0; border-radius: 50%; background: currentColor; }
-  .wz-ui [hidden], .wz-mark[hidden] { display: none; }
+  .wz-ui [hidden], .wz-ui .wz-row[hidden], .wz-mark[hidden] { display: none; }
   .wz-ui label button { transition: opacity .25s; }
   .wz-ui button.wz-trk { width: 24px; height: 24px; padding: 1px 0 0; justify-content: center; border: 2px solid currentColor; border-radius: 50%; letter-spacing: 0; font-size: 12px; flex: none; }
   .wz-ui button.wz-trk:not(:disabled):hover, .wz-ui button.wz-trk:focus-visible { border-color: #dd7f45; }
@@ -289,6 +289,8 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
   // Browsers only let sound start after a tap or a key: opened from the main page, the tap on the poster counts;
   // opened cold from a link, it starts with the first tap or key anywhere on the scene.
   const amb = $('wz-amb'), mus = $('wz-mus'), trk = $('wz-trk'), sliders = { amb, mus }, KEY = { amb: 'wavz-ambience', mus: 'wavz-music' };
+  const hasAudio = SCENES[name].audio !== false;
+  root.querySelector('.wz-r2').hidden = !hasAudio;
   const muted = { amb: localStorage.getItem('wavz-ambience-off') === '1', mus: localStorage.getItem('wavz-music-off') === '1' };
   amb.value = localStorage.getItem('wavz-ambience') ?? 0.7; mus.value = localStorage.getItem('wavz-music') ?? 0.7;
   const levels = (gentle = false) => {
@@ -297,6 +299,7 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
     trk.disabled = muted.mus; for (const sl of [amb, mus]) sl.style.setProperty('--v', sl.value * 100 + '%');
   };
   async function startSound() {
+    if (!hasAudio) return;
     const { makeSound } = await import('./sound.js');
     sound?.stop(); sound = makeSound(name);
     levels(); sound.onTrack((letter) => { trk.textContent = letter; trk.setAttribute('aria-label', 'Next track, now playing track ' + letter); });
@@ -319,7 +322,7 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
   // its clock running again without ever starting the files it turned away
   const wake = () => { removeEventListener('pointerup', wake); removeEventListener('keydown', wake); if (on && !closed) startSound(); };
   const arm = () => { addEventListener('pointerup', wake); addEventListener('keydown', wake); };
-  on = !(muted.amb && muted.mus); levels();
+  on = hasAudio && !(muted.amb && muted.mus); levels();
   // It is always tried at once: a browser that will not hear of it leaves the sound suspended, and then the first tap
   // or key starts it. (Asking the browser first whether there has been a tap is no good: after a reload it says no,
   // yet lets sound play because the page before had one.)
