@@ -1,16 +1,36 @@
 {
   "series": "Geometry",
+  "scenes": [
+    "Stacks",
+    "Blooms",
+    "Sand"
+  ],
+  "implementation": "Original flat Canvas 2D shapes; no downloaded SVGs, images, bevels or shadows.",
+  "palette": {
+    "hue_degrees_per_second": 0.32,
+    "saturation_percent": 36,
+    "shade": "Darker, muted shades; one hue for all shapes and background at any instant."
+  },
   "reference": "https://www.svgbackgrounds.com/elements/svg-shapes-geometric/",
-  "reference_reviewed": "2026-10-10",
-  "implementation": "Original, locally constructed Canvas vector paths. No external SVG files or other reference assets are copied or requested at runtime.",
-  "audio": false,
-  "textless": true,
   "posters": [
-    {"id": "endlesslayers", "title": "Endless Layers", "shape": "Alternating horizontal rectangles", "motion": "A bar every 2.8 seconds; analytically integrated variable camera drift over 100 seconds; bounded stack coverage; slow color rotation."},
-    {"id": "petalorbit", "title": "Petal Orbit", "shape": "Nested four-lobed petals and satellite circles", "vocabulary": "cross-petal-4-round", "motion": "Slow rotation, staggered breathing and small orbiting discs."},
-    {"id": "archcurrent", "title": "Arch Current", "shape": "Nested half-donut arches with long vertical legs", "vocabulary": "circle-half-donut-stacked", "motion": "Phase-delayed arch drifts around an orbiting accent."},
-    {"id": "quietweave", "title": "Quiet Weave", "shape": "Interlaced rounded rectangles", "vocabulary": "rectangle-quarter-hashtag-shape", "motion": "Gentle diagonal sway and translation with true alternating crossings."},
-    {"id": "prismtide", "title": "Prism Tide", "shape": "Faceted hollow diamonds", "vocabulary": "diamond-long-stacked", "motion": "Staggered floating, soft scale changes and slight tilts."},
-    {"id": "nestedpassage", "title": "Nested Passage", "shape": "Rounded rectangular rings", "vocabulary": "square-large-donut", "motion": "Continuous exponential expansion with hidden offscreen recycling and central fade-in."}
+    {
+      "id": "stacks",
+      "title": "Stacks",
+      "bar_thickness": ".35 * short side (5 \u00d7 previous .07)",
+      "motion": "Smooth seeded random arrival and camera clocks; alternating sides; bounded stack surface; top-to-bottom shade order.",
+      "audio_source": "openblue"
+    },
+    {
+      "id": "blooms",
+      "title": "Blooms",
+      "motion": "A new bloom every 5.8 seconds, starting at zero radius, expanding exponentially while rotating, covering the corners before leaving.",
+      "audio_source": "lavender"
+    },
+    {
+      "id": "sand",
+      "title": "Sand",
+      "motion": "Flat dune ribbons with slow, staggered lateral drift.",
+      "audio_source": "mesa"
+    }
   ]
 }

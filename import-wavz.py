@@ -62,7 +62,7 @@ def adapt_for_local_hosting():
     text = path.read_text()
     text = re.sub(r'<script async src="https://www.googletagmanager.com/gtag/js\?id=G-PKL1DBXEWK"></script>\s*<script>.*?</script>\s*', '', text, count=1, flags=re.S)
     text = text.replace('href="/favicon/', 'href="./favicon/').replace('href="/site.webmanifest', 'href="./site.webmanifest')
-    text = re.sub(r'href="\./site\.webmanifest(?:\?[^\"]*)?"', 'href="./site.webmanifest?v=3"', text, count=1)
+    text = re.sub(r'href="\./site\.webmanifest(?:\?[^\"]*)?"', 'href="./site.webmanifest?v=4"', text, count=1)
     text = text.replace("a.href = '/?scene=' + name", "a.href = '?scene=' + name")
     text = text.replace("history.replaceState(null, '', '/')", "history.replaceState(null, '', location.pathname)")
     path.write_text(text)
@@ -75,7 +75,7 @@ def adapt_for_local_hosting():
     path.write_text(text)
     path = ROOT / 'site.webmanifest'
     manifest = json.loads(path.read_text())
-    manifest.update(start_url='./', scope='./')
+    manifest.update(start_url='./', scope='./', name='Scenes', short_name='Scenes')
     # Leave browser/OS chrome untinted; the iOS status bar overlays the artwork.
     manifest.pop('theme_color', None)
     for icon in manifest['icons']:
@@ -91,9 +91,6 @@ def adapt_for_local_hosting():
         path = ROOT / 'live/poster.js'
         text = path.read_text().replace("import * as orbit from './s-orbit.js';", "import * as orbit from './s-orbit.js';\nimport * as music from './s-music.js';")
         text = text.replace('[nocturne, weather, windows, daybreak, deep, orbit]', '[nocturne, weather, windows, daybreak, deep, orbit, music]')
-        if (ROOT / 'live/s-essentials.js').exists():
-            text = text.replace("import * as music from './s-music.js';", "import * as music from './s-music.js';\nimport * as essentials from './s-essentials.js';")
-            text = text.replace('[nocturne, weather, windows, daybreak, deep, orbit, music]', '[nocturne, weather, windows, daybreak, deep, orbit, music, essentials]')
         text = text.replace('  const VW = width(aspect), VH = VW / aspect, m = M * frame;', '  // Text-free artwork always fills its canvas, including gallery cards and frame transitions.\n  if (scene.textless) frame = 0;\n  const VW = width(aspect), VH = VW / aspect, m = M * frame;')
         path.write_text(text)
         path = ROOT / 'live/player.js'
@@ -120,12 +117,13 @@ def adapt_for_local_hosting():
         path.write_text(text)
     if (ROOT / 'live/player-local.js').exists():
         adapt_local_viewer()
+        adapt_scenes()
 
 def adapt_local_viewer():
     """Retain full-bleed playback, the clock and variable fonts during a source refresh."""
     (ROOT / 'live/player.js').write_text("// Local viewer overrides are retained when refreshing the upstream WAVZ snapshot.\nexport { openScene } from './player-local.js';\n")
     path = ROOT / 'live/kit.js'
-    text = re.sub(r"export const FONT = '[^']*';", "export const FONT = '\"Manrope\", \"Inter\", system-ui, sans-serif';", path.read_text(), count=1)
+    text = re.sub(r"export const FONT = '[^']*';", "export const FONT = '\"Manrope\", system-ui, sans-serif';", path.read_text(), count=1)
     path.write_text(text)
     path = ROOT / 'index.html'
     text = path.read_text()
@@ -134,9 +132,9 @@ def adapt_local_viewer():
     text = text.replace(" document.querySelector('meta[name=viewport]').content += ', viewport-fit=cover';", '')
     if 'href="./live/fonts.css"' not in text:
         text = text.replace('</head>', '<link rel="stylesheet" href="./live/fonts.css">\n</head>')
-    text = re.sub(r'--face: [^;]+;', '--face: "Inter", system-ui, sans-serif;', text, count=1)
+    text = re.sub(r'--face: [^;]+;', '--face: "Manrope", system-ui, sans-serif;', text, count=1)
     if '--display:' not in text:
-        text = text.replace('--face: "Inter", system-ui, sans-serif;', '--face: "Inter", system-ui, sans-serif; --display: "Manrope", "Inter", system-ui, sans-serif;')
+        text = text.replace('--face: "Manrope", system-ui, sans-serif;', '--face: "Manrope", system-ui, sans-serif; --display: "Manrope", system-ui, sans-serif;')
     for tag in ['h1', 'h2']:
         if tag + ' { margin: 0; font-family: var(--display);' not in text:
             text = text.replace(tag + ' { margin: 0;', tag + ' { margin: 0; font-family: var(--display);')
@@ -145,6 +143,35 @@ def adapt_local_viewer():
     old_kern = "        c.font = cs.fontWeight + ' 200px ' + cs.fontFamily; const w = (t) => c.measureText(t).width;\n        for (let i = 1; i < k.length; i++) k[i].style.marginLeft = (w(k[i - 1].textContent + k[i].textContent) - w(k[i - 1].textContent) - w(k[i].textContent)) / 200 + 'em'; })();"
     new_kern = "        const kern = () => { c.font = cs.fontWeight + ' 200px ' + cs.fontFamily; const w = (t) => c.measureText(t).width;\n          for (let i = 1; i < k.length; i++) k[i].style.marginLeft = (w(k[i - 1].textContent + k[i].textContent) - w(k[i - 1].textContent) - w(k[i].textContent)) / 200 + 'em'; };\n        kern(); document.fonts.ready.then(kern); })();"
     text = text.replace(old_kern, new_kern)
+    path.write_text(text)
+
+def adapt_scenes():
+    """Keep the Scenes name, collection selection, footer removal and reused Geometry audio."""
+    path = ROOT / 'index.html'
+    text = path.read_text()
+    text = re.sub(r'<title>[^<]*</title>', '<title>Scenes</title>', text, count=1)
+    text = text.replace('content="WAVZ"', 'content="Scenes"')
+    text = re.sub(r'<h1 aria-label="WAVZ">.*?</h1>', '<h1 aria-label="Scenes">' + ''.join(f'<span style="--i:{i}">{char}</span>' for i, char in enumerate('Scenes')) + '</h1>', text, count=1)
+    text = re.sub(r'\s*<footer>.*?</footer>', '', text, flags=re.S)
+    text = re.sub(r"^\s*\{ const foot = document.querySelector\('footer'\);[^\n]*\}\n", '', text, flags=re.M)
+    text = text.replace('.series, .posters a, footer {', '.series, .posters a {').replace('header p, footer.in, .series.in', 'header p, .series.in')
+    text = '\n'.join(line for line in text.splitlines() if not line.lstrip().startswith('footer')) + '\n'
+    text = text.replace('Living posters for your screen. Open one, go fullscreen, and leave it running.', 'Calming scenes for your screen. Open one, go fullscreen, and unwind.')
+    text = text.replace('"Manrope", "Inter", system-ui, sans-serif', '"Manrope", system-ui, sans-serif')
+    text = text.replace('  function open(name, grow) {\n    player?.close();', "  const resolveSceneName = name => ({ endlesslayers: 'stacks', petalorbit: 'blooms' }[name] ?? name);\n  function open(name, grow) {\n    name = resolveSceneName(name);\n    if (!cards.some(c => c.name === name)) { leave(); return; }\n    player?.close();")
+    text = text.replace("  const asked = new URLSearchParams(location.search).get('scene');", "  const asked = resolveSceneName(new URLSearchParams(location.search).get('scene'));")
+    text = text.replace("    if (!history.state?.scene) history.replaceState({ scene: asked, cold: true }, '');", "    if (history.state?.scene !== asked) history.replaceState({ ...history.state, scene: asked, cold: history.state?.cold ?? true }, '');")
+    path.write_text(text)
+    path = ROOT / 'live/poster.js'
+    text = path.read_text().replace("import * as essentials from './s-essentials.js';\n", '').replace(', essentials', '').replace("set('WAVZ', spec.mark", "set('SCENES', spec.mark")
+    path.write_text(text)
+    path = ROOT / 'live/sound.js'
+    text = path.read_text().replace('export function makeSound(sceneName) {', 'export function makeSound(sceneName, sourceName = sceneName) {')
+    text = text.replace('const TRACKS = tracksFor(sceneName);', 'const TRACKS = tracksFor(sourceName);')
+    text = text.replace('LAYERS[sceneName]', 'LAYERS[sourceName]').replace('amb_${sceneName}', 'amb_${sourceName}').replace('music_${sceneName}', 'music_${sourceName}')
+    if 'const resume = () =>' not in text:
+        text = text.replace('    const s = { play, next:', "    const resume = () => {\n      players[cur].a.play().catch(() => {});\n      const spare = players[1 - cur];\n      if (!spare.a.src) spare.a.src = new URL(files[(i + 1) % files.length], base);\n      spare.a.play().then(() => { if (players[cur] !== spare) spare.a.pause(); }).catch(() => {});\n    };\n    const s = { play, resume, next:")
+    text = text.replace('    resume: () => ac.resume(),', '    resume: () => { const pending = ac.resume(); streams.forEach((s) => s.resume()); return pending.catch(() => {}); },')
     path.write_text(text)
 
 if __name__ == '__main__':

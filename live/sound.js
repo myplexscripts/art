@@ -16,8 +16,8 @@ const LAYERS = {
 // a and b are six minutes; the first two scenes also keep their first, shorter takes as c and d
 const tracksFor = (scene) => (scene === 'beach' || scene === 'jungle' ? ['a', 'b', 'c', 'd'] : ['a', 'b']);
 
-export function makeSound(sceneName) {
-  const TRACKS = tracksFor(sceneName);
+export function makeSound(sceneName, sourceName = sceneName) {
+  const TRACKS = tracksFor(sourceName);
   const ac = new (window.AudioContext || window.webkitAudioContext)();
   const gain = (v) => { const g = ac.createGain(); g.gain.value = v; return g; };
   // everything comes up gently from nothing when a scene starts, and goes down the same way when it stops
@@ -51,21 +51,28 @@ export function makeSound(sceneName) {
     // the idle player is started and stopped once inside the tap that turned sound on, so phones let it play later
     players[1].a.src = new URL(files[0], base); players[1].a.play().then(() => { if (cur !== 1) players[1].a.pause(); }).catch(() => {});
     const timer = setInterval(() => { const a = players[cur].a; if (i >= 0 && a.duration && a.currentTime > a.duration - cross - 0.5) play(i + 1); }, 500);
-    const s = { play, next: () => play(i + 1), stop: () => { clearInterval(timer); players.forEach((q) => q.a.pause()); } };
+    const resume = () => {
+      players[cur].a.play().catch(() => {});
+      // Unlock the spare media element in the same tap for later crossfades on iOS.
+      const spare = players[1 - cur];
+      if (!spare.a.src) spare.a.src = new URL(files[(i + 1) % files.length], base);
+      spare.a.play().then(() => { if (players[cur] !== spare) spare.a.pause(); }).catch(() => {});
+    };
+    const s = { play, resume, next: () => play(i + 1), stop: () => { clearInterval(timer); players.forEach((q) => q.a.pause()); } };
     streams.push(s);
     return s;
   }
 
   // the layers are different lengths, so together they never line up the same way twice
   // scenes without an entry above use amb_<scene>_1 and _2
-  for (const [file, vol] of LAYERS[sceneName] ?? [[`amb_${sceneName}_1.mp3`, 0.9], [`amb_${sceneName}_2.mp3`, 0.7]]) stream([file], amb, vol, 5).play(0);
+  for (const [file, vol] of LAYERS[sourceName] ?? [[`amb_${sourceName}_1.mp3`, 0.9], [`amb_${sourceName}_2.mp3`, 0.7]]) stream([file], amb, vol, 5).play(0);
 
   let onTrack = () => {}, letter = '';
-  const tracks = stream(TRACKS.map((t) => `music_${sceneName}_${t}.mp3`), music, 1, 7, (i) => { letter = TRACKS[i].toUpperCase(); localStorage.setItem('wavz-track-' + sceneName, i); onTrack(letter); });
+  const tracks = stream(TRACKS.map((t) => `music_${sourceName}_${t}.mp3`), music, 1, 7, (i) => { letter = TRACKS[i].toUpperCase(); localStorage.setItem('wavz-track-' + sceneName, i); onTrack(letter); });
   tracks.play((+localStorage.getItem('wavz-track-' + sceneName) || 0) % TRACKS.length);
 
   return {
-    resume: () => ac.resume(),
+    resume: () => { const pending = ac.resume(); streams.forEach((s) => s.resume()); return pending.catch(() => {}); },
     running: () => ac.state === 'running',
     // gentle: a slower change, for muting and unmuting; a slider being dragged wants the quick one
     ambience: (v, gentle) => set(amb.gain, v * v * 0.9, gentle ? 0.4 : 0.12),            // sits under the music: at equal slider positions the music leads

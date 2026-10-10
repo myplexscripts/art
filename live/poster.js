@@ -7,18 +7,17 @@ import * as daybreak from './s-daybreak.js';
 import * as deep from './s-deep.js';
 import * as orbit from './s-orbit.js';
 import * as music from './s-music.js';
-import * as essentials from './s-essentials.js';
 import * as geometry from './s-geometry.js';
 import { C, M, FONT } from './kit.js';
 
 // Each series lists its own scenes; a series with none yet is left out.
-export const SERIES = [nocturne, weather, windows, daybreak, deep, orbit, music, essentials, geometry].filter((s) => Object.keys(s.scenes).length);
+export const SERIES = [nocturne, weather, windows, daybreak, deep, orbit, music, geometry].filter((s) => Object.keys(s.scenes).length);
 export const SCENES = Object.assign({}, ...SERIES.map((s) => s.scenes));
 export const seriesLine = (scene) => `${LABEL.get(scene)}  ·  ${scene.no}`;   // "NOCTURNE SERIES  ·  No. 03", as printed under a title
 const LABEL = new Map(SERIES.flatMap((s) => Object.values(s.scenes).map((scene) => [scene, s.name.toUpperCase()])));
 
 // How the title is set. Narrow posters stack it under the picture; wide ones run it along the bottom.
-// brand: false leaves the WAVZ wordmark off, for posters shown small on a page that already carries it.
+// brand: false leaves the Scenes wordmark off, for posters shown small on a page that already carries it.
 const width = (aspect) => Math.max(1200, 1080 * aspect);
 export const styleFor = (aspect, brand = true) => ({ stacked: width(aspect) < 1500, brand });
 
@@ -75,7 +74,7 @@ export function draw(ctx, p, L, t = 0) {
   const put = (text, s, fill, a) => { if (a <= 0.01) return; ctx.globalAlpha = a; ctx.font = `bold ${s.size}px ${FONT}`; ctx.fillStyle = fill; ctx.fillText(text, s.x - s.ax * ctx.measureText(text).width, s.y); ctx.globalAlpha = 1; };
   const set = (text, s, [light, dark], a = 1) => { a *= frame * frame; if (d < 1) put(text, s, light, a); if (d > 0) put(text, s, dark, a * d); };
   const ink = [scene.text, C.cream], small = [C.rust, C.gold], keep = 1 - (L.fade?.text ?? 0), shut = L.fade?.rule ?? 0, ruleA = shut > 0.995 ? 0 : spec.rule.a;
-  set('WAVZ', spec.mark, ink, spec.mark.a * keep);
+  set('SCENES', spec.mark, ink, spec.mark.a * keep);
   if (ruleA * frame > 0.01) { ctx.globalAlpha = ruleA * frame * frame; ctx.fillStyle = C.orange; ctx.fillRect(spec.rule.x + (spec.rule.w * shut) / 2, spec.rule.y, spec.rule.w * (1 - shut), 6); ctx.globalAlpha = 1; }
   set(scene.title, spec.title, ink, keep);
   set(seriesLine(scene), spec.series, small, keep);

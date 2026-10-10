@@ -1,8 +1,8 @@
 {
   "lang": "en",
   "dir": "ltr",
-  "name": "WAVZ",
-  "short_name": "WAVZ",
+  "name": "Scenes",
+  "short_name": "Scenes",
   "icons": [
     {
       "src": "./favicon/android-chrome-192x192.png?v=2",

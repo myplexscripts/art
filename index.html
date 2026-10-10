@@ -6,14 +6,14 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="WAVZ">
-<title>WAVZ: living posters</title>
+<meta name="apple-mobile-web-app-title" content="Scenes">
+<title>Scenes</title>
 <meta name="description" content="Living posters for your screen. Each scene is drawn live in your browser, fits any screen, and is made to be left running.">
 <link rel="apple-touch-icon" sizes="180x180" href="./favicon/apple-touch-icon.png?v=2">
 <link rel="icon" type="image/svg+xml" href="./favicon/favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="./favicon/favicon-32x32.png?v=2">
 <link rel="icon" type="image/png" sizes="16x16" href="./favicon/favicon-16x16.png?v=2">
-<link rel="manifest" href="./site.webmanifest?v=3">
+<link rel="manifest" href="./site.webmanifest?v=4">
 <link rel="stylesheet" href="./live/fonts.css">
 <script>
   // cold: a scene's own address, so the scene covers the page at once. intro: the first visit of a session, when the
@@ -36,7 +36,7 @@
   /* a scene's own address opens this same page with the scene already over it; the page stays out of sight until it is */
   html.cold main, html.cold body::after { visibility: hidden; }
   @view-transition { navigation: auto; }
-  :root { --cream: #f2e5c3; --navy: #0e1c3a; --orange: #dd7f45; --rust: #8f4520; --face: "Inter", system-ui, sans-serif; --display: "Manrope", "Inter", system-ui, sans-serif; }
+  :root { --cream: #f2e5c3; --navy: #0e1c3a; --orange: #dd7f45; --rust: #8f4520; --face: "Manrope", system-ui, sans-serif; --display: "Manrope", system-ui, sans-serif; }
   /* room is kept for the scrollbar from the start, so the page does not step sideways when the posters give it height */
   html { background: var(--cream); scrollbar-gutter: stable; }
   /* The rows of posters run out to the edges of the page. They measure it by this box (100cqw), not by the window
@@ -80,16 +80,11 @@
   html.intro .rule { transform-origin: left; animation: draw .9s cubic-bezier(.6, 0, .2, 1) .45s both; }
   html.intro header p { animation: settle .6s ease .75s both; }
   html.intro { --d: .95s; }
-  .series, .posters a, footer { opacity: 0; }
-  footer.in { opacity: 1; animation: settle .5s ease calc(var(--d, 0s) + var(--r) * .24s + .7s) both; }   /* last, after the last row has been dealt */
-  footer.seen { opacity: 1; }
+  .series, .posters a { opacity: 0; }
   .series.in { opacity: 1; animation: settle .5s ease calc(var(--d, 0s) + var(--r) * .24s) both; }
   .posters.in a { opacity: 1; animation: deal .75s cubic-bezier(.2, .8, .2, 1) both; animation-delay: calc(var(--d, 0s) + var(--r) * .24s + var(--i) * 80ms + .1s); }
   .series.seen, .posters.seen a { opacity: 1; animation: none; }
-  @media (prefers-reduced-motion: reduce) { html.intro h1 span, html.intro .rule, html.intro header p, footer.in, .series.in, .posters.in a { animation: none; } }
-  footer { margin-top: 28px; font-size: 15px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--rust); }
-  footer a { color: inherit; text-decoration: none; border-bottom: 3px solid var(--orange); padding-bottom: 2px; }
-  footer a:hover, footer a:focus-visible { color: var(--navy); outline: none; }
+  @media (prefers-reduced-motion: reduce) { html.intro h1 span, html.intro .rule, html.intro header p, .series.in, .posters.in a { animation: none; } }
   @media (max-width: 560px) { header p { text-align: left; } }
 </style>
 </head>
@@ -97,9 +92,9 @@
 <div class="page">
 <main>
   <header>
-    <h1 aria-label="WAVZ"><span style="--i:0">W</span><span style="--i:1">A</span><span style="--i:2">V</span><span style="--i:3">Z</span></h1>
+    <h1 aria-label="Scenes"><span style="--i:0">S</span><span style="--i:1">c</span><span style="--i:2">e</span><span style="--i:3">n</span><span style="--i:4">e</span><span style="--i:5">s</span></h1>
     <script>
-      // The wordmark is set as four letters so they can rise one by one, and letters set apart lose their kerning (the A
+      // The wordmark is set as separate letters so they can rise one by one, and letters set apart lose their kerning (the A
       // and V sit too far from each other). Each is pulled back by what the font would have kerned it, so the word is
       // the same width as if it were set whole.
       (() => { const h = document.currentScript.previousElementSibling, cs = getComputedStyle(h), c = document.createElement('canvas').getContext('2d'), k = [...h.children];
@@ -107,11 +102,10 @@
           for (let i = 1; i < k.length; i++) k[i].style.marginLeft = (w(k[i - 1].textContent + k[i].textContent) - w(k[i - 1].textContent) - w(k[i].textContent)) / 200 + 'em'; };
         kern(); document.fonts.ready.then(kern); })();
     </script>
-    <p>Living posters for your screen. Open one, go fullscreen, and leave it running.</p>
+    <p>Calming scenes for your screen. Open one, go fullscreen, and unwind.</p>
   </header>
   <div class="rule"></div>
   <div id="rows"></div>
-  <footer>WAVZ originals by <a href="https://nicksaulino.com" rel="author">Nick Saulino</a> · Music, Essentials and Geometry: original rooms, playlist studies and moving shapes</footer>
 </main>
 </div>
 <script type="module">
@@ -213,7 +207,10 @@
   let player = null;
   history.scrollRestoration = 'manual';   // going back must not move the page under the poster as it shrinks home
   const rectOf = (name) => { const r = cards.find((c) => c.name === name).canvas.getBoundingClientRect(); return { left: r.left, top: r.top, width: r.width, height: r.height }; };
+  const resolveSceneName = name => ({ endlesslayers: 'stacks', petalorbit: 'blooms' }[name] ?? name);
   function open(name, grow) {
+    name = resolveSceneName(name);
+    if (!cards.some(c => c.name === name)) { leave(); return; }
     player?.close();
     const card = cards.find((c) => c.name === name); play(null);
     // back goes back when this page is what lies behind; a scene opened cold has nothing of ours behind it, so its
@@ -236,11 +233,10 @@
   // every row deals itself in on arrival, one after another down the page; under a scene opened cold, they are simply there
   const cold = document.documentElement.classList.contains('cold');
   rows.querySelectorAll('.posters').forEach((wrap, r) => { for (const el of [wrap, wrap.head]) { el.style.setProperty('--r', r); el.classList.add(cold ? 'seen' : 'in'); } });
-  { const foot = document.querySelector('footer'); foot.style.setProperty('--r', rows.querySelectorAll('.posters').length - 1); foot.classList.add(cold ? 'seen' : 'in'); }
   setTimeout(() => document.documentElement.classList.remove('intro'), 6000);   // long after the opening has played out
-  const asked = new URLSearchParams(location.search).get('scene');
+  const asked = resolveSceneName(new URLSearchParams(location.search).get('scene'));
   if (asked && cards.some((c) => c.name === asked)) {
-    if (!history.state?.scene) history.replaceState({ scene: asked, cold: true }, '');
+    if (history.state?.scene !== asked) history.replaceState({ ...history.state, scene: asked, cold: history.state?.cold ?? true }, '');
     cards.find((c) => c.name === asked).canvas.parentNode.scrollIntoView({ behavior: 'instant', block: 'center', inline: 'center' });
     open(asked, false);
   }
