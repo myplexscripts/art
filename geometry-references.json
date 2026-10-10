@@ -3,9 +3,10 @@
   "scenes": [
     "Stacks",
     "Blooms",
-    "Sand"
+    "Deep Waves"
   ],
   "implementation": "Original flat Canvas 2D shapes; no downloaded SVGs, images, bevels or shadows.",
+  "texture": "The collection's shared print-grain overlay covers the artwork and clock.",
   "palette": {
     "hue_degrees_per_second": 0.32,
     "saturation_percent": 36,
@@ -23,14 +24,15 @@
     {
       "id": "blooms",
       "title": "Blooms",
-      "motion": "A new bloom every 5.8 seconds, starting at zero radius, expanding exponentially while rotating, covering the corners before leaving.",
+      "motion": "A new bloom every 5.8 seconds, starting at zero radius, expanding exponentially while rotating. Four-, six-, three- and five-lobed shapes alternate every 32 births (185.6 seconds), longer if needed to cover an extreme viewport; each bloom keeps its birth shape.",
+      "layer_lightness_percent": [22, 57, 31, 66, 42],
       "audio_source": "lavender"
     },
     {
-      "id": "sand",
-      "title": "Sand",
-      "motion": "Flat dune ribbons with slow, staggered lateral drift.",
-      "audio_source": "mesa"
+      "id": "deepwaves",
+      "title": "Deep Waves",
+      "motion": "Flat water ribbons and fine crest lines follow travelling swells, opposing smaller ripples and a slow rise and fall.",
+      "audio_source": "openblue"
     }
   ]
 }

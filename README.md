@@ -20,9 +20,9 @@ Opening a poster fills the entire viewport with artwork, including the safe area
 
 The app adds no status-bar tint, blur, gradient or overlay. The page and manifest omit `theme-color`, and iOS uses `black-translucent` with `viewport-fit=cover` so the artwork can show beneath the status bar in the installed PWA. Any remaining blur or glass in Safari/iOS chrome is controlled by the operating system; websites have no API to remove it. The manifest URL is versioned to refresh the name and old color settings.
 
-The bottom bar's **Clock** button toggles a centered local-time clock. It is off by default, updates on the minute and refreshes when the app resumes. Characters use equal-width cells with a compact gap. There is no shadow. Tap the clock to switch between white and a palette color sampled from the art's edges; the shade is chosen for contrast against the art directly behind the time and follows the animation. Pinch to resize; swipe right for bolder text or left for lighter text (weights 200–800). Color mode, size and weight stay saved across scenes and reloads. Trackpad pinch also resizes it; with the clock focused, Enter/Space changes color, +/− changes size, and left/right arrows change weight. [View the clock](docs/player-clock-preview.png).
+The bottom bar's **Clock** button toggles a centered local-time clock. It is off by default, updates on the minute and refreshes when the app resumes. Inter shapes the whole time naturally, with tight kerning and a narrow colon; the default weight is 800. Text is fully opaque with no shadow and sits beneath the print grain. Tap the clock to switch between white and a solid palette color sampled from the art's edges; the shade is chosen for contrast against the art directly behind the time and follows the animation. Pinch to resize; swipe right for bolder text or left for lighter text (weights 100–900). Color mode, size and weight stay saved across scenes and reloads. Trackpad pinch also resizes it; with the clock focused, Enter/Space changes color, +/− changes size, and left/right arrows change weight. [View the clock](docs/player-clock-preview.png).
 
-**Manrope** (weights 200–800) is the global variable Google Font for the interface, headings, poster lettering and clock. Its WOFF2 file is self-hosted under [`live/fonts/`](live/fonts/) with its SIL Open Font License and source URL. Font loading needs no Google connection at runtime. The previously supplied Inter asset remains available but is not used by Scenes.
+**Inter** (weights 100–900) is the global variable Google Font for the interface, headings, poster lettering and clock. Its WOFF2 file is self-hosted under [`live/fonts/`](live/fonts/) with its SIL Open Font License and source URL. Font loading needs no Google connection at runtime. The previously supplied Manrope asset remains available.
 
 ## Included posters
 
@@ -35,7 +35,7 @@ The bottom bar's **Clock** button toggles a centered local-time clock. It is off
 | Deep | Kelp Forest, Coral Garden, The Wreck, Jellyfish Bloom, Open Blue |
 | Orbit | Earthrise, Ringed Giant, Space Station, Red Planet, Comet Pass |
 | Music | Needle Drop, Tape Loop, Blue Hour, Brass Midnight, Signal Bloom, Silk Current, Orbital Drift, Tidal Bloom, Afterglow Arcade |
-| Geometry | Stacks, Blooms, Sand |
+| Geometry | Stacks, Blooms, Deep Waves |
 
 **Needle Drop** (`?scene=needledrop`) is an original animated listening-room scene: a detailed direct-drive turntable with vinyl grooves, strobe dots, a calibrated pitch fader and a cueing lever, flanked by cloth-front speakers. A shelf of records, rainy round window, pendant light, sleeve, plant and steaming mug establish the room. Its warm rose, plum and teal inks use the collection's shared poster frame. This poster is intentionally silent: it creates no audio context, requests no audio files and hides the player audio controls.
 
@@ -59,15 +59,15 @@ Four additional silent animations take their visual direction from [The Art of A
 
 The scenes use deterministic geometry for fine details and independent, slow clocks for environmental movement. Wood grain, metal fasteners, glass reflections and instrument mechanisms are drawn as vectors; there are no image or audio dependencies in the Music Series.
 
-The **Geometry** collection contains only **Stacks**, **Blooms** and **Sand**. The Essentials series and the other Geometry scenes are no longer registered in the gallery. Previously supplied static Essentials covers remain archived in `covers/essentials/`.
+The **Geometry** collection contains only **Stacks**, **Blooms** and **Deep Waves**. The Essentials series and the other Geometry scenes are no longer registered in the gallery. Previously supplied static Essentials covers remain archived in `covers/essentials/`. Existing `?scene=sand` links open Deep Waves.
 
-All three Geometry scenes use flat shapes and a muted, bedside-friendly palette. The entire canvas shares one hue at a time; only shade varies, and every element rotates through hue at the same slow rate. Animations use standard Canvas 2D and cached vector paths for mobile Safari. Their clocks are independent of frame rate and remain consistent after a resize or a long pause.
+All three Geometry scenes use flat shapes, print grain and a muted, bedside-friendly palette. The grain covers the gallery artwork and both the artwork and clock in the full-screen viewer. The entire canvas shares one hue at a time; only shade varies, and every element rotates through hue at the same slow rate. Animations use standard Canvas 2D and cached vector paths for mobile Safari. Their clocks are independent of frame rate and remain consistent after a resize or a long pause.
 
 | Scene | Motion | Reused ambience and music |
 | --- | --- | --- |
 | **Stacks** (`?scene=stacks`) | Flat bars are exactly five times the previous thickness. Left/right arrivals and camera drift independently change pace through smooth seeded randomness. Shades run from light at the top to dark at the bottom. Bounded drift always leaves background showing. | Open Blue: deep-water ambience and its two music tracks. |
-| **Blooms** (`?scene=blooms`) | New four-lobed blooms start at zero radius in the center, expand and rotate, and leave only after covering the corners. Younger blooms layer over older ones for an endless outward flow. | Lavender Field: field ambience and its two music tracks. |
-| **Sand** (`?scene=sand`) | Broad, flat dune ribbons drift with long, staggered phases. | Desert Mesa: wind/night ambience and its two music tracks. |
+| **Blooms** (`?scene=blooms`) | Contrasting shades alternate between expanding flowers. A new bloom starts at zero radius every 5.8 seconds. Four-, six-, three- and five-lobed shapes take turns about every three minutes, with enough time to fill the canvas. Existing blooms keep their shape as the next variation emerges from the center. | Lavender Field: field ambience and its two music tracks. |
+| **Deep Waves** (`?scene=deepwaves`) | Flat water ribbons and fine crest lines undulate with travelling swells, opposing ripples and a gentle rise and fall. | Open Blue: deep-water ambience and its two music tracks. |
 
 The audio uses existing local files, streamed and crossfaded through the same Ambience, Music and Next Track controls as the original scenes. Track choices are saved separately for each new scene. On iOS, an initial tap can unlock playback when autoplay is blocked.
 
@@ -86,4 +86,4 @@ python3 import-wavz.py
 python3 import-audio.py
 ```
 
-The first script follows same-site browser dependencies, reapplies hosting adaptations and retains the Music and Geometry collections, Scenes branding, footer removal, reused audio sources, local player, clock, variable Manrope and untinted browser chrome. [`live/player-local.js`](live/player-local.js) is the maintained viewer; `live/player.js` re-exports it after an upstream refresh. The second fetches all audio referenced by scenes that support audio, skips files already downloaded and records files unavailable at the source. Neither changes the preserved Lantern Cove page.
+The first script follows same-site browser dependencies, reapplies hosting adaptations and retains the Music and Geometry collections, Scenes branding, footer removal, reused audio sources, local player, clock, variable Inter, Geometry grain and untinted browser chrome. [`live/player-local.js`](live/player-local.js) is the maintained viewer; `live/player.js` re-exports it after an upstream refresh. The second fetches all audio referenced by scenes that support audio, skips files already downloaded and records files unavailable at the source. Neither changes the preserved Lantern Cove page.

@@ -123,7 +123,7 @@ def adapt_local_viewer():
     """Retain full-bleed playback, the clock and variable fonts during a source refresh."""
     (ROOT / 'live/player.js').write_text("// Local viewer overrides are retained when refreshing the upstream WAVZ snapshot.\nexport { openScene } from './player-local.js';\n")
     path = ROOT / 'live/kit.js'
-    text = re.sub(r"export const FONT = '[^']*';", "export const FONT = '\"Manrope\", system-ui, sans-serif';", path.read_text(), count=1)
+    text = re.sub(r"export const FONT = '[^']*';", "export const FONT = '\"Inter\", system-ui, sans-serif';", path.read_text(), count=1)
     path.write_text(text)
     path = ROOT / 'index.html'
     text = path.read_text()
@@ -132,9 +132,11 @@ def adapt_local_viewer():
     text = text.replace(" document.querySelector('meta[name=viewport]').content += ', viewport-fit=cover';", '')
     if 'href="./live/fonts.css"' not in text:
         text = text.replace('</head>', '<link rel="stylesheet" href="./live/fonts.css">\n</head>')
-    text = re.sub(r'--face: [^;]+;', '--face: "Manrope", system-ui, sans-serif;', text, count=1)
+    text = re.sub(r'--face: [^;]+;', '--face: "Inter", system-ui, sans-serif;', text, count=1)
     if '--display:' not in text:
-        text = text.replace('--face: "Manrope", system-ui, sans-serif;', '--face: "Manrope", system-ui, sans-serif; --display: "Manrope", system-ui, sans-serif;')
+        text = text.replace('--face: "Inter", system-ui, sans-serif;', '--face: "Inter", system-ui, sans-serif; --display: "Inter", system-ui, sans-serif;')
+    else:
+        text = re.sub(r'--display: [^;]+;', '--display: "Inter", system-ui, sans-serif;', text, count=1)
     for tag in ['h1', 'h2']:
         if tag + ' { margin: 0; font-family: var(--display);' not in text:
             text = text.replace(tag + ' { margin: 0;', tag + ' { margin: 0; font-family: var(--display);')
@@ -157,8 +159,12 @@ def adapt_scenes():
     text = text.replace('.series, .posters a, footer {', '.series, .posters a {').replace('header p, footer.in, .series.in', 'header p, .series.in')
     text = '\n'.join(line for line in text.splitlines() if not line.lstrip().startswith('footer')) + '\n'
     text = text.replace('Living posters for your screen. Open one, go fullscreen, and leave it running.', 'Calming scenes for your screen. Open one, go fullscreen, and unwind.')
-    text = text.replace('"Manrope", "Inter", system-ui, sans-serif', '"Manrope", system-ui, sans-serif')
-    text = text.replace('  function open(name, grow) {\n    player?.close();', "  const resolveSceneName = name => ({ endlesslayers: 'stacks', petalorbit: 'blooms' }[name] ?? name);\n  function open(name, grow) {\n    name = resolveSceneName(name);\n    if (!cards.some(c => c.name === name)) { leave(); return; }\n    player?.close();")
+    if '.posters a.grained::after' not in text:
+        text = text.replace('  .posters a.textless canvas { position: relative; z-index: 1; }', '  .posters a.textless canvas { position: relative; z-index: 1; }\n  .posters a.grained { position: relative; }\n  .posters a.grained::after { content: ""; position: absolute; inset: 0; z-index: 2; background: var(--grain, none); background-size: var(--grain-size, 256px); pointer-events: none; }')
+    if "a.classList.toggle('grained'" not in text:
+        text = text.replace("    a.classList.toggle('textless', scene.textless === true);", "    a.classList.toggle('textless', scene.textless === true);\n    a.classList.toggle('grained', scene.grain === true);")
+    text = text.replace('  function open(name, grow) {\n    player?.close();', "  const resolveSceneName = name => ({ endlesslayers: 'stacks', petalorbit: 'blooms', sand: 'deepwaves' }[name] ?? name);\n  function open(name, grow) {\n    name = resolveSceneName(name);\n    if (!cards.some(c => c.name === name)) { leave(); return; }\n    player?.close();")
+    text = text.replace("petalorbit: 'blooms' }", "petalorbit: 'blooms', sand: 'deepwaves' }")
     text = text.replace("  const asked = new URLSearchParams(location.search).get('scene');", "  const asked = resolveSceneName(new URLSearchParams(location.search).get('scene'));")
     text = text.replace("    if (!history.state?.scene) history.replaceState({ scene: asked, cold: true }, '');", "    if (history.state?.scene !== asked) history.replaceState({ ...history.state, scene: asked, cold: history.state?.cold ?? true }, '');")
     path.write_text(text)

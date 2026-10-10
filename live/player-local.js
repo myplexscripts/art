@@ -7,16 +7,16 @@ import { draw, makeLayout, styleFor, SCENES } from './poster.js';
 import { makePaletteSampler } from './clock-palette.js';
 
 const LOOP = 30, MAXPX = 3840, CREAM = '#f2e5c3', FLIGHT = 650;
-const FACE = '"Manrope", system-ui, sans-serif';
+const FACE = '"Inter", system-ui, sans-serif';
 let clockId = 0;
 const CSS = `
   .wz-player { position: fixed; inset: 0; z-index: 10; overflow: hidden; -webkit-user-select: none; user-select: none; --wz-safe-left: env(safe-area-inset-left, 0px); --wz-safe-right: env(safe-area-inset-right, 0px); --wz-safe-bottom: env(safe-area-inset-bottom, 0px); }
   /* Artwork covers every edge, including the notch and home indicator. Only controls are inset. */
   .wz-player canvas, .wz-grain { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
   .wz-grain { pointer-events: none; z-index: 2; }
-  .wz-clock { position: absolute; inset: 0; display: grid; place-items: center; z-index: 3; pointer-events: none; margin: 0; color: #fff; font: 500 clamp(40px, 14vmin, 180px)/1 "Manrope", system-ui, sans-serif; font-variant-numeric: tabular-nums; letter-spacing: 0; white-space: nowrap; text-shadow: none; }
-  .wz-clock-face { pointer-events: auto; touch-action: none; padding: 20px; cursor: ew-resize; display: inline-flex; gap: .015em; font-kerning: none; transition: color 1s linear; }
-  .wz-clock-char { display: inline-flex; align-items: center; justify-content: center; width: .61em; flex: none; }
+  .wz-clock { position: absolute; inset: 0; display: grid; place-items: center; z-index: 1; pointer-events: none; margin: 0; color: #fff; opacity: 1; font: 800 clamp(40px, 14vmin, 180px)/1 "Inter", system-ui, sans-serif; letter-spacing: -.04em; white-space: nowrap; text-shadow: none; }
+  /* Shape the whole time as one text run: the colon and AM/PM space keep their natural widths. */
+  .wz-clock-face { pointer-events: auto; touch-action: none; padding: 20px; cursor: ew-resize; display: inline-block; font-kerning: normal; opacity: 1; }
   .wz-clock-face:focus-visible { outline: 1px solid currentColor; outline-offset: -10px; border-radius: 12px; }
   .wz-clock[hidden] { display: none; }
   /* The bottom controls slide over the artwork and never reserve space in its canvas. */
@@ -113,7 +113,7 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
     ui.classList.toggle('two', room < 640); ui.classList.toggle('tight', room >= 640 && room < 740);
   }
   grain.style.backgroundImage = `url(${tile()})`; grain.style.backgroundSize = 512 / devicePixelRatio + 'px';
-  grain.hidden = textless;
+  grain.hidden = textless && SCENES[first].grain !== true;
   let pending;
   const refit = () => { clearTimeout(pending); pending = setTimeout(() => { if (!flight && !closed) fit(); }, 120); };
   const listen = [[window, 'resize'], [window, 'orientationchange'], [screen.orientation, 'change'], [window.visualViewport, 'resize'], [document, 'fullscreenchange'], [document, 'webkitfullscreenchange']].filter(([t]) => t);
@@ -148,7 +148,7 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
     const saved = localStorage.getItem(key), value = saved === null ? fallback : Number(saved);
     return clamp(Number.isFinite(value) ? value : fallback, min, max);
   };
-  let clockScale = savedNumber('wavz-clock-scale', 1, .5, 4), clockWeight = savedNumber('wavz-clock-weight', 500, 200, 800);
+  let clockScale = savedNumber('wavz-clock-scale', 1, .5, 4), clockWeight = savedNumber('wavz-clock-weight', 800, 100, 900);
   function fitClock() {
     clockFace.style.fontWeight = String(clockWeight);
     if (!clockOn || closed) return;
@@ -171,10 +171,8 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
     clockToggle.setAttribute('aria-label', 'Clock: ' + (clockOn ? 'on' : 'off'));
     if (!clockOn || closed) return;
     const now = new Date();
-    const text = clockFormat.format(now);
-    clockFace.replaceChildren(...Array.from(text, char => {
-      const span = document.createElement('span'); span.className = 'wz-clock-char'; span.textContent = char; span.setAttribute('aria-hidden', 'true'); return span;
-    }));
+    const text = clockFormat.format(now).replace(/[\u00a0\u202f]/g, ' ');
+    clockFace.textContent = text;
     clockFace.setAttribute('aria-label', 'Current time: ' + text + '. Tap to change clock color.');
     clock.dateTime = now.toISOString();
     clock.setAttribute('aria-label', 'Current time: ' + clockFace.textContent);
@@ -214,7 +212,7 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
     else {
       const dx = e.clientX - gesture.x, dy = e.clientY - gesture.y;
       if (Math.abs(dx) < 8 || Math.abs(dx) < Math.abs(dy)) return;
-      clockWeight = Math.round(clamp(gesture.weight + dx * 2, 200, 800));
+      clockWeight = Math.round(clamp(gesture.weight + dx * 2, 100, 900));
     }
     fitClock();
   });
@@ -234,7 +232,7 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
   }, { passive: false });
   clockFace.addEventListener('keydown', (e) => {
     if (['Enter', ' '].includes(e.key)) { e.preventDefault(); toggleClockColor(); return; }
-    if (['ArrowLeft', 'ArrowRight'].includes(e.key)) clockWeight = clamp(clockWeight + (e.key === 'ArrowRight' ? 50 : -50), 200, 800);
+    if (['ArrowLeft', 'ArrowRight'].includes(e.key)) clockWeight = clamp(clockWeight + (e.key === 'ArrowRight' ? 50 : -50), 100, 900);
     else if (['+', '=', '-', '−'].includes(e.key)) clockScale = clamp(clockScale * (['+', '='].includes(e.key) ? 1.1 : 1 / 1.1), .5, 4);
     else return;
     e.preventDefault(); fitClock(); saveClockStyle();

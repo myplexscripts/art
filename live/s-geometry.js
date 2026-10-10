@@ -37,7 +37,7 @@ export function stackState(t, { H, S }) {
     scrollSpeed: range * drift.derivative * camera.rate + height * arrival.rate };
 }
 function scene(title, no, dark, audio, render) {
-  return { title, no: 'No. ' + no, dark, text: '#f5ead8', audio, textless: true, make,
+  return { title, no: 'No. ' + no, dark, text: '#f5ead8', audio, textless: true, grain: true, make,
     paint(c, p, t, G) { c.save(); render(c, t, G); c.restore(); } };
 }
 const stacks = scene('Stacks', '01', '#1d2939', 'openblue', (c, t, G) => {
@@ -54,26 +54,39 @@ const stacks = scene('Stacks', '01', '#1d2939', 'openblue', (c, t, G) => {
   }
 });
 
-// A unit bloom is cached as a vector path, making repeated scaling inexpensive on mobile Safari.
-let bloomPath;
-function bloom(c, radius) {
-  if (!bloomPath) {
-    bloomPath = new Path2D();
+// Each flower keeps the shape and shade it was born with as it expands across the canvas.
+// Cached unit paths make repeated scaling inexpensive on mobile Safari.
+const bloomShapes = [
+  { lobes: 4, base: .79, petal: .21 },
+  { lobes: 6, base: .84, petal: .16 },
+  { lobes: 3, base: .80, petal: .20 },
+  { lobes: 5, base: .82, petal: .18 },
+];
+const bloomPaths = [];
+const bloomShades = [22, 57, 31, 66, 42];
+const mod = (n, length) => (n % length + length) % length;
+function bloom(c, radius, shape) {
+  if (!bloomPaths[shape]) {
+    const path = new Path2D(), { lobes, base, petal } = bloomShapes[shape];
     for (let i = 0; i <= 128; i++) {
-      const a = i / 128 * TAU, r = .79 + .21 * Math.cos(a * 4);
+      const a = i / 128 * TAU, r = base + petal * Math.cos(a * lobes);
       const x = r * Math.cos(a), y = r * Math.sin(a);
-      i ? bloomPath.lineTo(x, y) : bloomPath.moveTo(x, y);
+      i ? path.lineTo(x, y) : path.moveTo(x, y);
     }
-    bloomPath.closePath();
+    path.closePath(); bloomPaths[shape] = path;
   }
-  c.save(); c.scale(radius, radius); c.fill(bloomPath); c.restore();
+  c.save(); c.scale(radius, radius); c.fill(bloomPaths[shape]); c.restore();
 }
 export function bloomState(t, { W, H, S }) {
   const cadence = 5.8, growth = .066, unit = S * .045;
   const cover = Math.hypot(W, H) / (2 * .58) * 1.12;
   const life = Math.log1p(cover / unit) / growth;
-  return { cadence, growth, unit, cover, life, born: Math.floor(t / cadence) };
+  // About three minutes per shape, and longer on extreme aspect ratios if needed.
+  // Even the last bloom can fill the viewport before the following shape takes over.
+  const shapeBirths = Math.max(32, Math.ceil(life / cadence) + 2);
+  return { cadence, growth, unit, cover, life, shapeBirths, born: Math.floor(t / cadence) };
 }
+export const bloomShape = (birth, state) => mod(Math.floor(birth / state.shapeBirths), bloomShapes.length);
 const blooms = scene('Blooms', '02', '#482c43', 'lavender', (c, t, G) => {
   const { W, H } = G, hue = hueAt(t, 334), state = bloomState(t, G);
   c.fillStyle = ink(hue, 18); c.fillRect(0, 0, W, H);
@@ -84,27 +97,36 @@ const blooms = scene('Blooms', '02', '#482c43', 'lavender', (c, t, G) => {
     const birth = state.born - i, age = t - birth * state.cadence;
     const radius = state.unit * Math.expm1(age * state.growth);
     if (radius <= 0) continue;
-    const depth = clamp(Math.log1p(radius / state.unit) / Math.log1p(state.cover / state.unit));
     c.save(); c.rotate(t * .015 + birth * .22 + Math.sin(age * .03) * .08);
-    c.fillStyle = ink(hue, 51 - depth * 30); bloom(c, radius); c.restore();
+    c.fillStyle = ink(hue, bloomShades[mod(birth, bloomShades.length)]);
+    bloom(c, radius, bloomShape(birth, state)); c.restore();
   }
 });
 
-const sand = scene('Sand', '03', '#46392c', 'mesa', (c, t, { W, H, S }) => {
-  const hue = hueAt(t, 30);
-  c.fillStyle = ink(hue, 43); c.fillRect(0, 0, W, H);
-  // Broad, flat dune ribbons drift sideways with long, unequal phases.
-  for (let i = 0; i < 7; i++) {
+const deepwaves = scene('Deep Waves', '03', '#183340', 'openblue', (c, t, { W, H, S }) => {
+  const hue = hueAt(t, 205), bands = 10;
+  c.fillStyle = ink(hue, 17); c.fillRect(0, 0, W, H);
+  // Travelling swells and smaller, opposing ripples deform each flat water ribbon.
+  // Neighbouring lines share the main swell so the surface moves as a body of water.
+  for (let i = 0; i < bands; i++) {
+    const baseline = H * (.07 + i * .105), phase = i * .38;
+    const crest = x => baseline
+      + Math.sin(x / W * TAU * 1.25 - t * .18 + phase) * S * .052
+      + Math.sin(x / W * TAU * 2.4 + t * .12 + phase * 1.6) * S * .019
+      + Math.sin(t * .065 + i * .55) * S * .012;
     c.beginPath();
-    const baseline = H * (.13 + i * .135), drift = t * (.016 + i * .0017);
-    for (let j = 0; j <= 64; j++) {
-      const x = W * j / 64;
-      const y = baseline + Math.sin(x / W * Math.PI * 1.2 + drift + i * .56) * S * .095
-        + Math.sin(x / W * Math.PI * 2.1 - t * .012 + i) * S * .027;
+    for (let j = 0; j <= 96; j++) {
+      const x = W * j / 96, y = crest(x);
       j ? c.lineTo(x, y) : c.moveTo(x, y);
     }
     c.lineTo(W, H); c.lineTo(0, H); c.closePath();
-    c.fillStyle = ink(hue, 40 - i * 3.6); c.fill();
+    c.fillStyle = ink(hue, (i % 2 === 0 ? 32 : 24) + i * .9); c.fill();
+    c.beginPath();
+    for (let j = 0; j <= 96; j++) {
+      const x = W * j / 96, y = crest(x);
+      j ? c.lineTo(x, y) : c.moveTo(x, y);
+    }
+    c.strokeStyle = ink(hue, 49 + i * .7); c.lineWidth = Math.max(1, S * .0025); c.stroke();
   }
 });
-export const scenes = { stacks, blooms, sand };
+export const scenes = { stacks, blooms, deepwaves };
