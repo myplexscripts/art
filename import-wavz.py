@@ -78,16 +78,19 @@ def adapt_for_local_hosting():
     for icon in manifest['icons']:
         icon['src'] = './' + icon['src'].lstrip('/')
     path.write_text(json.dumps(manifest, indent=2) + '\n')
-    # Retain the locally authored Music Series when refreshing the WAVZ snapshot.
+    # Retain the locally authored series when refreshing the WAVZ snapshot.
     if (ROOT / 'live/s-music.js').exists():
         path = ROOT / 'index.html'
-        path.write_text(path.read_text().replace('Made by <a href="https://nicksaulino.com" rel="author">Nick Saulino</a>', 'WAVZ originals by <a href="https://nicksaulino.com" rel="author">Nick Saulino</a> · Music Series: original rooms and playlist-art interpretations'))
+        path.write_text(path.read_text().replace('Made by <a href="https://nicksaulino.com" rel="author">Nick Saulino</a>', 'WAVZ originals by <a href="https://nicksaulino.com" rel="author">Nick Saulino</a> · Music and Essentials: original rooms and playlist-art interpretations'))
         text = path.read_text().replace('  .posters canvas { width: 100%; height: 100%; display: block; }', '  .posters canvas { width: 100%; height: 100%; display: block; }\n  .posters a.textless canvas { position: relative; z-index: 1; }')
         text = text.replace("    a.draggable = false;", "    a.classList.toggle('textless', scene.textless === true);\n    a.draggable = false;")
         path.write_text(text)
         path = ROOT / 'live/poster.js'
         text = path.read_text().replace("import * as orbit from './s-orbit.js';", "import * as orbit from './s-orbit.js';\nimport * as music from './s-music.js';")
         text = text.replace('[nocturne, weather, windows, daybreak, deep, orbit]', '[nocturne, weather, windows, daybreak, deep, orbit, music]')
+        if (ROOT / 'live/s-essentials.js').exists():
+            text = text.replace("import * as music from './s-music.js';", "import * as music from './s-music.js';\nimport * as essentials from './s-essentials.js';")
+            text = text.replace('[nocturne, weather, windows, daybreak, deep, orbit, music]', '[nocturne, weather, windows, daybreak, deep, orbit, music, essentials]')
         text = text.replace('  const VW = width(aspect), VH = VW / aspect, m = M * frame;', '  // Text-free artwork always fills its canvas, including gallery cards and frame transitions.\n  if (scene.textless) frame = 0;\n  const VW = width(aspect), VH = VW / aspect, m = M * frame;')
         path.write_text(text)
         path = ROOT / 'live/player.js'

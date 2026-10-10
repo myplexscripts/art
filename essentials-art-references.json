@@ -1,0 +1,80 @@
+{
+  "archive": "https://artofapplemusic.com/",
+  "collection_filter": "Essentials",
+  "retrieved": "2026-10-10",
+  "method": "Six newly coded, silent geometric interpretations; no source images, videos, lettering or logos are included.",
+  "references": [
+    {
+      "scene": "clubprism",
+      "title": "Club Prism",
+      "genre": "Dance / EDM",
+      "bpm": 124,
+      "animation": "Striped triangular spotlights sweep on a four-on-the-floor clock.",
+      "reference": "EDM Essentials",
+      "collection": "Essentials",
+      "curator": "Apple Music Dance",
+      "playlist": "https://music.apple.com/gb/playlist/edm-essentials/pl.733395f7caac4866b61dc281ac50bb2d",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/TestSource221/v4/1b/27/22/1b27229a-c9e3-3b5b-6fa8-63b96ffbcdc6/c967c2b7-d630-406b-86f4-d8cda274e814.png/3840x3840bb.png"
+    },
+    {
+      "scene": "breakgrid",
+      "title": "Break Grid",
+      "genre": "Hip-hop",
+      "bpm": 88,
+      "animation": "Chopped blocks and quarter circles hop on the kick and snare, with a looping sample strip.",
+      "reference": "Alternative Hip-Hop Essentials",
+      "collection": "Essentials",
+      "curator": "Apple Music Hip-Hop",
+      "playlist": "https://music.apple.com/gb/playlist/alternative-rap-essentials/pl.c50280b15852442ba25ca9949fa1a6a5",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features221/v4/60/59/57/60595722-f391-e871-f979-123e23e06c8a/11bd3507-1a0f-4e0d-844b-11d3df9702b8.png/3840x3840bb.png"
+    },
+    {
+      "scene": "bluenotes",
+      "title": "Blue Notes",
+      "genre": "Jazz",
+      "bpm": 108,
+      "animation": "Ivory and teal bars move to eighth notes with a 2:1 swing ratio.",
+      "reference": "Jazz Piano Essentials",
+      "collection": "Essentials",
+      "curator": "Apple Music Jazz",
+      "playlist": "https://music.apple.com/gb/playlist/jazz-piano-essentials/pl.5d571bccbe60493eaadf6bb467720feb",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/ad/c9/c2/adc9c2ec-a4c2-7793-7b4e-d7c599b9df46/d10d07d0-a255-42a7-8c47-732b738c1b76.png/3840x3840bb.png"
+    },
+    {
+      "scene": "riffcut",
+      "title": "Riff Cut",
+      "genre": "Punk rock",
+      "bpm": 168,
+      "animation": "Angular spikes jab and diagonal cuts slash on a fast guitar backbeat.",
+      "reference": "Classic Punk Essentials",
+      "collection": "Essentials",
+      "curator": "Apple Music Punk",
+      "playlist": "https://music.apple.com/gb/playlist/classic-punk-essentials/pl.878b36908fda455c8dd2cb0b5ef7ef0e",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/d1/68/fa/d168faa0-b06c-6bfd-b3bf-8d87f32e8078/3b59f0c3-246a-4a3b-ab04-9c4a32d649e4.png/3840x3840bb.png"
+    },
+    {
+      "scene": "stillfields",
+      "title": "Still Fields",
+      "genre": "Ambient",
+      "bpm": null,
+      "animation": "Horizontal mint-to-forest colour planes drift over long independent breaths.",
+      "reference": "Ambient Essentials",
+      "collection": "Essentials",
+      "curator": "",
+      "playlist": "https://music.apple.com/gb/playlist/ambient-essentials/pl.472dc0c5efe548bb9846e484378aa47b",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features221/v4/98/a6/4d/98a64d1a-5c30-67fd-640f-78c3bc819a84/8678027c-f51e-412c-831e-9f7aed018f46.png/3840x3840bb.png"
+    },
+    {
+      "scene": "funkspiral",
+      "title": "Funk Spiral",
+      "genre": "Funk",
+      "bpm": 104,
+      "animation": "Orange and violet curved sectors rotate and flex on syncopated accents.",
+      "reference": "Funk Essentials",
+      "collection": "Essentials",
+      "curator": "Apple Music Soul/Funk",
+      "playlist": "https://music.apple.com/gb/playlist/funk-essentials/pl.d3a816dac5504f4fa364ccab8ba40061",
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features/v4/ce/0e/a1/ce0ea125-b6ef-79dd-3a18-30494136b97c/b2d241c8-1dd5-4692-94d7-afe95c3b1817.png/3840x3840bb.png"
+    }
+  ]
+}

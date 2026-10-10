@@ -1,6 +1,6 @@
 # Living posters
 
-A complete snapshot of the 32 living posters published at [WAVZ](https://wavz.us), plus nine **Music Series** posters: 41 posters across seven series. The original WAVZ artwork, code and audio are by **Nick Saulino**; the gallery retains his attribution. The Music Series contains five original music rooms and four newly coded interpretations of playlist artwork.
+A complete snapshot of the 32 living posters published at [WAVZ](https://wavz.us), plus nine **Music Series** posters and six **Essentials Series** genre studies: 47 posters across eight series. The original WAVZ artwork, code and audio are by **Nick Saulino**; the gallery retains his attribution. The additions contain five original music rooms and ten newly coded interpretations of playlist artwork.
 
 The existing original **Lantern Cove** page is preserved at [`lantern-cove/index.html`](lantern-cove/index.html).
 
@@ -25,6 +25,7 @@ Open `http://localhost:8000/`. Open an individual poster using `?scene=beach`, f
 | Deep | Kelp Forest, Coral Garden, The Wreck, Jellyfish Bloom, Open Blue |
 | Orbit | Earthrise, Ringed Giant, Space Station, Red Planet, Comet Pass |
 | Music | Needle Drop, Tape Loop, Blue Hour, Brass Midnight, Signal Bloom, Silk Current, Orbital Drift, Tidal Bloom, Afterglow Arcade |
+| Essentials | Club Prism, Break Grid, Blue Notes, Riff Cut, Still Fields, Funk Spiral |
 
 **Needle Drop** (`?scene=needledrop`) is an original animated listening-room scene: a detailed direct-drive turntable with vinyl grooves, strobe dots, a calibrated pitch fader and a cueing lever, flanked by cloth-front speakers. A shelf of records, rainy round window, pendant light, sleeve, plant and steaming mug establish the room. Its warm rose, plum and teal inks use the collection's shared poster frame. This poster is intentionally silent: it creates no audio context, requests no audio files and hides the player audio controls.
 
@@ -46,6 +47,19 @@ Four additional silent animations take their visual direction from [The Art of A
 
 [View the four-poster preview](docs/music-art-preview.png). [`music-art-references.json`](music-art-references.json) records the selected playlist and cover URLs. No archive assets are bundled or requested at runtime.
 
+The **Essentials Series** uses geometric references exclusively from the archive's **Essentials** collection. Each poster represents a different genre, with its own musical timing or slow atmospheric movement. These are silent visual clocks, not audio-reactive effects. Like the four playlist interpretations above, their canvases have no lettering, logos, title bands or paper-grain overlays:
+
+| Poster | Genre / Essentials reference | Motion |
+| --- | --- | --- |
+| **Club Prism** (`?scene=clubprism`) | Dance — EDM Essentials | Mint, green and lime striped triangular spotlights sweep across one another; a narrow cone expands on a 124 BPM four-on-the-floor pulse. |
+| **Break Grid** (`?scene=breakgrid`) | Hip-hop — Alternative Hip-Hop Essentials | Blue and gold blocks chop and hop over an 88 BPM kick/snare pattern; a rolling strip suggests a looping sample. |
+| **Blue Notes** (`?scene=bluenotes`) | Jazz — Jazz Piano Essentials | Floating ivory and teal bars tilt and bounce with a 108 BPM phrase and a 2:1 swung eighth-note pair. |
+| **Riff Cut** (`?scene=riffcut`) | Punk rock — Classic Punk Essentials | Orange spikes jab and red diagonal cuts slash on alternating accents of a 168 BPM guitar backbeat. |
+| **Still Fields** (`?scene=stillfields`) | Ambient — Ambient Essentials | Horizontal mint-to-forest colour planes move over long, independent breaths, without a percussive beat. |
+| **Funk Spiral** (`?scene=funkspiral`) | Funk — Funk Essentials | Twelve curved orange and violet sectors rotate and flex to a syncopated 104 BPM groove. |
+
+[View the six-poster preview](docs/essentials-preview.png) or [watch six seconds of their motion](docs/essentials-motion.mp4). [`essentials-art-references.json`](essentials-art-references.json) records each genre, clock, reference and original playlist URL, including the verified `Essentials` collection membership. All geometry is drawn locally; no archive images, video or audio are loaded.
+
 The scenes use deterministic geometry for fine details and independent, slow clocks for environmental movement. Wood grain, metal fasteners, glass reflections and instrument mechanisms are drawn as vectors; there are no image or audio dependencies in the Music Series.
 
 All **132 audio files** are included in `live/audio/` (about 553 MB), so playback does not depend on WAVZ's CDN. Audio starts after browser interaction when autoplay restrictions apply. Ambience and music have separate volume and mute controls; available music tracks cycle as in the original.
@@ -61,4 +75,4 @@ python3 import-wavz.py
 python3 import-audio.py
 ```
 
-The first script follows same-site browser dependencies, reapplies hosting adaptations and retains the original Music Series. The second fetches all audio referenced by scenes that support audio, skips files already downloaded and records files unavailable at the source. Neither changes the preserved Lantern Cove page.
+The first script follows same-site browser dependencies, reapplies hosting adaptations and retains the Music and Essentials Series. The second fetches all audio referenced by scenes that support audio, skips files already downloaded and records files unavailable at the source. Neither changes the preserved Lantern Cove page.
