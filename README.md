@@ -1,5 +1,3 @@
-# Moonpath
+# Lantern Cove
 
-A standalone one-page animated poster experience built with HTML, CSS, JavaScript and Canvas 2D.
-
-Open `index.html` directly in a browser. No build step or external dependencies are required.
+An original animated living poster built as a standalone one-page site with Canvas 2D. The scene includes procedural water, moving reflections, drifting clouds, a flickering dock lantern, a gently bobbing boat, stars and swaying shoreline grasses.
