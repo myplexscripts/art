@@ -1,0 +1,798 @@
+{
+  "source": "https://cdn.wavz.us/",
+  "files": [
+    {
+      "path": "live/audio/amb_alpine_1.mp3",
+      "url": "https://cdn.wavz.us/amb_alpine_1.mp3",
+      "bytes": 4077454,
+      "sha256": "548132b175d7b55324868d545b4e9cfd286d0fb3203b1038ef00dea3807c125d"
+    },
+    {
+      "path": "live/audio/amb_alpine_2.mp3",
+      "url": "https://cdn.wavz.us/amb_alpine_2.mp3",
+      "bytes": 3309239,
+      "sha256": "deb751fd49fda8c9b3c0b7bb76a48eaf8cac3906e32a406bb0d70cb5b6acf4f4"
+    },
+    {
+      "path": "live/audio/amb_aurora_ice.mp3",
+      "url": "https://cdn.wavz.us/amb_aurora_ice.mp3",
+      "bytes": 3378474,
+      "sha256": "85a7edc83070aa94a3b9dffdd801c47f7e57481857b21dc394134b5c1b4587cf"
+    },
+    {
+      "path": "live/audio/amb_aurora_wind.mp3",
+      "url": "https://cdn.wavz.us/amb_aurora_wind.mp3",
+      "bytes": 3670668,
+      "sha256": "af6d30f8db7d08362d6448d86401af78dbdff8bd3cb9a115563cef74433592e3"
+    },
+    {
+      "path": "live/audio/amb_balloons_1.mp3",
+      "url": "https://cdn.wavz.us/amb_balloons_1.mp3",
+      "bytes": 3488265,
+      "sha256": "0c992d01d63fff91dbc333770c06c40a052b094cd35334c8bd3b4a4c5a54aea0"
+    },
+    {
+      "path": "live/audio/amb_balloons_2.mp3",
+      "url": "https://cdn.wavz.us/amb_balloons_2.mp3",
+      "bytes": 3473923,
+      "sha256": "786ee4180bbdd27539e47680262005e710acf7e56a0ddeb23a693ddd11f79ace"
+    },
+    {
+      "path": "live/audio/amb_beach_surf.mp3",
+      "url": "https://cdn.wavz.us/amb_beach_surf.mp3",
+      "bytes": 4069422,
+      "sha256": "fd250bcbce193fdf90a00cce04ef252cec63c5f06151bd51bba6ef78c3b7385e"
+    },
+    {
+      "path": "live/audio/amb_beach_wind.mp3",
+      "url": "https://cdn.wavz.us/amb_beach_wind.mp3",
+      "bytes": 3661430,
+      "sha256": "e5e78df145ba12a631fbf19d45a208382831d00e8dd12b288804aeb4b19a06ce"
+    },
+    {
+      "path": "live/audio/amb_cabinwin_1.mp3",
+      "url": "https://cdn.wavz.us/amb_cabinwin_1.mp3",
+      "bytes": 4518169,
+      "sha256": "46ce384571b55278f87a3c65886825be6b252eade42fd1352929b1cca43fdfdc"
+    },
+    {
+      "path": "live/audio/amb_cabinwin_2.mp3",
+      "url": "https://cdn.wavz.us/amb_cabinwin_2.mp3",
+      "bytes": 3273123,
+      "sha256": "a0cacb34b49a792f172a4c18748e468a50023172cc298d153b1f6ac2eabd5e63"
+    },
+    {
+      "path": "live/audio/amb_cafe_1.mp3",
+      "url": "https://cdn.wavz.us/amb_cafe_1.mp3",
+      "bytes": 4173547,
+      "sha256": "1c39260f95ee5f766d5cb6845766a463f1b25317ac912358910f4af7639352d1"
+    },
+    {
+      "path": "live/audio/amb_cafe_2.mp3",
+      "url": "https://cdn.wavz.us/amb_cafe_2.mp3",
+      "bytes": 3239611,
+      "sha256": "0eb3d616c8153e416951f387e3f5b11ceae1148fa69ddfd0a69530f1c3282bfb"
+    },
+    {
+      "path": "live/audio/amb_campfire_fire.mp3",
+      "url": "https://cdn.wavz.us/amb_campfire_fire.mp3",
+      "bytes": 5067889,
+      "sha256": "94234c3bd8b2630b94b7ef4a51098c3de6702022ac2307690fc46498ada4ad15"
+    },
+    {
+      "path": "live/audio/amb_campfire_night.mp3",
+      "url": "https://cdn.wavz.us/amb_campfire_night.mp3",
+      "bytes": 3309695,
+      "sha256": "49ceedd71497061f2ae167df23ed515152588c42116c3654e813fe28f609741d"
+    },
+    {
+      "path": "live/audio/amb_comet_1.mp3",
+      "url": "https://cdn.wavz.us/amb_comet_1.mp3",
+      "bytes": 2514643,
+      "sha256": "71f5c79cfba91f8b4ff0ecdb5c77f9498ea316d97365a12adc7804a9b5e38a68"
+    },
+    {
+      "path": "live/audio/amb_comet_2.mp3",
+      "url": "https://cdn.wavz.us/amb_comet_2.mp3",
+      "bytes": 3434953,
+      "sha256": "e191c4bf80ffea11524de9f423724a39611a0d4bc734b93a80d9c45be1c34e91"
+    },
+    {
+      "path": "live/audio/amb_coral_1.mp3",
+      "url": "https://cdn.wavz.us/amb_coral_1.mp3",
+      "bytes": 5051131,
+      "sha256": "87f77eef8b39222afe5230cdee0f463e32b918e4e014cd8290a941233686fe50"
+    },
+    {
+      "path": "live/audio/amb_coral_2.mp3",
+      "url": "https://cdn.wavz.us/amb_coral_2.mp3",
+      "bytes": 3109081,
+      "sha256": "c9239c6081396457c3293ffd1966d0a8e85cdc91156d8eb23922f5cf5579e0e9"
+    },
+    {
+      "path": "live/audio/amb_earthrise_1.mp3",
+      "url": "https://cdn.wavz.us/amb_earthrise_1.mp3",
+      "bytes": 3450276,
+      "sha256": "8dd0144c0e102468eaa0e33d86caf0b3fafe7bd4615f2e3582892a2571950213"
+    },
+    {
+      "path": "live/audio/amb_earthrise_2.mp3",
+      "url": "https://cdn.wavz.us/amb_earthrise_2.mp3",
+      "bytes": 3290760,
+      "sha256": "5c724e05581a8badaa4ddb400ce7708c4620d3ec2ef0408c4cdf6507157e1e84"
+    },
+    {
+      "path": "live/audio/amb_fogbank_1.mp3",
+      "url": "https://cdn.wavz.us/amb_fogbank_1.mp3",
+      "bytes": 3873043,
+      "sha256": "2d3a2b36e039d0831421af6be31061c410795c7208e4ba3a1a66f3a3b766f691"
+    },
+    {
+      "path": "live/audio/amb_fogbank_2.mp3",
+      "url": "https://cdn.wavz.us/amb_fogbank_2.mp3",
+      "bytes": 3077054,
+      "sha256": "eb1ce2d5013f3a37754c5f0ec8c0043458e73813f0c408101b95356b32ef6ed8"
+    },
+    {
+      "path": "live/audio/amb_gale_1.mp3",
+      "url": "https://cdn.wavz.us/amb_gale_1.mp3",
+      "bytes": 3747399,
+      "sha256": "2b94e61ef80ccd87b3c975a2cfbb0d5bdf14addf1c172023410dd102f19a98ec"
+    },
+    {
+      "path": "live/audio/amb_gale_2.mp3",
+      "url": "https://cdn.wavz.us/amb_gale_2.mp3",
+      "bytes": 3376471,
+      "sha256": "edac45de09a5e873593846a51246a9e4cbee8b141c4d655fb37839b05a892339"
+    },
+    {
+      "path": "live/audio/amb_giant_1.mp3",
+      "url": "https://cdn.wavz.us/amb_giant_1.mp3",
+      "bytes": 2844769,
+      "sha256": "c3c1b30d92e301f136eb1af33618af3a75229be6abfd402e8cbe62bc88b5f1f2"
+    },
+    {
+      "path": "live/audio/amb_giant_2.mp3",
+      "url": "https://cdn.wavz.us/amb_giant_2.mp3",
+      "bytes": 2821362,
+      "sha256": "202d238fe4c90834fc8f88e7fdeb05a27e3f35a2a50efffb05a8443ba005bb4d"
+    },
+    {
+      "path": "live/audio/amb_harbor_rigging.mp3",
+      "url": "https://cdn.wavz.us/amb_harbor_rigging.mp3",
+      "bytes": 3152655,
+      "sha256": "912ec3ef585f55be4dec1b77752ffd44794e3542f2cb444a24ef6b32e20e903f"
+    },
+    {
+      "path": "live/audio/amb_harbor_water.mp3",
+      "url": "https://cdn.wavz.us/amb_harbor_water.mp3",
+      "bytes": 4248333,
+      "sha256": "4bc7e1bca5f37555c863e98e32b0845a3c057cba73b3d33e17101b0f2d184021"
+    },
+    {
+      "path": "live/audio/amb_jellies_1.mp3",
+      "url": "https://cdn.wavz.us/amb_jellies_1.mp3",
+      "bytes": 3896277,
+      "sha256": "47a1035e6ce6ce381711333b63404775bc09101667a58f91a2cd8459cbffdf90"
+    },
+    {
+      "path": "live/audio/amb_jellies_2.mp3",
+      "url": "https://cdn.wavz.us/amb_jellies_2.mp3",
+      "bytes": 3307724,
+      "sha256": "0744735560cb4dcdce320c8038de35c1e6fa987226fde340e19fab29ad983f69"
+    },
+    {
+      "path": "live/audio/amb_jungle_fall.mp3",
+      "url": "https://cdn.wavz.us/amb_jungle_fall.mp3",
+      "bytes": 3763722,
+      "sha256": "10195ea80cd8e5c16603d09cf622e3bdaabac1ffd7b2d9c8b7ae8aedf3b402ef"
+    },
+    {
+      "path": "live/audio/amb_jungle_night.mp3",
+      "url": "https://cdn.wavz.us/amb_jungle_night.mp3",
+      "bytes": 3371089,
+      "sha256": "671779b2206f8a14b24b3bf88dedd599d7a81a201293f5dcf56f3addce7ea0db"
+    },
+    {
+      "path": "live/audio/amb_kelp_1.mp3",
+      "url": "https://cdn.wavz.us/amb_kelp_1.mp3",
+      "bytes": 3122632,
+      "sha256": "de8e100643c8a9ed8c8eab444ad39853a950e95386c7489d7ade1121d29abe6e"
+    },
+    {
+      "path": "live/audio/amb_kelp_2.mp3",
+      "url": "https://cdn.wavz.us/amb_kelp_2.mp3",
+      "bytes": 3658749,
+      "sha256": "d1edc443749583da809622336168872648459b056b1711c202d9351727e9d715"
+    },
+    {
+      "path": "live/audio/amb_lavender_1.mp3",
+      "url": "https://cdn.wavz.us/amb_lavender_1.mp3",
+      "bytes": 3836063,
+      "sha256": "7d78674515011e01fe6f713df2a9450fe64377f4e6461b8c5b86a356b96c2ede"
+    },
+    {
+      "path": "live/audio/amb_lavender_2.mp3",
+      "url": "https://cdn.wavz.us/amb_lavender_2.mp3",
+      "bytes": 3521402,
+      "sha256": "12ad42f01764866ed2e82c5010343334443fcf3ae198210dfe2f083192b92142"
+    },
+    {
+      "path": "live/audio/amb_loft_1.mp3",
+      "url": "https://cdn.wavz.us/amb_loft_1.mp3",
+      "bytes": 3583339,
+      "sha256": "dae4511a09a5b3305447192557ac7129514d795cf0cbec1c9fa2f9d99e26f094"
+    },
+    {
+      "path": "live/audio/amb_loft_2.mp3",
+      "url": "https://cdn.wavz.us/amb_loft_2.mp3",
+      "bytes": 3301611,
+      "sha256": "7a2272a67cb8e843e929abb2c5c3e427e414c3acdaa89072e25399cac245f62a"
+    },
+    {
+      "path": "live/audio/amb_mars_1.mp3",
+      "url": "https://cdn.wavz.us/amb_mars_1.mp3",
+      "bytes": 3882988,
+      "sha256": "2603ddb94287fb7887098e419da5a9add264899a73ed1c7cbc21944cbe3380f6"
+    },
+    {
+      "path": "live/audio/amb_mars_2.mp3",
+      "url": "https://cdn.wavz.us/amb_mars_2.mp3",
+      "bytes": 3184242,
+      "sha256": "25e808f75f219f615b6d96cc70baf4f24bd22944e4506a3e180532b5afe5e738"
+    },
+    {
+      "path": "live/audio/amb_mesa_night.mp3",
+      "url": "https://cdn.wavz.us/amb_mesa_night.mp3",
+      "bytes": 3274195,
+      "sha256": "ad4a85b8d9f23224612732058e5f1e54e091ae7f5fadf054557d9b84937537f9"
+    },
+    {
+      "path": "live/audio/amb_mesa_wind.mp3",
+      "url": "https://cdn.wavz.us/amb_mesa_wind.mp3",
+      "bytes": 3651674,
+      "sha256": "7e9a9633ba7dd9e0b4b805161424574d99ea86404b3c3dfe67e8b3fe26e57d1e"
+    },
+    {
+      "path": "live/audio/amb_openblue_1.mp3",
+      "url": "https://cdn.wavz.us/amb_openblue_1.mp3",
+      "bytes": 3089153,
+      "sha256": "6e146dd8a99cf767eb70ec00a2f59b3c90c37b1a6c815023fc4516e70f49f942"
+    },
+    {
+      "path": "live/audio/amb_openblue_2.mp3",
+      "url": "https://cdn.wavz.us/amb_openblue_2.mp3",
+      "bytes": 3104872,
+      "sha256": "c72515dbb634238ebc592fc2643dc3a7a1ae73ead5a295d7912b3eb2e209dd61"
+    },
+    {
+      "path": "live/audio/amb_rainbow_1.mp3",
+      "url": "https://cdn.wavz.us/amb_rainbow_1.mp3",
+      "bytes": 4354400,
+      "sha256": "c32ff3dc88333f75183887978fcc75aade50d3d7ae9e41af01812856e5ed1bc3"
+    },
+    {
+      "path": "live/audio/amb_rainbow_2.mp3",
+      "url": "https://cdn.wavz.us/amb_rainbow_2.mp3",
+      "bytes": 3583915,
+      "sha256": "181fff6953241f152210dacd7752afea69901a45b79b103b9cecbdad2a9377c1"
+    },
+    {
+      "path": "live/audio/amb_savanna_1.mp3",
+      "url": "https://cdn.wavz.us/amb_savanna_1.mp3",
+      "bytes": 3865735,
+      "sha256": "d980fd050f27d80c10db031c3b85f3839d5742dd31706ef069de281be608fb8b"
+    },
+    {
+      "path": "live/audio/amb_savanna_2.mp3",
+      "url": "https://cdn.wavz.us/amb_savanna_2.mp3",
+      "bytes": 3538273,
+      "sha256": "f2c9bc4fb839188064ad4e61f3f5f06e54bc331273aec215a274e528c44ea1eb"
+    },
+    {
+      "path": "live/audio/amb_seaview_1.mp3",
+      "url": "https://cdn.wavz.us/amb_seaview_1.mp3",
+      "bytes": 3958399,
+      "sha256": "a2282b7295673b575bfd07cccd021a9e004a738cdff9d1d7d483a65c57a6e7a1"
+    },
+    {
+      "path": "live/audio/amb_seaview_2.mp3",
+      "url": "https://cdn.wavz.us/amb_seaview_2.mp3",
+      "bytes": 3554626,
+      "sha256": "f56d8d09b806195898c9f151f5ea80bb918e7aec096dee6ff52e4874956c098d"
+    },
+    {
+      "path": "live/audio/amb_sleeper_1.mp3",
+      "url": "https://cdn.wavz.us/amb_sleeper_1.mp3",
+      "bytes": 3707220,
+      "sha256": "f913f971bbd4887b9a2d0fc2ffc2b381b1ba91bd17d0a62067d46b0e5396f4f4"
+    },
+    {
+      "path": "live/audio/amb_sleeper_2.mp3",
+      "url": "https://cdn.wavz.us/amb_sleeper_2.mp3",
+      "bytes": 3253594,
+      "sha256": "5907286caa50caecbfd83bd7d9ca2cb2a7c9c96402eddce80c02365179e1350c"
+    },
+    {
+      "path": "live/audio/amb_snowfall_1.mp3",
+      "url": "https://cdn.wavz.us/amb_snowfall_1.mp3",
+      "bytes": 3800532,
+      "sha256": "cc68d9f260e59937df715faeee30ae3b4cecb6a676c06637a382a79a0753a82b"
+    },
+    {
+      "path": "live/audio/amb_snowfall_2.mp3",
+      "url": "https://cdn.wavz.us/amb_snowfall_2.mp3",
+      "bytes": 3359054,
+      "sha256": "37e4ec2f6192621a7456791880a25f7766811e55d83394b1ccdb56e5ce6daa95"
+    },
+    {
+      "path": "live/audio/amb_station_1.mp3",
+      "url": "https://cdn.wavz.us/amb_station_1.mp3",
+      "bytes": 3560946,
+      "sha256": "ff59db911cb4454965fc40d5db9968042de7057aacac8cd1dae85b9d82e775d9"
+    },
+    {
+      "path": "live/audio/amb_station_2.mp3",
+      "url": "https://cdn.wavz.us/amb_station_2.mp3",
+      "bytes": 3405121,
+      "sha256": "eb1627f631150cda3b9f3edbb392649d990a9dd29b78d712ba70469ebe90657e"
+    },
+    {
+      "path": "live/audio/amb_storm_1.mp3",
+      "url": "https://cdn.wavz.us/amb_storm_1.mp3",
+      "bytes": 4169445,
+      "sha256": "80fff4b407c0757f87b33cbce183965237001d32a154f2938144fbcb7af80d28"
+    },
+    {
+      "path": "live/audio/amb_storm_2.mp3",
+      "url": "https://cdn.wavz.us/amb_storm_2.mp3",
+      "bytes": 3151304,
+      "sha256": "4db5fce4a3a6c8748cc69b113fc97e8d1e0c0c59ba16904cce749d2cf6d103e5"
+    },
+    {
+      "path": "live/audio/amb_terraces_1.mp3",
+      "url": "https://cdn.wavz.us/amb_terraces_1.mp3",
+      "bytes": 3970957,
+      "sha256": "3487f98927e10541f6439391a12060eca969e2fbb671ee73776bb332158113b6"
+    },
+    {
+      "path": "live/audio/amb_terraces_2.mp3",
+      "url": "https://cdn.wavz.us/amb_terraces_2.mp3",
+      "bytes": 3426823,
+      "sha256": "f362060354c3be7999c8bd3f3d73332697a8de14d2ef6d6cedb28a5fc55f613f"
+    },
+    {
+      "path": "live/audio/amb_train_plain.mp3",
+      "url": "https://cdn.wavz.us/amb_train_plain.mp3",
+      "bytes": 3536192,
+      "sha256": "b20da6d91f95fa230dcf96739b44b85a1f43f2d32a0d0e4331460e20f16e58e7"
+    },
+    {
+      "path": "live/audio/amb_train_rails.mp3",
+      "url": "https://cdn.wavz.us/amb_train_rails.mp3",
+      "bytes": 3346290,
+      "sha256": "d4bf31c8c3ba2e7d5a6f41301077d548190e63815bf25bd4b8e2ab5f235ea280"
+    },
+    {
+      "path": "live/audio/amb_wreck_1.mp3",
+      "url": "https://cdn.wavz.us/amb_wreck_1.mp3",
+      "bytes": 2868896,
+      "sha256": "ca46824c402fcdc281f3de059a98e216c3cf0766b2a2ab2c093f6119956a492e"
+    },
+    {
+      "path": "live/audio/amb_wreck_2.mp3",
+      "url": "https://cdn.wavz.us/amb_wreck_2.mp3",
+      "bytes": 2580025,
+      "sha256": "11f68b119042958b900407b9bd12fd1c41cf19d034416c26f38f382ca9175d60"
+    },
+    {
+      "path": "live/audio/music_alpine_a.mp3",
+      "url": "https://cdn.wavz.us/music_alpine_a.mp3",
+      "bytes": 4440440,
+      "sha256": "2bd6fcd620d9e3a0401b67a1edb4a3e7cedf7f2a472420643b8d90be3a1ab643"
+    },
+    {
+      "path": "live/audio/music_alpine_b.mp3",
+      "url": "https://cdn.wavz.us/music_alpine_b.mp3",
+      "bytes": 4637031,
+      "sha256": "7ebd76fbbfdb0b1121e4260ead3cddd7e9d994f6b54189f86427039500729894"
+    },
+    {
+      "path": "live/audio/music_aurora_a.mp3",
+      "url": "https://cdn.wavz.us/music_aurora_a.mp3",
+      "bytes": 6309939,
+      "sha256": "455975ccf0e0a7e715629334f0ba4792ddf69033d654c1628764d08b0ce549c8"
+    },
+    {
+      "path": "live/audio/music_aurora_b.mp3",
+      "url": "https://cdn.wavz.us/music_aurora_b.mp3",
+      "bytes": 6084970,
+      "sha256": "fda31179b76f06284c297ef0aaec76261437740d1556b1920934552ecf965333"
+    },
+    {
+      "path": "live/audio/music_balloons_a.mp3",
+      "url": "https://cdn.wavz.us/music_balloons_a.mp3",
+      "bytes": 4311247,
+      "sha256": "3668a2df7a44aa87e58bf138fd73707742bdb38562bc870b14d13e6bbfa118c2"
+    },
+    {
+      "path": "live/audio/music_balloons_b.mp3",
+      "url": "https://cdn.wavz.us/music_balloons_b.mp3",
+      "bytes": 4186896,
+      "sha256": "12c2e9fbc904ad8008947fc10c46e3cbfdd4fe977cbdf8dc77aee01ffc20ad54"
+    },
+    {
+      "path": "live/audio/music_beach_a.mp3",
+      "url": "https://cdn.wavz.us/music_beach_a.mp3",
+      "bytes": 6535934,
+      "sha256": "292d510aea1630e2e9fe7b4adc0cdf67822d2d81960b56ea582eb07ea6ddc762"
+    },
+    {
+      "path": "live/audio/music_beach_b.mp3",
+      "url": "https://cdn.wavz.us/music_beach_b.mp3",
+      "bytes": 4649369,
+      "sha256": "a9fb3489de91b15f12b3fac51690e0d2b819764ca11ac532783f22199811651f"
+    },
+    {
+      "path": "live/audio/music_beach_c.mp3",
+      "url": "https://cdn.wavz.us/music_beach_c.mp3",
+      "bytes": 2417317,
+      "sha256": "04449fb1c61959f4ac64c8297ef95e096a8c92b0f72801be7b0cc58ad4104623"
+    },
+    {
+      "path": "live/audio/music_beach_d.mp3",
+      "url": "https://cdn.wavz.us/music_beach_d.mp3",
+      "bytes": 2372582,
+      "sha256": "79af357ae23a6a752b3dcf2bc61ef28d7e602c30036f1345610959c0c941be22"
+    },
+    {
+      "path": "live/audio/music_cabinwin_a.mp3",
+      "url": "https://cdn.wavz.us/music_cabinwin_a.mp3",
+      "bytes": 4182452,
+      "sha256": "a7876d908fb58f84247bace782d0ef68feec415455d88481e560e6faf7b99b41"
+    },
+    {
+      "path": "live/audio/music_cabinwin_b.mp3",
+      "url": "https://cdn.wavz.us/music_cabinwin_b.mp3",
+      "bytes": 4230040,
+      "sha256": "c3a8c52d48ef101844efbe4bb88ee6f916f3ee3377353e21224c72dd64365f52"
+    },
+    {
+      "path": "live/audio/music_cafe_a.mp3",
+      "url": "https://cdn.wavz.us/music_cafe_a.mp3",
+      "bytes": 5092070,
+      "sha256": "c7d1312dee1e2269a5886a54d411cc1b316dcc64dd347ec829cdfe98d1a9578d"
+    },
+    {
+      "path": "live/audio/music_cafe_b.mp3",
+      "url": "https://cdn.wavz.us/music_cafe_b.mp3",
+      "bytes": 5345734,
+      "sha256": "84bcf6ffe539a1c3b8939451c44110850384abc42ecef2686dc176d505f27341"
+    },
+    {
+      "path": "live/audio/music_campfire_a.mp3",
+      "url": "https://cdn.wavz.us/music_campfire_a.mp3",
+      "bytes": 4700156,
+      "sha256": "be515dfc6efb1304690541e10c821f4cee5c102a6d6627359898a671ee70c825"
+    },
+    {
+      "path": "live/audio/music_campfire_b.mp3",
+      "url": "https://cdn.wavz.us/music_campfire_b.mp3",
+      "bytes": 6421405,
+      "sha256": "de73c0d3fc6f574822a72cfd10bb348bd5b270015f544d30326f5d126b346d7b"
+    },
+    {
+      "path": "live/audio/music_comet_a.mp3",
+      "url": "https://cdn.wavz.us/music_comet_a.mp3",
+      "bytes": 4226639,
+      "sha256": "9161909b1e481ca0e1ebaf1f26ddc6abbd3e10664153ad4ebda17c71825a534e"
+    },
+    {
+      "path": "live/audio/music_comet_b.mp3",
+      "url": "https://cdn.wavz.us/music_comet_b.mp3",
+      "bytes": 5389754,
+      "sha256": "389a08947bd9ba46cde484715b3528e9a95df25273465170e157aad31ca6cd5b"
+    },
+    {
+      "path": "live/audio/music_coral_a.mp3",
+      "url": "https://cdn.wavz.us/music_coral_a.mp3",
+      "bytes": 5423797,
+      "sha256": "ddfaa17baf8da4864434dc7df53041bf4c0d2dc91584b7264f6a0abfd732709f"
+    },
+    {
+      "path": "live/audio/music_coral_b.mp3",
+      "url": "https://cdn.wavz.us/music_coral_b.mp3",
+      "bytes": 4654842,
+      "sha256": "bd53828f604c6987dbe5c18561590b8fcd781070d1c0757d8240bf2486fd440a"
+    },
+    {
+      "path": "live/audio/music_earthrise_a.mp3",
+      "url": "https://cdn.wavz.us/music_earthrise_a.mp3",
+      "bytes": 4523227,
+      "sha256": "e4ca08b34aafac41d6c5494c58258012a679c75357c0a8c9a23741dda258d4af"
+    },
+    {
+      "path": "live/audio/music_earthrise_b.mp3",
+      "url": "https://cdn.wavz.us/music_earthrise_b.mp3",
+      "bytes": 4370593,
+      "sha256": "247ceb2e698ea3303e0e4f9f272520b8125a81d281ea1447c6d5049f6ce156d0"
+    },
+    {
+      "path": "live/audio/music_fogbank_a.mp3",
+      "url": "https://cdn.wavz.us/music_fogbank_a.mp3",
+      "bytes": 4489517,
+      "sha256": "13863bc50c4c7ce201505314a383321562c71a5f67634d41ce5b0b75ab54fef1"
+    },
+    {
+      "path": "live/audio/music_fogbank_b.mp3",
+      "url": "https://cdn.wavz.us/music_fogbank_b.mp3",
+      "bytes": 4713666,
+      "sha256": "7a32f8ba22f415107a0cac233a776ae6e60b456fac31b5059e1662492d1a60de"
+    },
+    {
+      "path": "live/audio/music_gale_a.mp3",
+      "url": "https://cdn.wavz.us/music_gale_a.mp3",
+      "bytes": 5504028,
+      "sha256": "10aa02dd9b453629d6c0d0fbe2681eeec31cf39657fdd7fbef53558ba90170d3"
+    },
+    {
+      "path": "live/audio/music_gale_b.mp3",
+      "url": "https://cdn.wavz.us/music_gale_b.mp3",
+      "bytes": 4688851,
+      "sha256": "0549edf3ba0dbf069b3202603d6e86a66e020537e3032b819fe5a292a12d454c"
+    },
+    {
+      "path": "live/audio/music_giant_a.mp3",
+      "url": "https://cdn.wavz.us/music_giant_a.mp3",
+      "bytes": 4302671,
+      "sha256": "98c7000ec3e248d880ecdf339a037ba77be37700d95233e37f96438e20902750"
+    },
+    {
+      "path": "live/audio/music_giant_b.mp3",
+      "url": "https://cdn.wavz.us/music_giant_b.mp3",
+      "bytes": 4102381,
+      "sha256": "ebed1d85582cc5c4ff4599795d2547a400f717b0f575dd5cc00d0d511757540a"
+    },
+    {
+      "path": "live/audio/music_harbor_a.mp3",
+      "url": "https://cdn.wavz.us/music_harbor_a.mp3",
+      "bytes": 5575200,
+      "sha256": "6b7879ae1111dc57f232b2be587fbbdd1153ec2eb1e6a23e756dca3682bd2250"
+    },
+    {
+      "path": "live/audio/music_harbor_b.mp3",
+      "url": "https://cdn.wavz.us/music_harbor_b.mp3",
+      "bytes": 4404227,
+      "sha256": "aef8d2df3ac8577900bb51340820649125600aa391a9b77f6b75dbb947d22cb8"
+    },
+    {
+      "path": "live/audio/music_jellies_a.mp3",
+      "url": "https://cdn.wavz.us/music_jellies_a.mp3",
+      "bytes": 4949700,
+      "sha256": "c5874ece3b3b0fed44fd01fc1a9fc5b804fe95cbfee754a74c70c751306b3c2b"
+    },
+    {
+      "path": "live/audio/music_jellies_b.mp3",
+      "url": "https://cdn.wavz.us/music_jellies_b.mp3",
+      "bytes": 4295313,
+      "sha256": "f416d41532447fe4229894ca2a50f529dc13a9138dcf632e3deca28096380f65"
+    },
+    {
+      "path": "live/audio/music_jungle_a.mp3",
+      "url": "https://cdn.wavz.us/music_jungle_a.mp3",
+      "bytes": 5063347,
+      "sha256": "ea5bc3fa2ffa206d4167b8ece38674214193d2ad7313a33c23e2d91772f12ea9"
+    },
+    {
+      "path": "live/audio/music_jungle_b.mp3",
+      "url": "https://cdn.wavz.us/music_jungle_b.mp3",
+      "bytes": 6104633,
+      "sha256": "06d66141a9457eb47873fe49369e50e77bcddd3140aa569bdb978c3c0149cf1a"
+    },
+    {
+      "path": "live/audio/music_jungle_c.mp3",
+      "url": "https://cdn.wavz.us/music_jungle_c.mp3",
+      "bytes": 2270357,
+      "sha256": "9b51c4624ead0225acf83ff88d2c44ff1970acf083a103a6f2ee3e98c8aef09a"
+    },
+    {
+      "path": "live/audio/music_jungle_d.mp3",
+      "url": "https://cdn.wavz.us/music_jungle_d.mp3",
+      "bytes": 2728386,
+      "sha256": "ebacd4e97b1827738c203b2c3e51c89700a59b7b6b65e947d1d174fe13818cdf"
+    },
+    {
+      "path": "live/audio/music_kelp_a.mp3",
+      "url": "https://cdn.wavz.us/music_kelp_a.mp3",
+      "bytes": 6135272,
+      "sha256": "7d7796b169e215799c5325a28f9b02bd00c85da52d66efb8ccc1758467cb29da"
+    },
+    {
+      "path": "live/audio/music_kelp_b.mp3",
+      "url": "https://cdn.wavz.us/music_kelp_b.mp3",
+      "bytes": 5037907,
+      "sha256": "151b8d6cce2c6e563bf8af2f9014565e37101f18481b45a4d0347cc6a660446f"
+    },
+    {
+      "path": "live/audio/music_lavender_a.mp3",
+      "url": "https://cdn.wavz.us/music_lavender_a.mp3",
+      "bytes": 4439050,
+      "sha256": "d1d38b6f64272149546e91c7301b4ce70212a51d9e345c82fad35d51bc85f4df"
+    },
+    {
+      "path": "live/audio/music_lavender_b.mp3",
+      "url": "https://cdn.wavz.us/music_lavender_b.mp3",
+      "bytes": 4159830,
+      "sha256": "86fd5ebff51a41202d4035896dd36aa9cc95087abd708b817d3907154e503919"
+    },
+    {
+      "path": "live/audio/music_loft_a.mp3",
+      "url": "https://cdn.wavz.us/music_loft_a.mp3",
+      "bytes": 4929729,
+      "sha256": "44898f4d5e5951014a2aee75f915de173479a2477ac073c0ff9da0cf9152b0c3"
+    },
+    {
+      "path": "live/audio/music_loft_b.mp3",
+      "url": "https://cdn.wavz.us/music_loft_b.mp3",
+      "bytes": 4889113,
+      "sha256": "97aa32156797d39997e01bd47235ad3bb70587b74a90dc694813438eedab495d"
+    },
+    {
+      "path": "live/audio/music_mars_a.mp3",
+      "url": "https://cdn.wavz.us/music_mars_a.mp3",
+      "bytes": 4793390,
+      "sha256": "e616f2845ed0a7227b64c997bee535fd59f44571f5465a842fcc0ca6862e6b0c"
+    },
+    {
+      "path": "live/audio/music_mars_b.mp3",
+      "url": "https://cdn.wavz.us/music_mars_b.mp3",
+      "bytes": 4877265,
+      "sha256": "8bb2ac5173bb617d2c616e1726ec566b713f5bab667a60cc13ab338d90d5790f"
+    },
+    {
+      "path": "live/audio/music_mesa_a.mp3",
+      "url": "https://cdn.wavz.us/music_mesa_a.mp3",
+      "bytes": 6664686,
+      "sha256": "91cba6ec5e4a18575340d05b4fdbaa148240ded518c59bcf964cf445a43a7961"
+    },
+    {
+      "path": "live/audio/music_mesa_b.mp3",
+      "url": "https://cdn.wavz.us/music_mesa_b.mp3",
+      "bytes": 4575307,
+      "sha256": "8a918badb2a2baa66a6bcb4110331e9e098d4561967e9bd43af04212a29b7bb3"
+    },
+    {
+      "path": "live/audio/music_openblue_a.mp3",
+      "url": "https://cdn.wavz.us/music_openblue_a.mp3",
+      "bytes": 4548826,
+      "sha256": "0874d9a7dcafbb46c65a7ff3c65e33169a40a8c7bcf03254b2a9979acdd3d2a9"
+    },
+    {
+      "path": "live/audio/music_openblue_b.mp3",
+      "url": "https://cdn.wavz.us/music_openblue_b.mp3",
+      "bytes": 4324298,
+      "sha256": "2b403f097c1384426c3c38985714ccd87487b9a9a3b783c69fc70703576cf72b"
+    },
+    {
+      "path": "live/audio/music_rainbow_a.mp3",
+      "url": "https://cdn.wavz.us/music_rainbow_a.mp3",
+      "bytes": 5172118,
+      "sha256": "c00919c64f81c581584797a4845487fb2eef22a11f0f245ab00cfef20c647f8f"
+    },
+    {
+      "path": "live/audio/music_rainbow_b.mp3",
+      "url": "https://cdn.wavz.us/music_rainbow_b.mp3",
+      "bytes": 4738580,
+      "sha256": "a4bf914b362a3609152634bf4a24b5f57bd60a41e882fa3c6471ad706ba7954a"
+    },
+    {
+      "path": "live/audio/music_savanna_a.mp3",
+      "url": "https://cdn.wavz.us/music_savanna_a.mp3",
+      "bytes": 4206021,
+      "sha256": "6dc20e2d42c468564fdcf99c11b744c496fc28e0895540fba078ec593b93e1b1"
+    },
+    {
+      "path": "live/audio/music_savanna_b.mp3",
+      "url": "https://cdn.wavz.us/music_savanna_b.mp3",
+      "bytes": 5128926,
+      "sha256": "f508975648c0dd8cea609118c94df3dbc62af8011a98c4b7a3f37f02fa086114"
+    },
+    {
+      "path": "live/audio/music_seaview_a.mp3",
+      "url": "https://cdn.wavz.us/music_seaview_a.mp3",
+      "bytes": 4961849,
+      "sha256": "ce6d0502d5e7b34d7dae96f24d2ff4b2392af61a4d66914a15433334b245d202"
+    },
+    {
+      "path": "live/audio/music_seaview_b.mp3",
+      "url": "https://cdn.wavz.us/music_seaview_b.mp3",
+      "bytes": 4363408,
+      "sha256": "3752c009c74fe0d868408c8d8275dba30fd0b9d6f0595e587ced5f8521570998"
+    },
+    {
+      "path": "live/audio/music_sleeper_a.mp3",
+      "url": "https://cdn.wavz.us/music_sleeper_a.mp3",
+      "bytes": 5396457,
+      "sha256": "049e5964bf0dcfb22c1debec84ed0675e2d3e2cd3d0c457ebafaa2226e3d1922"
+    },
+    {
+      "path": "live/audio/music_sleeper_b.mp3",
+      "url": "https://cdn.wavz.us/music_sleeper_b.mp3",
+      "bytes": 4612700,
+      "sha256": "db53d7a5cf5b7d9f06b568f79edd8414d251f0276d69a4d215151f7202381eeb"
+    },
+    {
+      "path": "live/audio/music_snowfall_a.mp3",
+      "url": "https://cdn.wavz.us/music_snowfall_a.mp3",
+      "bytes": 3718348,
+      "sha256": "40fa50f66a2846ca5f543ad0e5be8e388aa459bfcb0d7c66f0a315b0b12c171e"
+    },
+    {
+      "path": "live/audio/music_snowfall_b.mp3",
+      "url": "https://cdn.wavz.us/music_snowfall_b.mp3",
+      "bytes": 4657721,
+      "sha256": "3b1add473c9e31fad4cbe11be249cfc07a4e1cb6472341c000016185df3f400a"
+    },
+    {
+      "path": "live/audio/music_station_a.mp3",
+      "url": "https://cdn.wavz.us/music_station_a.mp3",
+      "bytes": 4146927,
+      "sha256": "3ec85f7d006b57cbdfc3c028f8dc596f7aa5d2e8460b06bc1d129f143bf06e61"
+    },
+    {
+      "path": "live/audio/music_station_b.mp3",
+      "url": "https://cdn.wavz.us/music_station_b.mp3",
+      "bytes": 4820398,
+      "sha256": "9b2d4aa46a5b555f3b6f97f728571633a3feec00adc1be9d762fee0c063f4bdc"
+    },
+    {
+      "path": "live/audio/music_storm_a.mp3",
+      "url": "https://cdn.wavz.us/music_storm_a.mp3",
+      "bytes": 4626718,
+      "sha256": "47c6b6420aa1ddab020d888f89598d7253c1892395c137d7227a8acf88eb991a"
+    },
+    {
+      "path": "live/audio/music_storm_b.mp3",
+      "url": "https://cdn.wavz.us/music_storm_b.mp3",
+      "bytes": 4731647,
+      "sha256": "23070510bad32b6ecc62bec1767921037cde7b38a2e5d20c217fac5f75134693"
+    },
+    {
+      "path": "live/audio/music_terraces_a.mp3",
+      "url": "https://cdn.wavz.us/music_terraces_a.mp3",
+      "bytes": 5112922,
+      "sha256": "012bd31e9ff3263a51f589fe52564b679a2c72b16dfd89d772aa82e5e01f4ed4"
+    },
+    {
+      "path": "live/audio/music_terraces_b.mp3",
+      "url": "https://cdn.wavz.us/music_terraces_b.mp3",
+      "bytes": 4835723,
+      "sha256": "537b7c2be3adc318f27874ca2f51068bfbef73971ee13460bfb9e6b6246d0891"
+    },
+    {
+      "path": "live/audio/music_train_a.mp3",
+      "url": "https://cdn.wavz.us/music_train_a.mp3",
+      "bytes": 6960799,
+      "sha256": "5ff09e5bba90d1b474ee20190a3f17f3fb147686609a22efd2f7522b48cf5dce"
+    },
+    {
+      "path": "live/audio/music_train_b.mp3",
+      "url": "https://cdn.wavz.us/music_train_b.mp3",
+      "bytes": 6634291,
+      "sha256": "cc7f0cc1a4e5209a5a4c5a23e10725862ec2df895ece5af44000047b60e7a342"
+    },
+    {
+      "path": "live/audio/music_wreck_a.mp3",
+      "url": "https://cdn.wavz.us/music_wreck_a.mp3",
+      "bytes": 4878605,
+      "sha256": "c082c5c841aaa8b85a3a68534707db5d2dd4ba0e2e72132cbdf17fa2b351517a"
+    },
+    {
+      "path": "live/audio/music_wreck_b.mp3",
+      "url": "https://cdn.wavz.us/music_wreck_b.mp3",
+      "bytes": 4561474,
+      "sha256": "9ff100db11ba8a290de531203c6e00caf061e8d54ab4ebf7a606d4457027a579"
+    }
+  ],
+  "not_published": []
+}
