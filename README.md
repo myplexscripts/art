@@ -78,7 +78,9 @@ The audio uses existing local files, streamed and crossfaded through the same Am
 
 [View the Geometry scenes](docs/geometry-preview.png) or [watch ten seconds of their motion](docs/geometry-motion.mp4). These exported previews contain no grain. [`geometry-references.json`](geometry-references.json) records the authored motion and audio sources. No external SVGs or image assets are needed.
 
-All **132 audio files** are included in `live/audio/` (about 553 MB), so playback does not depend on WAVZ's CDN. Audio starts after browser interaction when autoplay restrictions apply. Ambience and music have separate volume and mute controls; available music tracks cycle as in the original.
+All **132 original WAVZ audio files** are included in `live/audio/` (about 553 MB), so playback does not depend on WAVZ's CDN. Audio starts after browser interaction when autoplay restrictions apply. Ambience and music have separate volume and mute controls; available music tracks cycle as in the original.
+
+**Soft Arrival** is an original Scenes chime: three soft bell notes (D4, A4, D5) with a rounded attack and a warm reverberant tail. The 7.2-second [MP3](live/audio/scenes-chime.mp3) is ready for a future focus timer; the [WAV master](live/audio/scenes-chime.wav) is also included. It uses synthesized tones and room reflections, with no third-party samples. To regenerate it, install NumPy and SciPy, make ffmpeg available, and run `python3 make-chime.py`.
 
 ## Snapshot and refresh
 
