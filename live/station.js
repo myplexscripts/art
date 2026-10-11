@@ -2,9 +2,9 @@
 // is one huge circle whose centre is far below the frame; its cloud bands are arcs about that centre, placed along
 // endless strips of angle, each strip sliding at its own speed. A sun rises and sets over the limb at the left inside
 // flat rings and rays, a shuttle comes and goes in time slots, and small satellites drift across.
-import { mulberry, lerp, clamp, osc, sway, noise1, poly, circle, pill, TAU } from './geom.js?v=20261011-ui';
-import { C, F } from './kit.js?v=20261011-ui';
-import { hash, el, makeStars, paintStars, meteor } from './bits.js?v=20261011-ui';
+import { mulberry, lerp, clamp, osc, sway, noise1, poly, circle, pill, TAU } from './geom.js?v=20261011-clock';
+import { C, F } from './kit.js?v=20261011-clock';
+import { hash, el, makeStars, paintStars, meteor } from './bits.js?v=20261011-clock';
 
 export const title = 'SPACE STATION', no = 'No. 03', text = '#101a3c', dark = '#060a1c';
 const S = { sky: '#070b20', s1: '#0d1436', s2: '#152050', s3: '#1f2f6c', air: '#7cc4d6', air2: '#2a4f8c', night: '#0a1634', shade: '#c5b48c', panel: '#2c5f9a', ink: '#0a1024' };

@@ -1,5 +1,5 @@
-// A once-only welcome, plus a replayable, fully illustrated iPhone installation guide.
-import { lockPage } from './scroll-lock.js?v=20261011-ui';
+// A once-only welcome with a fully illustrated iPhone installation guide.
+import { lockPage } from './scroll-lock.js?v=20261011-clock';
 const KEY = 'scenes-welcome-v1';
 const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 const standalone = () => navigator.standalone || matchMedia('(display-mode: standalone)').matches;
@@ -66,7 +66,7 @@ function showWelcome(skipSplash = false) {
     $('.welcome-back').hidden = next !== 'install'; $('.welcome-actions').hidden = next === 'splash';
     $('.welcome-note').textContent = next === 'features' && standalone() ? 'Already at home. Enjoy the full screen.' : next === 'install' ? 'Follow along, or choose any step.' : 'Your clock remembers its place in every scene.';
     if (next === 'features') {
-      if (!demoScene) import('./s-geometry.js?v=20261011-ui').then(({ scenes }) => { if (!ended) { demoScene = scenes.deepwaves; demoStarted = performance.now(); drawDemo(demoStarted); } });
+      if (!demoScene) import('./s-geometry.js?v=20261011-clock').then(({ scenes }) => { if (!ended) { demoScene = scenes.deepwaves; demoStarted = performance.now(); drawDemo(demoStarted); } });
       else drawDemo(performance.now());
     }
     if (next === 'install') { cancelAnimationFrame(raf); showStep(0); }
@@ -127,7 +127,5 @@ function showWelcome(skipSplash = false) {
   else { dialog.dataset.stage = 'splash'; $('.welcome-actions').hidden = true; timer = setTimeout(() => changeStage('features'), 1100); }
 }
 
-const guide = document.querySelector('.scenes-guide');
-guide?.addEventListener('click', () => showWelcome(true));
 let seen = false; try { seen = localStorage.getItem(KEY) === '1'; } catch {}
 if (!seen) showWelcome();

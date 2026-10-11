@@ -1,9 +1,9 @@
 // Nocturne Series No. 03: Lantern Harbor. A waterfront town under a hill, boats at their moorings, a pier in the
 // near corner and paper lanterns strung across the top. The waterline sits at a fixed share of the height; extra
 // width becomes more town and more water, extra height more sky and more harbor.
-import { mulberry, lerp, clamp, osc, sway, noise1, poly, circle, pill, TAU } from './geom.js?v=20261011-ui';
-import { C, F } from './kit.js?v=20261011-ui';
-import { hash, el, makeStars, paintStars, meteor, bars, crescent } from './bits.js?v=20261011-ui';
+import { mulberry, lerp, clamp, osc, sway, noise1, poly, circle, pill, TAU } from './geom.js?v=20261011-clock';
+import { C, F } from './kit.js?v=20261011-clock';
+import { hash, el, makeStars, paintStars, meteor, bars, crescent } from './bits.js?v=20261011-clock';
 
 export const title = 'LANTERN HARBOR', no = 'No. 03', text = C.navy, dark = C.ink;
 const WALLS = [C.deep, '#1a4a70', '#10294d'], nH = noise1(301);

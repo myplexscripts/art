@@ -127,3 +127,18 @@ export function makePaletteSampler(canvas, face, background = '#000') {
     return { ...choosePaletteColor(palette, behind, null, minimum), dominant: dominantColors(palette) };
   };
 }
+
+// Sample an authored pixel from the scene canvas, before the separate clock and grain overlays.
+export function makeSceneColorSampler(canvas, background = '#000') {
+  const pixel = document.createElement('canvas'); pixel.width = pixel.height = 1;
+  const context = pixel.getContext('2d', { willReadFrequently: true });
+  return (clientX, clientY) => {
+    const art = canvas.getBoundingClientRect();
+    if (!art.width || !art.height) return null;
+    const x = clamp(Math.floor((clientX - art.left) / art.width * canvas.width), 0, canvas.width - 1);
+    const y = clamp(Math.floor((clientY - art.top) / art.height * canvas.height), 0, canvas.height - 1);
+    context.fillStyle = background; context.fillRect(0, 0, 1, 1);
+    context.drawImage(canvas, x, y, 1, 1, 0, 0, 1, 1);
+    return [...context.getImageData(0, 0, 1, 1).data].slice(0, 3);
+  };
+}

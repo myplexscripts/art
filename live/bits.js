@@ -1,6 +1,6 @@
 // Pieces more than one scene uses: curves, a field of stars, shooting stars, drifting bars of cloud, a crescent, a pine.
-import { mulberry, osc, frac, circle, pill, star4, poly, TAU } from './geom.js?v=20261011-ui';
-import { C, F } from './kit.js?v=20261011-ui';
+import { mulberry, osc, frac, circle, pill, star4, poly, TAU } from './geom.js?v=20261011-clock';
+import { C, F } from './kit.js?v=20261011-clock';
 
 export const bez = (A, B, D, t) => [(1 - t) ** 2 * A[0] + 2 * t * (1 - t) * B[0] + t * t * D[0], (1 - t) ** 2 * A[1] + 2 * t * (1 - t) * B[1] + t * t * D[1]];
 export const bezT = (A, B, D, t) => { const x = 2 * (1 - t) * (B[0] - A[0]) + 2 * t * (D[0] - B[0]), y = 2 * (1 - t) * (B[1] - A[1]) + 2 * t * (D[1] - B[1]), l = Math.hypot(x, y) || 1; return [x / l, y / l]; };

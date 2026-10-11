@@ -1,5 +1,5 @@
 // Funk Essentials: an orange/violet pinwheel turns and flexes on a syncopated groove.
-import { make,setup,beat,TAU } from './genre-kit.js?v=20261011-ui';
+import { make,setup,beat,TAU } from './genre-kit.js?v=20261011-clock';
 export { make };
 export const title='Funk Spiral', no='No. 06', genre='Funk', text='#ff9d44', dark='#472398', audio=false, textless=true;
 const inks=['#df4604','#ff8131','#ffaf64','#887cf0','#653de0','#502aaf'];

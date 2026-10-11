@@ -1,4 +1,4 @@
-import { fromHex, hex } from './clock-palette.js?v=20261011-ui';
+import { fromHex, hex } from './clock-palette.js?v=20261011-clock';
 
 export const COLOR_CSS = `
   .wz-color-editor { position: absolute; inset: 0; z-index: 5; pointer-events: none; color: #f2e5c3; font-family: var(--face, "Barlow Condensed", system-ui, sans-serif); }
@@ -25,14 +25,24 @@ export const COLOR_CSS = `
   .wz-color-footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 18px; }
   .wz-color-note { margin: 0; max-width: 300px; font-size: 16px; line-height: 1.5; }
   .wz-color-editor .wz-color-done { padding: 10px 0 8px; border: 0; border-bottom: 2px solid #dd7f45; letter-spacing: .06em; text-transform: uppercase; }
+  .wz-color-editor .wz-color-sample { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 42px; margin-top: 16px; border: 1px solid #f2e5c366; border-radius: 8px; }
+  .wz-color-sample svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; }
+  .wz-color-editor.sampling .wz-color-panel { display: none; }
+  .wz-color-sample-guide { position: absolute; bottom: 0; left: 0; right: 0; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 20px max(20px, env(safe-area-inset-right, 0px)) calc(20px + env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 0px)); border-top: 2px solid #f2e5c3; background: var(--paper); pointer-events: auto; font-size: 18px; }
+  .wz-color-sample-guide button { border: 0; border-bottom: 2px solid #dd7f45; padding: 10px 0; }
   .wz-color-option:disabled { opacity: .35; cursor: default; }
   @media (max-height: 480px) { .wz-color-panel { padding-top: 12px; padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)); } .wz-color-heading { margin-bottom: 10px; } .wz-color-modes { margin-bottom: 12px; } .wz-color-chip { height: 40px; } .wz-color-option, .wz-color-custom { gap: 6px; } .wz-color-footer, .wz-color-hex-row { margin-top: 10px; } }
 `;
 
-export function makeColorPicker({ root, face, button, title, selected, getPalette, customColor, onSelect, onOpen, onClose }) {
+export function makeColorPicker({ root, face, button, title, selected, getPalette, sampleColor, customColor, onSelect, onOpen, onClose }) {
   const editor = document.createElement('section'); editor.className = 'wz-color-editor'; editor.hidden = true;
   editor.id = 'wz-color-' + face.parentNode.id;
   editor.innerHTML = `<div class="wz-color-panel"><div class="wz-color-heading"><strong>Clock colour</strong><span class="wz-color-scene"></span></div><div class="wz-color-modes" role="group" aria-label="Clock colour mode"><button class="wz-color-mode" type="button" data-mode="adaptive">Adaptive</button><button class="wz-color-mode" type="button" data-mode="white">White</button></div><div class="wz-color-swatches" role="group" aria-label="Three poster colours and a custom colour"><label class="wz-color-custom"><span class="wz-color-chip"><input type="color" aria-label="Choose any clock colour"></span><span>Custom</span></label></div><label class="wz-color-hex-row" hidden>Hex colour<input class="wz-color-hex" type="text" inputmode="text" maxlength="7" spellcheck="false" autocomplete="off" aria-label="Custom clock hex colour"></label><div class="wz-color-footer"><p class="wz-color-note" aria-live="polite"></p><button class="wz-color-done" type="button">Done</button></div></div>`;
+  const sampleButton = document.createElement('button'); sampleButton.type = 'button'; sampleButton.className = 'wz-color-sample';
+  sampleButton.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 5 5 5M3 21l4-1 11-11-4-4L3 16v5Zm12-17 2-2a2 2 0 0 1 3 3l-2 2"/></svg>Pick from scene';
+  editor.querySelector('.wz-color-footer').before(sampleButton);
+  const guide = document.createElement('div'); guide.className = 'wz-color-sample-guide'; guide.hidden = true;
+  guide.innerHTML = '<span role="status">Tap a colour in the scene</span><button type="button">Cancel</button>'; editor.append(guide);
   root.append(editor); editor.querySelector('.wz-color-scene').textContent = title;
   const panel = editor.querySelector('.wz-color-panel'), viewport = window.visualViewport;
   const swatches = editor.querySelector('.wz-color-swatches'), custom = editor.querySelector('.wz-color-custom');
@@ -40,7 +50,7 @@ export function makeColorPicker({ root, face, button, title, selected, getPalett
   const note = editor.querySelector('.wz-color-note'), done = editor.querySelector('.wz-color-done');
   const modes = [...editor.querySelectorAll('.wz-color-mode')];
   input.value = fromHex(customColor) ? customColor : '#b8c6d6';
-  let active = false, colors = [];
+  let active = false, sampling = false, colors = [];
   const presets = Array.from({ length: 3 }, (_, i) => {
     const preset = document.createElement('button'); preset.type = 'button'; preset.className = 'wz-color-option'; preset.dataset.colorIndex = i;
     preset.innerHTML = `<span class="wz-color-chip"></span><span>Colour ${i + 1}</span>`;
@@ -75,11 +85,20 @@ export function makeColorPicker({ root, face, button, title, selected, getPalett
   }
   function close(restoreFocus = true) {
     if (!active) return;
+    endSampling(); root.classList.remove('native-color');
     active = false; editor.hidden = true;
     viewport?.removeEventListener('resize', fitPanel); viewport?.removeEventListener('scroll', fitPanel); window.removeEventListener('resize', fitPanel);
     for (const attr of ['role', 'aria-modal', 'aria-label']) root.removeAttribute(attr);
     button.setAttribute('aria-expanded', 'false'); onClose(); if (restoreFocus) button.focus();
   }
+  function endSampling() {
+    sampling = false; editor.classList.remove('sampling'); root.classList.remove('picking-scene-color'); guide.hidden = true;
+  }
+  sampleButton.addEventListener('click', () => {
+    root.classList.remove('native-color'); sampling = true; editor.classList.add('sampling'); root.classList.add('picking-scene-color'); guide.hidden = false;
+    guide.querySelector('button').focus();
+  });
+  guide.querySelector('button').addEventListener('click', () => { endSampling(); sampleButton.focus(); });
   function fitPanel() {
     if (!active) return;
     const frame = root.getBoundingClientRect();
@@ -88,7 +107,12 @@ export function makeColorPicker({ root, face, button, title, selected, getPalett
     panel.style.maxHeight = Math.min(frame.height, viewport?.height ?? frame.height) + 'px';
   }
   modes.forEach(mode => mode.addEventListener('click', () => select({ mode: mode.dataset.mode })));
-  input.addEventListener('click', () => select({ mode: 'custom', rgb: fromHex(input.value) }));
+  // Native eyedroppers sample the composited screen. Keep the grain out of that
+  // screen until the user returns to the scene controls or closes the colour editor.
+  input.addEventListener('pointerdown', () => root.classList.add('native-color'));
+  input.addEventListener('focus', () => root.classList.add('native-color'));
+  input.addEventListener('keydown', e => { if (['Enter', ' '].includes(e.key)) root.classList.add('native-color'); });
+  input.addEventListener('click', () => { root.classList.add('native-color'); select({ mode: 'custom', rgb: fromHex(input.value) }); });
   for (const event of ['input', 'change']) input.addEventListener(event, () => select({ mode: 'custom', rgb: fromHex(input.value) }));
   text.addEventListener('input', () => {
     const rgb = fromHex('#' + text.value.replace(/^#/, ''));
@@ -97,12 +121,20 @@ export function makeColorPicker({ root, face, button, title, selected, getPalett
   text.addEventListener('blur', () => { text.value = input.value; text.removeAttribute('aria-invalid'); });
   button.setAttribute('aria-controls', editor.id); button.setAttribute('aria-haspopup', 'dialog'); button.setAttribute('aria-expanded', 'false');
   button.addEventListener('click', open); done.addEventListener('click', () => close());
-  root.addEventListener('pointerdown', e => { if (active && !e.defaultPrevented && !editor.contains(e.target) && !face.contains(e.target) && !button.contains(e.target)) close(false); });
+  root.addEventListener('pointerdown', e => {
+    if (!input.parentNode.contains(e.target)) root.classList.remove('native-color');
+    if (!active || e.defaultPrevented || editor.contains(e.target) || button.contains(e.target)) return;
+    if (sampling) {
+      e.preventDefault(); const rgb = sampleColor(e.clientX, e.clientY);
+      if (rgb) { select({ mode: 'custom', rgb }); endSampling(); sampleButton.focus(); }
+    } else if (!face.contains(e.target)) close(false);
+  });
   root.addEventListener('keydown', e => {
+    if (active && sampling && e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); endSampling(); sampleButton.focus(); return; }
     if (!active || e.key !== 'Tab') return;
-    const targets = [face, ...editor.querySelectorAll('button:not(:disabled), input')].filter(e => e.getClientRects().length);
+    const targets = (sampling ? [guide.querySelector('button')] : [face, ...editor.querySelectorAll('button:not(:disabled), input')]).filter(e => e.getClientRects().length);
     const index = targets.indexOf(document.activeElement), next = (index + (e.shiftKey ? -1 : 1) + targets.length) % targets.length;
     e.preventDefault(); targets[next].focus();
   });
-  sync(); return { element: editor, open, close, sync, get active() { return active; } };
+  sync(); return { element: editor, open, close, sync, get active() { return active; }, get sampling() { return sampling; } };
 }

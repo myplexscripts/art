@@ -1,9 +1,9 @@
 // Nocturne Series No. 04: Campfire Ridge. A fire and a lit tent on a dark ridge between the pines, ranges falling
 // away behind with mist between them, and the Milky Way across the sky. The ridge keeps a fixed share of the height;
 // extra room becomes sky.
-import { mulberry, clamp, osc, sway, noise1, poly, circle, pill, star4, TAU } from './geom.js?v=20261011-ui';
-import { C, F } from './kit.js?v=20261011-ui';
-import { hash, el, makeStars, paintStars, meteor, bars, crescent, pine } from './bits.js?v=20261011-ui';
+import { mulberry, clamp, osc, sway, noise1, poly, circle, pill, star4, TAU } from './geom.js?v=20261011-clock';
+import { C, F } from './kit.js?v=20261011-clock';
+import { hash, el, makeStars, paintStars, meteor, bars, crescent, pine } from './bits.js?v=20261011-clock';
 
 export const title = 'CAMPFIRE RIDGE', no = 'No. 04', text = C.navy, dark = C.ink;
 const K = { sky: '#0c1834', way1: '#101f42', way2: '#152c54', r1: '#2f7f97', r1b: '#1d5a74', r2: '#18486a', r3: '#123458', r4: '#0d2444', glow1: '#3a2034', glow2: '#7a3f33', log: '#2a1420', smoke: '#1d3558' };

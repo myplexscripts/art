@@ -3,9 +3,9 @@
 // top to come in again from below somewhere else, so the frame is always peopled. Tentacles and arms are chains of
 // points that sit where the bell was a moment ago, so they trail it and snake after every pulse. There is no sea
 // floor; a wider or taller frame simply holds more jellies.
-import { clamp, osc, noise1, circle, frac, TAU } from './geom.js?v=20261011-ui';
-import { C, F } from './kit.js?v=20261011-ui';
-import { hash } from './bits.js?v=20261011-ui';
+import { clamp, osc, noise1, circle, frac, TAU } from './geom.js?v=20261011-clock';
+import { C, F } from './kit.js?v=20261011-clock';
+import { hash } from './bits.js?v=20261011-clock';
 
 export const title = 'JELLYFISH BLOOM', no = 'No. 04', text = '#1b1a4a', dark = '#07061a';
 const K = { w: ['#141338', '#0e0d2b', '#09081f'], far: ['#2b2a66', '#3d3c85'], pink: '#e58aa8' };

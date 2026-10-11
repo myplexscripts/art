@@ -1,8 +1,8 @@
 // Nocturne Series No. 02: Hidden Falls. A waterfall drops off a cliff on the left into a moonlit pool,
 // framed by trunks, hanging vines and big leaves. Composed against the frame like the beach: the pool line
 // sits at a fixed share of the height, the cliff hangs off the left edge, and extra room becomes sky, water and foliage.
-import { mulberry, lerp, clamp, osc, sway, noise1, frac, poly, circle, pill, star4, TAU } from './geom.js?v=20261011-ui';
-import { C, F } from './kit.js?v=20261011-ui';
+import { mulberry, lerp, clamp, osc, sway, noise1, frac, poly, circle, pill, star4, TAU } from './geom.js?v=20261011-clock';
+import { C, F } from './kit.js?v=20261011-clock';
 
 export const title = 'HIDDEN FALLS', no = 'No. 02', text = '#0b2a26', dark = '#051411';
 // greens run light to dark with nearness; the cream, gold and orange are the series' own

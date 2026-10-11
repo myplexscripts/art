@@ -19,7 +19,6 @@
   --gallery-button-ink: #121f2b;
 }
 .gallery-actions { display: flex; align-items: center; justify-content: flex-end; gap: 14px 20px; flex-wrap: wrap; margin-top: 16px; }
-.gallery-actions .scenes-guide { margin: 0; }
 .scenes-theme { display: flex; align-items: center; gap: 8px; background: none; color: var(--gallery-accent); border: 0; border-bottom: 1px solid currentColor; padding: 0 0 3px; font: 600 16px/1.4 var(--face); cursor: pointer; }
 .scenes-theme em { font-style: normal; text-transform: uppercase; }
 .scenes-theme::before { content: ''; width: 12px; height: 12px; border: 1.5px solid currentColor; border-radius: 50%; background: linear-gradient(90deg, currentColor 50%, transparent 50%); }

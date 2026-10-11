@@ -1,5 +1,5 @@
 // Original Music Series No. 03: a quiet piano room beneath a rain-streaked arch.
-import { paper, makeRoom, box, disc, oval, stroke, polygon, word, hash, screw, wood, plant, steam, books } from './music-kit.js?v=20261011-ui';
+import { paper, makeRoom, box, disc, oval, stroke, polygon, word, hash, screw, wood, plant, steam, books } from './music-kit.js?v=20261011-clock';
 export const title = 'BLUE HOUR', no = 'No. 03', text = '#183a51', dark = '#102638', audio = false;
 export const make = makeRoom;
 const K={night:'#102638',wall:'#24475d',blue:'#416b85',mint:'#91b0b4',wood:'#16394c',gold:'#e8b768',dim:'#bc8350',key:'#f2e5c3'};

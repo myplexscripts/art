@@ -1,5 +1,5 @@
 // A slowly rotating cloud of points, inspired by Ambient Sleep.
-import { make as geometry, setup, gradient, glow, hash, TAU } from './art-kit.js?v=20261011-ui';
+import { make as geometry, setup, gradient, glow, hash, TAU } from './art-kit.js?v=20261011-clock';
 export const title='Orbital Drift', no='No. 07', text='#c3e3ef', dark='#10232e', audio=false, textless=true;
 let shellSurfaces;
 export function make(W,H) {

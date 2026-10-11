@@ -11,7 +11,7 @@ from urllib.request import Request, urlopen
 
 ORIGIN = 'https://wavz.us/'
 ROOT = Path(__file__).resolve().parent
-ASSET_VERSION = '20261011-ui'
+ASSET_VERSION = '20261011-clock'
 
 def version_assets(version=None):
     """One release URL for the entire local module graph prevents mixed cached UI."""
@@ -245,9 +245,9 @@ def adapt_gallery():
     text = text.replace('color: var(--navy); background: none; border: 2px solid var(--navy);', 'color: var(--gallery-ink); background: none; border: 2px solid currentColor;')
     text = re.sub(r'display: block; aspect-ratio: 3\s*/\s*4; scroll-snap-align: start;', 'display: block; scroll-snap-align: start; text-decoration: none; color: inherit;', text)
     text = text.replace('.posters canvas { width: 100%; height: 100%; display: block; }', '.posters canvas { width: 100%; height: auto; aspect-ratio: 3 / 4; display: block; }')
-    guide = '<button class="scenes-guide" type="button">Welcome &amp; iPhone setup</button>'
+    text = re.sub(r'<button\b[^>]*class="scenes-guide"[^>]*>.*?</button>', '', text, flags=re.S)
     if 'class="scenes-theme"' not in text:
-        text = text.replace(guide, '<span class="gallery-actions">' + guide + '<button class="scenes-theme" type="button" role="switch" aria-checked="false" aria-label="Dark gallery">Dark mode <em>off</em></button></span>')
+        text = text.replace('Calming scenes for your screen. Open one, go fullscreen, and unwind.</p>', 'Calming scenes for your screen. Open one, go fullscreen, and unwind.<span class="gallery-actions"><button class="scenes-theme" type="button" role="switch" aria-checked="false" aria-label="Dark gallery">Dark mode <em>off</em></button></span></p>')
     text = text.replace('import { draw, makeLayout, SERIES }', 'import { draw, makeLayout, SERIES, seriesLine }')
     if "import { galleryIsDark }" not in text:
         text = text.replace("  import { openScene }", "  import { galleryIsDark } from './live/theme.js';\n  import { openScene }")
@@ -276,8 +276,6 @@ def adapt_scenes():
     text = text.replace('.series, .posters a, footer {', '.series, .posters a {').replace('header p, footer.in, .series.in', 'header p, .series.in')
     text = '\n'.join(line for line in text.splitlines() if not line.lstrip().startswith('footer')) + '\n'
     text = text.replace('Living posters for your screen. Open one, go fullscreen, and leave it running.', 'Calming scenes for your screen. Open one, go fullscreen, and unwind.')
-    if (ROOT / 'live/welcome.js').exists() and 'class="scenes-guide"' not in text:
-        text = text.replace('Calming scenes for your screen. Open one, go fullscreen, and unwind.</p>', 'Calming scenes for your screen. Open one, go fullscreen, and unwind.<button class="scenes-guide" type="button">Welcome &amp; iPhone setup</button></p>')
     # Gallery previews use the page's existing grain; the viewer has its own overlay.
     text = '\n'.join(line for line in text.splitlines() if '.posters a.grained' not in line and "a.classList.toggle('grained'" not in line) + '\n'
     text = text.replace('  function open(name, grow) {\n    player?.close();', "  const resolveSceneName = name => ({ endlesslayers: 'stacks', petalorbit: 'blooms', sand: 'deepwaves' }[name] ?? name);\n  function open(name, grow) {\n    name = resolveSceneName(name);\n    if (!cards.some(c => c.name === name)) { leave(); return; }\n    player?.close();")

@@ -6,7 +6,8 @@ const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
 const smooth = x => { x = clamp(x); return x * x * (3 - 2 * x); };
 const hash = (n, seed) => { const x = Math.sin(n * 127.1 + seed * 311.7) * 43758.5453; return x - Math.floor(x); };
 const ink = (h, l) => `hsl(${h} 36% ${l}%)`;
-const hueAt = (t, start) => start + t * .32;
+export const COLOR_CYCLE_SECONDS = 90;
+const hueAt = (t, start) => start + t * 360 / COLOR_CYCLE_SECONDS;
 const stacksHue = t => hueAt(t, 218), bloomsHue = t => hueAt(t, 334);
 const make = (W, H) => ({ W, H, S: Math.min(W, H) });
 function noise(t, seed) {

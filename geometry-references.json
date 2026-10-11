@@ -10,7 +10,8 @@
   "gallery": "Shared framed caption band displays each scene's name, series and number.",
   "palette": {
     "cycling_scenes": ["stacks", "blooms"],
-    "cycling_hue_degrees_per_second": 0.32,
+    "cycling_hue_degrees_per_second": 4,
+    "cycling_period_seconds": 90,
     "saturation_percent": 36,
     "shade": "Darker, muted shades; one hue for all shapes and background at any instant."
   },

@@ -1,5 +1,5 @@
 // Classic Punk Essentials: a crown of sharp spikes and slashing shapes on a fast guitar backbeat.
-import { make,setup,beat,polygon,circle } from './genre-kit.js?v=20261011-ui';
+import { make,setup,beat,polygon,circle } from './genre-kit.js?v=20261011-clock';
 export { make };
 export const title='Riff Cut', no='No. 04', genre='Punk rock', text='#ff7141', dark='#430f24', audio=false, textless=true;
 const BPM=168;

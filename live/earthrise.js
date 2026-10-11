@@ -2,9 +2,9 @@
 // near, with craters, boulders and a lander whose dish turns; a half-lit Earth hangs over it inside flat glow rings and
 // turns under its night side. Earth's continents and clouds sit on endless strips of longitude, squeezed toward the
 // limb, so the globe turns and never shows the same face twice.
-import { mulberry, lerp, clamp, sway, noise1, poly, circle, pill, star4, TAU } from './geom.js?v=20261011-ui';
-import { C, F } from './kit.js?v=20261011-ui';
-import { hash, el, makeStars, paintStars } from './bits.js?v=20261011-ui';
+import { mulberry, lerp, clamp, sway, noise1, poly, circle, pill, star4, TAU } from './geom.js?v=20261011-clock';
+import { C, F } from './kit.js?v=20261011-clock';
+import { hash, el, makeStars, paintStars } from './bits.js?v=20261011-clock';
 
 export const title = 'EARTHRISE', no = 'No. 01', text = '#141a33', dark = '#06081a';
 const E = { sky: '#070a1e', r1: '#0c1330', r2: '#131d44', r3: '#1c2c5c', sea: C.blue, sea2: '#1f5f86', land: '#86a56c', night: '#0b1838', hi: '#d6dbe3', g1: '#b4bcc8', g2: '#8b94a6', g3: '#626c82', g4: '#3e465c', g5: '#252b40', ink: '#10142a' };
