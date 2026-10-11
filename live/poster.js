@@ -9,6 +9,7 @@ import * as orbit from './s-orbit.js';
 import * as music from './s-music.js';
 import * as geometry from './s-geometry.js';
 import { C, M, FONT } from './kit.js';
+import { scalePosterText } from './typography.js';
 
 // Each series lists its own scenes; a series with none yet is left out.
 export const SERIES = [nocturne, weather, windows, daybreak, deep, orbit, music, geometry].filter((s) => Object.keys(s.scenes).length);
@@ -47,11 +48,12 @@ function blend(A, B, e) {
 // A layout may carry fade: { rule, text }, 0 to 1, set by the player while its controls are printed in the title band:
 // the orange rule draws in to its middle and is gone, and on a narrow poster all the lettering fades with it.
 // frame: 1 is the full poster; 0 is the picture alone, edge to edge, with no margin or title; between, the frame is part-way gone.
-export function makeLayout(aspect, scene, { brand = true, dark = false, mix = null, frame = 1 } = {}) {
+export function makeLayout(aspect, scene, { brand = true, dark = false, mix = null, frame = 1, cssWidth } = {}) {
   // Text-free artwork always fills its canvas, including gallery cards and frame transitions.
   if (scene.textless) frame = 0;
   const VW = width(aspect), VH = VW / aspect, m = M * frame;
-  const spec = mix ? blend(titleSpec(mix.from, VW, VH), titleSpec(mix.to, VW, VH), mix.e) : titleSpec(styleFor(aspect, brand), VW, VH);
+  const base = mix ? blend(titleSpec(mix.from, VW, VH), titleSpec(mix.to, VW, VH), mix.e) : titleSpec(styleFor(aspect, brand), VW, VH);
+  const spec = scalePosterText(base, { VW, VH, cssWidth, margin: M });
   return { VW, VH, spec, scene, dark: +dark, m, frame, G: scene.make(VW - 2 * m, VH - 2 * m - spec.band * frame) };
 }
 

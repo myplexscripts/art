@@ -1,4 +1,5 @@
 // Small drawing primitives shared by the original Music Series.
+import { FONT } from './kit.js';
 export const TAU = Math.PI * 2;
 export const paper = '#f2e5c3';
 export function makeRoom(W, H) { return { W, H, s: Math.min(W / 1000, H / 920) }; }
@@ -18,7 +19,7 @@ export function polygon(c, points, ink) {
   c.beginPath(); points.forEach(([x, y], i) => i ? c.lineTo(x, y) : c.moveTo(x, y)); c.closePath(); c.fillStyle = ink; c.fill();
 }
 export function word(c, text, x, y, size, ink, align = 'left') {
-  c.fillStyle = ink; c.font = `bold ${size}px "Arial Narrow", Arial, sans-serif`; c.textAlign = align; c.fillText(text, x, y);
+  c.fillStyle = ink; c.font = `bold ${size}px ${FONT}`; c.textAlign = align; c.fillText(text, x, y);
 }
 export function knob(c, x, y, r, t, ink, lineInk = paper) {
   disc(c, x, y, r + 3, lineInk); disc(c, x, y, r, ink);

@@ -1,23 +1,23 @@
 // A live, full-screen clock editor with one mark for each authored scene boundary.
 export const DEPTH_CSS = `
-  .wz-depth-editor { position: absolute; inset: 0; z-index: 5; pointer-events: none; color: #f2e5c3; font-family: "Inter", system-ui, sans-serif; }
+  .wz-depth-editor { position: absolute; inset: 0; z-index: 5; pointer-events: none; color: #f2e5c3; font-family: "Barlow Condensed", system-ui, sans-serif; }
   .wz-depth-editor[hidden] { display: none; }
   .wz-depth-top { position: absolute; left: max(20px, env(safe-area-inset-left, 0px)); top: calc(22px + env(safe-area-inset-top, 0px)); display: grid; gap: 6px; background: var(--paper); padding: 10px 14px; border-radius: 12px; }
-  .wz-depth-top strong { font-size: 20px; font-weight: 650; letter-spacing: -.035em; }
-  .wz-depth-scene { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+  .wz-depth-top strong { font-size: 24px; font-weight: 650; letter-spacing: -.035em; }
+  .wz-depth-scene { font-size: 13.2px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
   .wz-depth-rail { position: absolute; right: max(10px, env(safe-area-inset-right, 0px)); top: calc(50% - 52px); transform: translateY(-50%); display: grid; padding: 6px 3px; background: var(--paper); border: 1px solid #f2e5c344; border-radius: 28px; pointer-events: auto; }
   .wz-depth-mark { width: 56px; min-height: 48px; padding: 0; display: grid; place-items: center; background: none; border: 0; cursor: pointer; touch-action: manipulation; }
   .wz-depth-mark::before { content: ''; display: block; width: 24px; height: 2px; border-radius: 2px; background: #f2e5c3; transition: width .25s ease, background .25s ease; }
   .wz-depth-mark[aria-checked=true]::before { width: 42px; height: 3px; background: #dd7f45; }
   .wz-depth-mark:focus-visible { outline: 1px solid #dd7f45; outline-offset: -4px; border-radius: 22px; }
   .wz-depth-bottom { position: absolute; bottom: 0; left: 0; right: 0; padding: 16px max(20px, env(safe-area-inset-right, 0px)) calc(18px + env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 0px)); border-top: 2px solid #f2e5c3; background: var(--paper); pointer-events: auto; }
-  .wz-depth-description { margin: 0 0 12px; font-size: 12px; line-height: 1.5; }
-  .wz-depth-description strong { display: block; font-size: 15px; font-weight: 650; margin-bottom: 5px; }
+  .wz-depth-description { margin: 0 0 12px; font-size: 14.4px; line-height: 1.5; }
+  .wz-depth-description strong { display: block; font-size: 18px; font-weight: 650; margin-bottom: 5px; }
   .wz-depth-actions { display: flex; justify-content: space-between; gap: 20px; }
-  .wz-depth-actions button { border: 0; border-bottom: 2px solid #dd7f45; background: none; color: inherit; padding: 10px 0 8px; font: 650 13px/1 "Inter", system-ui, sans-serif; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; }
+  .wz-depth-actions button { border: 0; border-bottom: 2px solid #dd7f45; background: none; color: inherit; padding: 10px 0 8px; font: 650 15.6px/1 "Barlow Condensed", system-ui, sans-serif; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; }
   .wz-depth-actions button:focus-visible { outline: 1px solid #dd7f45; outline-offset: 5px; }
   .wz-depth-bounds { position: absolute; box-sizing: border-box; border: 1px dashed #f2e5c399; border-radius: 12px; pointer-events: none; }
-  @media (max-height: 480px) { .wz-depth-top { top: calc(14px + env(safe-area-inset-top, 0px)); } .wz-depth-bottom { padding-top: 10px; padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)); } .wz-depth-description { margin-bottom: 3px; } .wz-depth-description strong { font-size: 13px; } .wz-depth-mark { min-height: 40px; } }
+  @media (max-height: 480px) { .wz-depth-top { top: calc(14px + env(safe-area-inset-top, 0px)); } .wz-depth-bottom { padding-top: 10px; padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)); } .wz-depth-description { margin-bottom: 3px; } .wz-depth-description strong { font-size: 15.6px; } .wz-depth-mark { min-height: 40px; } }
   @media (prefers-reduced-motion: reduce) { .wz-depth-mark::before { transition: none; } }
 `;
 

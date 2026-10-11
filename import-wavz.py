@@ -118,16 +118,16 @@ def adapt_for_local_hosting():
     if (ROOT / 'live/player-local.js').exists():
         adapt_local_viewer()
         adapt_scenes()
-    adapt_font_preview()
+    adapt_typography()
     if (ROOT / 'live/clock-depth.js').exists():
         from scene_depth import apply_depth
         apply_depth(ROOT)
 
 def adapt_local_viewer():
-    """Retain full-bleed playback, the clock and variable fonts during a source refresh."""
+    """Retain full-bleed playback, the clock and locally hosted fonts during a source refresh."""
     (ROOT / 'live/player.js').write_text("// Local viewer overrides are retained when refreshing the upstream WAVZ snapshot.\nexport { openScene } from './player-local.js';\n")
     path = ROOT / 'live/kit.js'
-    text = re.sub(r"export const FONT = '[^']*';", "export const FONT = '\"Inter\", system-ui, sans-serif';", path.read_text(), count=1)
+    text = re.sub(r"export const FONT = '[^']*';", "export { FONT } from './typography.js';", path.read_text(), count=1)
     path.write_text(text)
     path = ROOT / 'index.html'
     text = path.read_text()
@@ -138,46 +138,70 @@ def adapt_local_viewer():
         text = text.replace('</head>', '<link rel="stylesheet" href="./live/fonts.css">\n</head>')
     if (ROOT / 'live/welcome.js').exists() and 'src="./live/welcome.js"' not in text:
         text = text.replace('</head>', '<link rel="stylesheet" href="./live/welcome.css">\n<script type="module" src="./live/welcome.js"></script>\n</head>')
-    text = re.sub(r'--face: [^;]+;', '--face: "Inter", system-ui, sans-serif;', text, count=1)
+    text = re.sub(r'--face: [^;]+;', '--face: "Barlow Condensed", system-ui, sans-serif;', text, count=1)
     if '--display:' not in text:
-        text = text.replace('--face: "Inter", system-ui, sans-serif;', '--face: "Inter", system-ui, sans-serif; --display: "Inter", system-ui, sans-serif;')
+        text = text.replace('--face: "Barlow Condensed", system-ui, sans-serif;', '--face: "Barlow Condensed", system-ui, sans-serif; --display: "Barlow Condensed", system-ui, sans-serif;')
     else:
-        text = re.sub(r'--display: [^;]+;', '--display: "Inter", system-ui, sans-serif;', text, count=1)
+        text = re.sub(r'--display: [^;]+;', '--display: "Barlow Condensed", system-ui, sans-serif;', text, count=1)
     for tag in ['h1', 'h2']:
         if tag + ' { margin: 0; font-family: var(--display);' not in text:
             text = text.replace(tag + ' { margin: 0;', tag + ' { margin: 0; font-family: var(--display);')
-    if 'document.fonts.ready.then(() => { for (const card of cards) card.paint(); });' not in text:
+    if 'fonts.ready.then(() => { for (const card of cards) card.paint(); });' not in text and 'fontReady.then(() => { for (const card of cards) card.paint(); });' not in text:
         text = text.replace(' }); size();', ' }); size();\n  document.fonts.ready.then(() => { for (const card of cards) card.paint(); });')
     old_kern = "        c.font = cs.fontWeight + ' 200px ' + cs.fontFamily; const w = (t) => c.measureText(t).width;\n        for (let i = 1; i < k.length; i++) k[i].style.marginLeft = (w(k[i - 1].textContent + k[i].textContent) - w(k[i - 1].textContent) - w(k[i].textContent)) / 200 + 'em'; })();"
     new_kern = "        const kern = () => { c.font = cs.fontWeight + ' 200px ' + cs.fontFamily; const w = (t) => c.measureText(t).width;\n          for (let i = 1; i < k.length; i++) k[i].style.marginLeft = (w(k[i - 1].textContent + k[i].textContent) - w(k[i - 1].textContent) - w(k[i].textContent)) / 200 + 'em'; };\n        kern(); document.fonts.ready.then(kern); })();"
     text = text.replace(old_kern, new_kern)
     path.write_text(text)
 
-def adapt_font_preview():
-    """Keep the shared font preview and sequenced clock transitions after a refresh."""
-    if not (ROOT / 'live/font-preview.js').exists():
+def adapt_typography():
+    """Keep fixed Barlow typography, readable captions and clock transitions after a refresh."""
+    if not (ROOT / 'live/typography.js').exists():
         return
     path = ROOT / 'live/kit.js'
-    text = re.sub(r"export const FONT = '[^']*';", "export { FONT } from './font-preview.js';", path.read_text(), count=1)
+    text = re.sub(r"export const FONT = '[^']*';", "export { FONT } from './typography.js';", path.read_text(), count=1)
+    text = text.replace("from './font-preview.js'", "from './typography.js'")
     path.write_text(text)
     path = ROOT / 'index.html'
     text = path.read_text()
-    if 'src="./live/font-preview.js"' not in text:
-        text = text.replace('<link rel="stylesheet" href="./live/fonts.css">', '<link rel="stylesheet" href="./live/fonts.css">\n<script type="module" src="./live/font-preview.js"></script>')
-    if 'data-font-preview' not in text:
-        text = text.replace('<button class="scenes-guide" type="button">Welcome &amp; iPhone setup</button>', '<span class="scenes-tools"><button class="scenes-guide" type="button">Welcome &amp; iPhone setup</button><span data-font-preview></span></span>')
-    if '  .scenes-tools {' not in text:
-        text = text.replace('  .rule {', '  .scenes-tools { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 10px 16px; margin-top: 12px; }\n  .scenes-tools .scenes-guide { margin: 0; }\n  .rule {', 1)
-        text = text.replace('header p { text-align: left; } }', 'header p { text-align: left; } .scenes-tools { justify-content: flex-start; } }')
+    text = text.replace('src="./live/font-preview.js"', 'src="./live/typography.js"')
+    if 'src="./live/typography.js"' not in text:
+        text = text.replace('<link rel="stylesheet" href="./live/fonts.css">', '<link rel="stylesheet" href="./live/fonts.css">\n<script type="module" src="./live/typography.js"></script>')
+    text = text.replace('<span class="scenes-tools"><button class="scenes-guide" type="button">Welcome &amp; iPhone setup</button><span data-font-preview></span></span>', '<button class="scenes-guide" type="button">Welcome &amp; iPhone setup</button>')
+    text = re.sub(r'^  \.scenes-tools[^\n]*\n', '', text, flags=re.M)
+    text = text.replace(' .scenes-tools { justify-content: flex-start; }', '')
     text = text.replace(', cs = getComputedStyle(h), c =', ', c =')
     text = text.replace("const kern = () => { c.font =", "const kern = () => { const cs = getComputedStyle(h); c.font =")
-    text = text.replace('kern(); document.fonts.ready.then(kern); })();', "kern(); document.fonts.ready.then(kern); addEventListener('scenes-font-change', kern); })();")
-    if "addEventListener('scenes-font-change', () => { for (const card of cards) card.paint(); });" not in text:
-        text = text.replace('  document.fonts.ready.then(() => { for (const card of cards) card.paint(); });', "  document.fonts.ready.then(() => { for (const card of cards) card.paint(); });\n  addEventListener('scenes-font-change', () => { for (const card of cards) card.paint(); });")
+    text = text.replace(" addEventListener('scenes-font-change', kern);", '')
+    text = text.replace('kern(); document.fonts.ready.then(kern);', "kern(); import('./live/typography.js').then(({ fontReady }) => fontReady.then(kern));")
+    text = text.replace("  addEventListener('scenes-font-change', () => { for (const card of cards) card.paint(); });\n", '')
+    if "import { fontReady } from './live/typography.js';" not in text:
+        text = text.replace("  import { draw, makeLayout, SERIES } from './live/poster.js';", "  import { draw, makeLayout, SERIES } from './live/poster.js';\n  import { fontReady } from './live/typography.js';")
+    text = text.replace('document.fonts.ready.then(() => { for (const card of cards) card.paint(); });', 'fontReady.then(() => { for (const card of cards) card.paint(); });')
+    text = text.replace('{ brand: false, dark }', '{ brand: false, dark, cssWidth: r.width }')
+    marker = '  /* Text sizes are 1.2 times the original hierarchy, with a 12px minimum. */'
+    if marker not in text:
+        def scale_font(match):
+            def scale_number(number):
+                value = float(number[1]) * 1.2
+                if number[2] == 'px':
+                    value = max(12, value)
+                return f'{value:g}{number[2]}'
+            return match[1] + re.sub(r'([\d.]+)(px|vw|vmin)', scale_number, match[2]) + ';'
+        text = re.sub(r'(\bfont(?:-size)?\s*:\s*)([^;{}]+);', scale_font, text)
+        text = text.replace('  h1 { margin:', marker + '\n  h1 { margin:', 1)
     text = text.replace('  let player = null;', '  let player = null, departing = null;')
     text = text.replace('    player?.close();', '    departing?.close({ immediate: true }); departing = null;\n    player?.close({ immediate: true });')
     text = text.replace('const was = player; player = null;', 'const was = player; departing = was; player = null;')
     text = text.replace('was.close({ to: () => rectOf(was.name) }); setTimeout(() => size(), 800);', 'was.close({ to: () => rectOf(was.name) }); setTimeout(() => size(), 1000);')
+    path.write_text(text)
+    path = ROOT / 'live/poster.js'
+    text = path.read_text()
+    if "import { scalePosterText } from './typography.js';" not in text:
+        text = text.replace("import { C, M, FONT } from './kit.js';", "import { C, M, FONT } from './kit.js';\nimport { scalePosterText } from './typography.js';")
+    text = text.replace('mix = null, frame = 1 } = {})', 'mix = null, frame = 1, cssWidth } = {})')
+    if 'const spec = scalePosterText(' not in text:
+        text = text.replace('  const spec = mix ? blend(', '  const base = mix ? blend(')
+        text = text.replace('titleSpec(styleFor(aspect, brand), VW, VH);', 'titleSpec(styleFor(aspect, brand), VW, VH);\n  const spec = scalePosterText(base, { VW, VH, cssWidth, margin: M });')
     path.write_text(text)
 
 def adapt_scenes():

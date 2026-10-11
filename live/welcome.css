@@ -1,21 +1,21 @@
-.scenes-guide { display: block; margin: 12px 0 0 auto; padding: 0 0 3px; color: var(--rust); border: 0; border-bottom: 1px solid currentColor; background: none; font: 600 13px/1.4 var(--face); cursor: pointer; }
+.scenes-guide { display: block; margin: 12px 0 0 auto; padding: 0 0 3px; color: var(--rust); border: 0; border-bottom: 1px solid currentColor; background: none; font: 600 15.6px/1.4 var(--face); cursor: pointer; }
 .scenes-guide:focus-visible { outline: 2px solid var(--orange); outline-offset: 4px; }
-.scenes-welcome { position: fixed; inset: 0; box-sizing: border-box; margin: 0; width: 100%; height: 100%; max-width: none; max-height: none; padding: max(24px, env(safe-area-inset-top)) max(22px, env(safe-area-inset-right)) max(22px, env(safe-area-inset-bottom)) max(22px, env(safe-area-inset-left)); border: 0; background: #f2e5c3; color: #0e1c3a; font-family: var(--face, 'Inter', system-ui, sans-serif); overflow-y: auto; overscroll-behavior: contain; }
+.scenes-welcome { position: fixed; inset: 0; box-sizing: border-box; margin: 0; width: 100%; height: 100%; max-width: none; max-height: none; padding: max(24px, env(safe-area-inset-top)) max(22px, env(safe-area-inset-right)) max(22px, env(safe-area-inset-bottom)) max(22px, env(safe-area-inset-left)); border: 0; background: #f2e5c3; color: #0e1c3a; font-family: var(--face, 'Barlow Condensed', system-ui, sans-serif); overflow-y: auto; overscroll-behavior: contain; }
 .scenes-welcome::backdrop { background: #f2e5c3; }
 .scenes-welcome::after { content: ''; position: fixed; inset: 0; z-index: 2; background: var(--grain, none); background-size: var(--grain-size, 256px); pointer-events: none; }
 .scenes-welcome [hidden] { display: none !important; }
 .welcome-shell { max-width: 940px; min-height: 100%; margin: 0 auto; display: flex; flex-direction: column; }
 .welcome-top { display: flex; justify-content: space-between; gap: 16px; align-items: center; }
-.welcome-wordmark { font-size: 30px; font-weight: 750; letter-spacing: -.05em; }
+.welcome-wordmark { font-size: 36px; font-weight: 750; letter-spacing: -.05em; }
 .scenes-welcome button { font-family: inherit; cursor: pointer; }
-.welcome-skip { background: none; color: #8f4520; border: 0; padding: 8px 0; font-size: 12px; font-weight: 650; }
+.welcome-skip { background: none; color: #8f4520; border: 0; padding: 8px 0; font-size: 14.4px; font-weight: 650; }
 .welcome-progress { display: flex; gap: 5px; margin: 16px 0 28px; }
 .welcome-progress i { height: 3px; width: 30px; background: #0e1c3a25; transition: background .4s; }
 .scenes-welcome[data-stage=splash] .welcome-progress i:first-child, .scenes-welcome[data-stage=features] .welcome-progress i:nth-child(-n+2), .scenes-welcome[data-stage=install] .welcome-progress i { background: #dd7f45; }
-.welcome-kicker { font-size: 11px; font-weight: 700; color: #8f4520; letter-spacing: .13em; text-transform: uppercase; margin: 0 0 14px; }
+.welcome-kicker { font-size: 13.2px; font-weight: 700; color: #8f4520; letter-spacing: .13em; text-transform: uppercase; margin: 0 0 14px; }
 .welcome-splash { flex: 1; display: grid; justify-items: center; align-content: center; text-align: center; min-height: 400px; }
-.welcome-splash h1 { font-size: clamp(80px, 14vw, 148px); font-weight: 760; letter-spacing: -.06em; line-height: 1; margin: 0; }
-.welcome-splash > p:last-of-type { font-size: 18px; font-weight: 550; }
+.welcome-splash h1 { font-size: clamp(96px, 16.8vw, 177.6px); font-weight: 760; letter-spacing: -.06em; line-height: 1; margin: 0; }
+.welcome-splash > p:last-of-type { font-size: 21.6px; font-weight: 550; }
 .splash-rule { width: 96px; height: 4px; background: #dd7f45; margin-top: 8px; transform-origin: left; animation: welcome-rule .7s .25s both; }
 .splash-posters { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 44px; }
 .splash-posters > i { width: 65px; height: 90px; border: 5px solid #e8d6ad; animation: welcome-posters .8s cubic-bezier(.16,1,.3,1) both; }
@@ -27,59 +27,59 @@
 .splash-bloom::before { content: ''; position: absolute; left: 21%; top: 30%; width: 58%; aspect-ratio: 1; border-radius: 55% 28% 55% 28%; transform: rotate(30deg); background: #6d303c; outline: 9px solid #a84e5b; border: 7px solid #dbb8a6; box-sizing: border-box; }
 .splash-waves { background: repeating-radial-gradient(circle at 45% 30%, #42748b 0 14px, #31566e 14px 29px, #203e53 29px 44px); }
 .welcome-features, .welcome-install { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; flex: 1; padding-bottom: 20px; }
-.welcome-copy h2 { font-size: clamp(32px, 4.4vw, 49px); font-weight: 730; letter-spacing: -.045em; text-transform: none; color: #0e1c3a; margin: 0 0 14px; line-height: 1.04; }
-.welcome-copy > p:not(.welcome-kicker) { font-size: 15px; line-height: 1.5; max-width: 30em; margin: 0 0 20px; }
+.welcome-copy h2 { font-size: clamp(38.4px, 5.28vw, 58.8px); font-weight: 730; letter-spacing: -.045em; text-transform: none; color: #0e1c3a; margin: 0 0 14px; line-height: 1.04; }
+.welcome-copy > p:not(.welcome-kicker) { font-size: 18px; line-height: 1.5; max-width: 30em; margin: 0 0 20px; }
 .welcome-feature-list { margin: 20px 0 0; padding: 0; list-style: none; }
 .welcome-feature-list li { margin: 0 0 15px; padding-left: 15px; border-left: 2px solid #dd7f45; }
-.welcome-feature-list b { display: block; font-size: 14px; font-weight: 700; margin-bottom: 3px; }
-.welcome-feature-list span { font-size: 12px; line-height: 1.45; }
+.welcome-feature-list b { display: block; font-size: 16.8px; font-weight: 700; margin-bottom: 3px; }
+.welcome-feature-list span { font-size: 14.4px; line-height: 1.45; }
 .welcome-demo { max-width: 320px; width: 100%; justify-self: center; padding: 10px; border: 1px solid #0e1c3a25; box-sizing: border-box; }
 .demo-art { position: relative; aspect-ratio: 604 / 680; overflow: hidden; background: #183340; }
 .demo-art canvas { display: block; width: 100%; height: 100%; }
-.demo-clock { position: absolute; top: 48%; left: 50%; transform: translate(-50%, -50%); color: #fff; font-size: 42px; letter-spacing: -.04em; white-space: nowrap; transition: top .7s cubic-bezier(.22,1,.36,1), left .7s cubic-bezier(.22,1,.36,1), font-size .7s, font-weight .7s, color .7s; }
-.demo-controls { position: absolute; bottom: 0; left: 0; right: 0; display: flex; justify-content: center; align-items: center; gap: 7px; padding: 14px 6px; color: #f2e5c3; background: #183340; font-size: 8px; font-weight: 650; letter-spacing: .03em; }
+.demo-clock { position: absolute; top: 48%; left: 50%; transform: translate(-50%, -50%); color: #fff; font-size: 63px; letter-spacing: -.04em; white-space: nowrap; transition: top .7s cubic-bezier(.22,1,.36,1), left .7s cubic-bezier(.22,1,.36,1), font-size .7s, font-weight .7s, color .7s; }
+.demo-controls { position: absolute; bottom: 0; left: 0; right: 0; display: flex; justify-content: center; align-items: center; gap: 7px; padding: 14px 6px; color: #f2e5c3; background: #183340; font-size: 12px; font-weight: 650; letter-spacing: .03em; }
 .demo-controls i { height: 2px; width: 36px; background: #dd7f45; position: relative; }
 .demo-controls i::after { content: ''; position: absolute; right: 4px; top: -3px; width: 8px; height: 8px; border-radius: 50%; background: #f2e5c3; }
 .demo-caption { text-align: center; padding: 10px 0 6px; }
-.demo-caption b { display: block; font-size: 13px; }
-.demo-caption span { font-size: 8px; color: #8f4520; font-weight: 650; }
-.demo-gesture { text-align: center; color: #8f4520; font-size: 11px; font-weight: 650; min-height: 15px; margin: 6px 0; }
+.demo-caption b { display: block; font-size: 19.5px; }
+.demo-caption span { font-size: 12px; color: #8f4520; font-weight: 650; }
+.demo-gesture { text-align: center; color: #8f4520; font-size: 16.5px; font-weight: 650; min-height: 15px; margin: 6px 0; }
 .welcome-actions { display: flex; align-items: center; gap: 15px; padding-top: 18px; border-top: 1px solid #0e1c3a25; margin-top: 12px; }
-.welcome-note { flex: 1; font-size: 11px; line-height: 1.4; max-width: 27em; }
-.welcome-next { flex: none; color: #f2e5c3; background: #0e1c3a; border: 0; padding: 14px 18px; border-radius: 3px; font-size: 13px; font-weight: 650; }
-.welcome-back { background: none; border: 0; color: #8f4520; padding: 8px 0; font-size: 12px; font-weight: 650; }
+.welcome-note { flex: 1; font-size: 13.2px; line-height: 1.4; max-width: 27em; }
+.welcome-next { flex: none; color: #f2e5c3; background: #0e1c3a; border: 0; padding: 14px 18px; border-radius: 3px; font-size: 15.6px; font-weight: 650; }
+.welcome-back { background: none; border: 0; color: #8f4520; padding: 8px 0; font-size: 14.4px; font-weight: 650; }
 .scenes-welcome button:focus-visible { outline: 2px solid #dd7f45; outline-offset: 4px; }
 .install-steps { list-style: none; margin: 24px 0 16px; padding: 0; }
 .install-steps li { margin-bottom: 8px; }
 .install-steps button { display: flex; align-items: center; text-align: left; gap: 10px; border: 0; padding: 4px 0; width: 100%; background: none; color: #0e1c3a; }
-.install-steps button > span { display: grid; place-items: center; border: 1px solid #0e1c3a30; border-radius: 50%; width: 23px; height: 23px; flex: none; font-size: 11px; }
-.install-steps b { font-size: 12px; font-weight: 550; }
+.install-steps button > span { display: grid; place-items: center; border: 1px solid #0e1c3a30; border-radius: 50%; width: 23px; height: 23px; flex: none; font-size: 13.2px; }
+.install-steps b { font-size: 14.4px; font-weight: 550; }
 .install-steps button[aria-current=step] > span { background: #dd7f45; color: #0e1c3a; border-color: #dd7f45; }
 .install-steps button[aria-current=step] b { font-weight: 750; }
-.welcome-copy .install-detail { font-size: 12px !important; color: #8f4520; min-height: 54px; max-width: 31em; }
+.welcome-copy .install-detail { font-size: 14.4px !important; color: #8f4520; min-height: 54px; max-width: 31em; }
 .install-animation { display: grid; justify-items: center; gap: 12px; }
-.install-play { border: 0; padding: 4px 0; background: none; color: #8f4520; border-bottom: 1px solid currentColor; font-size: 11px; font-weight: 650; }
-.install-phone { position: relative; width: 230px; height: 460px; border: 6px solid #0e1c3a; border-radius: 32px; overflow: hidden; background: #f2e5c3; isolation: isolate; font-size: 11px; }
+.install-play { border: 0; padding: 4px 0; background: none; color: #8f4520; border-bottom: 1px solid currentColor; font-size: 13.2px; font-weight: 650; }
+.install-phone { position: relative; width: 230px; height: 460px; border: 6px solid #0e1c3a; border-radius: 32px; overflow: hidden; background: #f2e5c3; isolation: isolate; font-size: 22px; }
 .install-phone svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.7; }
 .phone-island { position: absolute; z-index: 8; top: 7px; left: 50%; transform: translateX(-50%); width: 62px; height: 17px; background: #0e1c3a; border-radius: 15px; }
-.phone-status { position: absolute; z-index: 8; top: 11px; left: 15px; right: 15px; display: flex; justify-content: space-between; font-size: 8px; font-weight: 750; pointer-events: none; }
+.phone-status { position: absolute; z-index: 8; top: 11px; left: 15px; right: 15px; display: flex; justify-content: space-between; font-size: 16px; font-weight: 750; pointer-events: none; }
 .phone-home-line { position: absolute; z-index: 8; bottom: 6px; left: 50%; transform: translateX(-50%); width: 66px; height: 3px; border-radius: 2px; background: #0e1c3a; }
 .phone-web { position: absolute; inset: 0; }
 .phone-gallery { padding: 52px 14px 0; }
-.phone-gallery > b { font-size: 29px; font-weight: 750; letter-spacing: -.04em; }
-.phone-gallery > p { font-size: 9px; margin: 7px 0 10px; }
+.phone-gallery > b { font-size: 58px; font-weight: 750; letter-spacing: -.04em; }
+.phone-gallery > p { font-size: 18px; margin: 7px 0 10px; }
 .phone-rule { height: 3px; background: #dd7f45; margin-bottom: 20px; }
-.phone-gallery > small { font-size: 8px; letter-spacing: .1em; color: #8f4520; font-weight: 750; }
+.phone-gallery > small { font-size: 16px; letter-spacing: .1em; color: #8f4520; font-weight: 750; }
 .phone-cards { display: flex; gap: 10px; margin-top: 12px; }
-.phone-cards > i { width: 95px; height: 145px; border: 4px solid #e8d6ad; box-sizing: border-box; font-style: normal; overflow: visible; }
-.phone-cards i > span { position: absolute; top: 100%; left: -4px; right: -4px; background: #e8d6ad; padding: 6px 0; text-align: center; font-size: 8px; font-weight: 700; }
-.phone-cards em { font-size: 6px; color: #8f4520; font-style: normal; }
+.phone-cards > i { width: 95px; height: 100px; border: 4px solid #e8d6ad; box-sizing: border-box; font-style: normal; overflow: visible; }
+.phone-cards i > span { position: absolute; top: 100%; left: -4px; right: -4px; background: #e8d6ad; padding: 6px 0; text-align: center; font-size: 16px; font-weight: 700; }
+.phone-cards em { font-size: 12px; color: #8f4520; font-style: normal; }
 .phone-toolbar { position: absolute; bottom: 0; left: 0; right: 0; height: 50px; padding: 0 12px 12px; display: flex; align-items: center; gap: 10px; background: #e8d6ad; font-weight: 650; }
-.phone-address { border: 1px solid #0e1c3a22; padding: 8px 12px; font-size: 9px; flex: 1; text-align: center; border-radius: 10px; }
-.phone-menu-icon { font-size: 13px; }
+.phone-address { border: 1px solid #0e1c3a22; padding: 8px 12px; font-size: 18px; flex: 1; text-align: center; border-radius: 10px; }
+.phone-menu-icon { font-size: 26px; }
 .phone-share-icon { display: none; }
 .phone-page-menu { display: none; position: absolute; right: 8px; bottom: 62px; width: 137px; background: #f9f0dc; border: 1px solid #0e1c3a30; border-radius: 12px; padding: 12px; box-sizing: border-box; }
-.phone-page-menu > span { display: block; font-size: 8px; color: #8f4520; margin-bottom: 10px; }
+.phone-page-menu > span { display: block; font-size: 16px; color: #8f4520; margin-bottom: 10px; }
 .phone-page-menu > div { display: flex; align-items: center; gap: 10px; padding: 8px 2px; border-top: 1px solid #0e1c3a20; }
 .phone-share-sheet { display: none; position: absolute; z-index: 4; bottom: 0; left: 0; right: 0; height: 284px; padding: 12px; background: #f9f0dc; border-radius: 18px 18px 0 0; box-sizing: border-box; }
 .sheet-grip { width: 27px; height: 3px; border-radius: 2px; background: #0e1c3a35; margin: -4px auto 12px; }
@@ -89,27 +89,27 @@
 .sheet-options > div { display: flex; justify-content: space-between; align-items: center; height: 44px; padding: 0 12px; border-bottom: 1px solid #0e1c3a20; box-sizing: border-box; }
 .sheet-options .add-home { font-weight: 750; background: #dd7f4530; }
 .phone-confirm { display: none; position: absolute; inset: 0; background: #f9f0dc; padding: 50px 14px 0; text-align: center; }
-.confirm-top { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 32px; font-size: 8px; }
+.confirm-top { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 32px; font-size: 16px; }
 .confirm-top > span { color: #2e6786; }
 .confirm-icon { width: 51px; height: 51px; border-radius: 12px; display: block; margin: 0 auto 9px; }
-.confirm-name { font-size: 15px; }
+.confirm-name { font-size: 30px; }
 .confirm-field { border: 1px solid #0e1c3a20; background: #fff8ec; padding: 12px; border-radius: 7px; text-align: left; margin-top: 24px; }
-.confirm-toggle { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; margin-top: 5px; font-size: 10px; }
+.confirm-toggle { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; margin-top: 5px; font-size: 20px; }
 .confirm-toggle i { display: block; width: 32px; height: 18px; border-radius: 12px; background: #466d5e; position: relative; }
 .confirm-toggle i::after { content: ''; position: absolute; top: 2px; right: 2px; width: 14px; height: 14px; border-radius: 50%; background: #fff8ec; }
-.phone-confirm > p { color: #8f4520; font-size: 9px; text-align: left; }
+.phone-confirm > p { color: #8f4520; font-size: 18px; text-align: left; }
 .phone-home { display: none; position: absolute; inset: 0; background: radial-gradient(circle at 70% 20%, #46756f, #19394b 70%); padding: 60px 14px 0; box-sizing: border-box; }
 .home-icons { display: grid; grid-template-columns: repeat(4,1fr); gap: 25px 9px; align-items: start; }
 .home-icons > i, .home-dock > i { height: 35px; border-radius: 8px; background: #acb6a7; opacity: .6; }
 .home-icons > i:nth-child(3n) { background: #bb957d; }
 .home-icons > i:nth-child(4n) { background: #6787ab; }
 .home-scenes img { width: 35px; height: 35px; border-radius: 8px; display: block; margin: 0 auto; }
-.home-scenes span { display: block; margin: 5px -3px 0; text-align: center; font-size: 7px; color: #f2e5c3; }
+.home-scenes span { display: block; margin: 5px -3px 0; text-align: center; font-size: 14px; color: #f2e5c3; }
 .home-dock { position: absolute; bottom: 23px; left: 13px; right: 13px; display: flex; gap: 11px; padding: 12px; background: #f2e5c328; border-radius: 15px; }
 .home-dock > i { width: 35px; height: 35px; }
 .phone-launched { display: none; position: absolute; inset: 0; background: #183340; }
 .phone-launched > svg { width: 100%; height: 100%; }
-.phone-launched > b { position: absolute; top: 48%; left: 50%; transform: translate(-50%,-50%); font-size: 37px; color: #f2e5c3; letter-spacing: -.04em; }
+.phone-launched > b { position: absolute; top: 48%; left: 50%; transform: translate(-50%,-50%); font-size: 74px; color: #f2e5c3; letter-spacing: -.04em; }
 .phone-touch { position: absolute; z-index: 9; width: 25px; height: 25px; border: 2px solid #dd7f45; border-radius: 50%; box-sizing: border-box; background: #dd7f4533; opacity: 0; pointer-events: none; }
 .install-phone[data-step=menu] .phone-touch { left: 85%; top: 90%; }
 .install-phone[data-step=share] .phone-page-menu { display: block; }
@@ -141,30 +141,30 @@
   .scenes-guide { margin-left: 0; }
   .welcome-progress { margin: 12px 0 24px; }
   .welcome-features { grid-template-columns: 1fr; gap: 20px; }
-  .welcome-features .welcome-copy h2 { font-size: 33px; }
+  .welcome-features .welcome-copy h2 { font-size: 39.6px; }
   .welcome-features .welcome-copy > p:not(.welcome-kicker) { margin-bottom: 14px; }
   .welcome-feature-list { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
   .welcome-feature-list li { margin: 0; padding-left: 10px; }
-  .welcome-feature-list b { font-size: 12px; }
-  .welcome-feature-list span { font-size: 11px; }
+  .welcome-feature-list b { font-size: 14.4px; }
+  .welcome-feature-list span { font-size: 13.2px; }
   .welcome-demo { width: 220px; }
   .demo-art { aspect-ratio: 1.35; }
   .demo-gesture { margin-bottom: 3px; }
   .welcome-actions { flex-wrap: wrap; }
-  .welcome-note { font-size: 10px; }
-  .welcome-next { font-size: 12px; padding: 13px; }
+  .welcome-note { font-size: 12px; }
+  .welcome-next { font-size: 14.4px; padding: 13px; }
   .welcome-install { grid-template-columns: 1fr; gap: 18px; }
-  .welcome-install .welcome-copy h2 { font-size: 30px; }
+  .welcome-install .welcome-copy h2 { font-size: 36px; }
   .welcome-install .welcome-copy > p:not(.welcome-kicker):not(.install-detail) { display: none; }
   .install-steps { display: flex; gap: 10px; margin: 12px 0; }
   .install-steps li { margin: 0; }
   .install-steps b { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-  .welcome-copy .install-detail { min-height: 32px; margin-bottom: 0 !important; font-size: 11px !important; }
-  .install-phone { width: 207px; height: 414px; font-size: 10px; transform: scale(.82); transform-origin: top center; margin-bottom: -77px; }
+  .welcome-copy .install-detail { min-height: 32px; margin-bottom: 0 !important; font-size: 13.2px !important; }
+  .install-phone { width: 207px; height: 414px; font-size: 20px; }
   .phone-confirm { padding: 45px 12px 0; }
   .confirm-top { margin-bottom: 20px; }
-  .confirm-top b { font-size: 7px; }
-  .phone-cards > i { width: 83px; height: 120px; }
+  .confirm-top b { font-size: 14px; }
+  .phone-cards > i { width: 83px; height: 90px; }
   .phone-share-sheet { height: 267px; }
   .home-icons { gap: 22px 8px; }
   .install-animation { gap: 9px; }
@@ -172,8 +172,7 @@
 @media (max-width: 600px) and (max-height: 730px) {
   .scenes-welcome { padding-top: max(16px, env(safe-area-inset-top)); }
   .welcome-progress { margin-bottom: 14px; }
-  .welcome-install .welcome-copy h2 { font-size: 25px; }
-  .install-phone { transform: scale(.70); margin-bottom: -128px; }
+  .welcome-install .welcome-copy h2 { font-size: 30px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .scenes-welcome *, .scenes-welcome *::before, .scenes-welcome *::after { animation: none !important; transition: none !important; }

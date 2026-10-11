@@ -1,7 +1,7 @@
 // Music Series No. 01: Needle Drop. Original geometric artwork and animation.
 // A vinyl deck beneath a late-night listening-room window. Every motion is visual;
 // the scene deliberately has no soundtrack or audio-dependent behaviour.
-import { C } from './kit.js';
+import { C, FONT } from './kit.js';
 import { hash, screw, wood, plant, steam, books } from './music-kit.js';
 
 export const title = 'NEEDLE DROP', no = 'No. 01', text = '#31243a', dark = '#241d30';
@@ -68,9 +68,9 @@ function record(c, r, t) {
   c.save();c.globalAlpha=.17;
   for(const angle of [-.5,2.6]){c.beginPath();c.moveTo(0,0);c.arc(0,0,r*.96,angle,angle+.15);c.closePath();c.fillStyle=C.cream;c.fill();}
   c.restore();
-  c.textAlign = 'center'; c.fillStyle = K.plum; c.font = `bold ${r * .13}px "Arial Narrow", Arial, sans-serif`;
+  c.textAlign = 'center'; c.fillStyle = K.plum; c.font = `bold ${r * .13}px ${FONT}`;
   c.fillText('SIDE A', 0, -r * .045);
-  c.font = `bold ${r * .047}px Arial, sans-serif`; c.fillText('33 ⅓  ·  STEREO', 0, r * .23);
+  c.font = `bold ${r * .047}px ${FONT}`; c.fillText('33 ⅓  ·  STEREO', 0, r * .23);
   c.restore();
   disc(c, 0, 0, r * .055, C.cream); disc(c, 0, 0, r * .016, K.ink);
 }
@@ -111,12 +111,12 @@ function deck(c, r, t) {
   round(c,r*1.10,r*.12,r*.125,r*.066,r*.013,K.plum);
   round(c, -r * 1.15, r * .92, r * .22, r * .08, r * .035, K.plum);
   disc(c, -r * 1.23, r * .96, r * .032, C.orange);
-  c.fillStyle=K.plum;c.font=`${r*.032}px Arial`;c.textAlign='left';c.fillText('33   /   45',-r*1.13,r*.875);
+  c.fillStyle=K.plum;c.font=`${r*.032}px ${FONT}`;c.textAlign='left';c.fillText('33   /   45',-r*1.13,r*.875);
   disc(c, r * .96, r * .94, r * .067, K.plum);
   line(c, [[r * .96, r * .94],[r * .96 + Math.sin(t * .3) * r * .027, r * .90]], r * .009, C.cream);
-  c.fillStyle = K.plum; c.font = `bold ${r * .054}px Arial, sans-serif`; c.textAlign = 'left';
+  c.fillStyle = K.plum; c.font = `bold ${r * .054}px ${FONT}`; c.textAlign = 'left';
   c.fillText('ND—01', -r * .75, r * .99);
-  c.font=`${r*.028}px Arial`;c.fillText('DIRECT DRIVE  /  STEREO TURNTABLE',-r*.75,r*1.055);
+  c.font=`${r*.028}px ${FONT}`;c.fillText('DIRECT DRIVE  /  STEREO TURNTABLE',-r*.75,r*1.055);
   c.textAlign = 'right'; c.fillText('HI–FI', r * .73, r * .97);
 }
 
