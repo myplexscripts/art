@@ -1,5 +1,5 @@
 // Ambient Essentials: ordered colour planes drift slowly, without a percussive clock.
-import { make } from './genre-kit.js?v=20261011-focus-finish';
+import { make } from './genre-kit.js?v=20261011-dreamscapes';
 export { make };
 export const title='Still Fields', no='No. 05', genre='Ambient', text='#c3f0df', dark='#005640', audio=false, textless=true;
 export function paint(c,p,t,G) {

@@ -1,18 +1,19 @@
 // The poster: a framed picture with a title, fitted to any screen shape. Each scene module supplies
 // make(W, H) (its geometry for a W x H window), paint(ctx, p, t, G), and its title, number, text ink and dark frame ink.
-import * as nocturne from './s-nocturne.js?v=20261011-focus-finish';
-import * as weather from './s-weather.js?v=20261011-focus-finish';
-import * as windows from './s-window.js?v=20261011-focus-finish';
-import * as daybreak from './s-daybreak.js?v=20261011-focus-finish';
-import * as deep from './s-deep.js?v=20261011-focus-finish';
-import * as orbit from './s-orbit.js?v=20261011-focus-finish';
-import * as music from './s-music.js?v=20261011-focus-finish';
-import * as geometry from './s-geometry.js?v=20261011-focus-finish';
-import { C, M, FONT } from './kit.js?v=20261011-focus-finish';
-import { scalePosterText } from './typography.js?v=20261011-focus-finish';
+import * as nocturne from './s-nocturne.js?v=20261011-dreamscapes';
+import * as weather from './s-weather.js?v=20261011-dreamscapes';
+import * as windows from './s-window.js?v=20261011-dreamscapes';
+import * as daybreak from './s-daybreak.js?v=20261011-dreamscapes';
+import * as deep from './s-deep.js?v=20261011-dreamscapes';
+import * as orbit from './s-orbit.js?v=20261011-dreamscapes';
+import * as music from './s-music.js?v=20261011-dreamscapes';
+import * as geometry from './s-geometry.js?v=20261011-dreamscapes';
+import * as dreamscapes from './s-dreamscapes.js?v=20261011-dreamscapes';
+import { C, M, FONT } from './kit.js?v=20261011-dreamscapes';
+import { scalePosterText } from './typography.js?v=20261011-dreamscapes';
 
 // Each series lists its own scenes; a series with none yet is left out.
-export const SERIES = [nocturne, weather, windows, daybreak, deep, orbit, music, geometry].filter((s) => Object.keys(s.scenes).length);
+export const SERIES = [nocturne, weather, windows, daybreak, deep, orbit, music, geometry, dreamscapes].filter((s) => Object.keys(s.scenes).length);
 export const SCENES = Object.assign({}, ...SERIES.map((s) => s.scenes));
 export const seriesLine = (scene) => `${LABEL.get(scene)}  ·  ${scene.no}`;   // "NOCTURNE SERIES  ·  No. 03", as printed under a title
 const LABEL = new Map(SERIES.flatMap((s) => Object.values(s.scenes).map((scene) => [scene, s.name.toUpperCase()])));

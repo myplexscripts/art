@@ -11,7 +11,7 @@ from urllib.request import Request, urlopen
 
 ORIGIN = 'https://wavz.us/'
 ROOT = Path(__file__).resolve().parent
-ASSET_VERSION = '20261011-focus-finish'
+ASSET_VERSION = '20261011-dreamscapes'
 
 def version_assets(version=None):
     """One release URL for the entire local module graph prevents mixed cached UI."""
@@ -128,6 +128,15 @@ def adapt_for_local_hosting():
         path.write_text(text)
         path = ROOT / 'index.html'
         text = path.read_text().replace('Music and Essentials: original rooms and playlist-art interpretations', 'Music, Essentials and Geometry: original rooms, playlist studies and moving shapes')
+        path.write_text(text)
+    if (ROOT / 'live/s-dreamscapes.js').exists():
+        path = ROOT / 'live/poster.js'
+        text = path.read_text()
+        if "import * as dreamscapes from './s-dreamscapes.js';" not in text:
+            text = text.replace("import { C, M, FONT }", "import * as dreamscapes from './s-dreamscapes.js';\nimport { C, M, FONT }")
+        series = re.search(r'export const SERIES = \[([^\]]+)\]', text)
+        if series and 'dreamscapes' not in series[1]:
+            text = text[:series.end(1)] + ', dreamscapes' + text[series.end(1):]
         path.write_text(text)
     if (ROOT / 'live/player-local.js').exists():
         adapt_local_viewer()

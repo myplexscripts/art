@@ -1,5 +1,5 @@
 // A once-only welcome with a fully illustrated iPhone installation guide.
-import { lockPage } from './scroll-lock.js?v=20261011-focus-finish';
+import { lockPage } from './scroll-lock.js?v=20261011-dreamscapes';
 const KEY = 'scenes-welcome-v1';
 const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 const standalone = () => navigator.standalone || matchMedia('(display-mode: standalone)').matches;
@@ -23,7 +23,7 @@ function showWelcome(skipSplash = false) {
     <div class="welcome-progress" aria-hidden="true"><i></i><i></i><i></i></div>
     <div class="welcome-content">
     <section class="welcome-splash" aria-labelledby="welcome-title"><div class="splash-posters" aria-hidden="true"><i class="splash-stacks"></i><i class="splash-bloom"></i><i class="splash-waves"></i></div><p class="welcome-kicker">A little room to breathe</p><h1 id="welcome-title">Scenes</h1><p>Find your quiet corner.</p><div class="splash-rule"></div></section>
-    <section class="welcome-features" hidden aria-labelledby="features-title"><div class="welcome-copy"><p class="welcome-kicker">Made for slower moments</p><h2 id="features-title">Living art.<br>Your quiet corner.</h2><p>Pick a scene. Let the room soften.</p><ul class="welcome-feature-list"><li><b>40 living scenes</b><span>From moonlit shores to moving geometry.</span></li><li><b>Set the sound</b><span>Blend music and ambience, or enjoy the quiet.</span></li><li><b>Make the clock yours</b><span>Tap for colour. Pinch for size. Swipe for weight.</span></li><li><b>Put time in its place</b><span>Hold to move. Triple tap to float back to centre.</span></li></ul></div>
+    <section class="welcome-features" hidden aria-labelledby="features-title"><div class="welcome-copy"><p class="welcome-kicker">Made for slower moments</p><h2 id="features-title">Living art.<br>Your quiet corner.</h2><p>Pick a scene. Let the room soften.</p><ul class="welcome-feature-list"><li><b class="welcome-scene-count">Living scenes</b><span>From moonlit shores to impossible places.</span></li><li><b>Set the sound</b><span>Blend music and ambience, or enjoy the quiet.</span></li><li><b>Make the clock yours</b><span>Tap for colour. Pinch for size. Swipe for weight.</span></li><li><b>Put time in its place</b><span>Hold to move. Triple tap to float back to centre.</span></li></ul></div>
       <div class="welcome-demo"><div class="demo-art" aria-hidden="true"><canvas width="604" height="680"></canvas><span class="demo-clock">9:41</span><div class="demo-controls">AMBIENCE <i></i> MUSIC <i></i></div></div><div class="demo-caption"><b>Deep Waves</b><span>GEOMETRY · No. 03</span></div><p class="demo-gesture" aria-live="off">Tap for a scene colour</p></div>
     </section>
     <section class="welcome-install" hidden aria-labelledby="install-title"><div class="welcome-copy"><p class="welcome-kicker">A home for your scenes · iPhone</p><h2 id="install-title">One tap away.<br>Every day.</h2><p>Add Scenes to your Home Screen for a full-screen space of your own.</p><ol class="install-steps">${steps.map((s, i) => `<li><button type="button" data-step="${i}"><span>${i + 1}</span><b>${s[1]}</b></button></li>`).join('')}</ol><p class="install-detail" aria-live="polite"></p></div>
@@ -66,7 +66,8 @@ function showWelcome(skipSplash = false) {
     $('.welcome-back').hidden = next !== 'install'; $('.welcome-actions').hidden = next === 'splash';
     $('.welcome-note').textContent = next === 'features' && standalone() ? 'Already at home. Enjoy the full screen.' : next === 'install' ? 'Follow along, or choose any step.' : 'Your clock remembers its place in every scene.';
     if (next === 'features') {
-      if (!demoScene) import('./s-geometry.js?v=20261011-focus-finish').then(({ scenes }) => { if (!ended) { demoScene = scenes.deepwaves; demoStarted = performance.now(); drawDemo(demoStarted); } });
+      import('./poster.js?v=20261011-dreamscapes').then(({ SCENES }) => { if (!ended) $('.welcome-scene-count').textContent = `${Object.keys(SCENES).length} living scenes`; });
+      if (!demoScene) import('./s-geometry.js?v=20261011-dreamscapes').then(({ scenes }) => { if (!ended) { demoScene = scenes.deepwaves; demoStarted = performance.now(); drawDemo(demoStarted); } });
       else drawDemo(performance.now());
     }
     if (next === 'install') { cancelAnimationFrame(raf); showStep(0); }

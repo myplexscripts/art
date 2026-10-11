@@ -50,6 +50,12 @@ LAYERS = {
     'stacks': [('three-bars', 'Three newest bars', None), ('two-bars', 'Two newest bars', None), ('newest-bar', 'Newest bar', None)],
     'blooms': [('outer-petals', 'Outer petals', None), ('middle-petals', 'Middle petals', None), ('newest-bloom', 'Newest bloom', None)],
     'deepwaves': [('near-ripples', 'Near ripples', None), ('inner-ripples', 'Inner ripples', None), ('centre-ripple', 'Centre ripple', None)],
+    'seadoor': [('door-shadow', 'Doorway and its shadow', None), ('stone-door', 'Stone doorway', None), ('desert-grass', 'Desert grass', None)],
+    'endlessarches': [('middle-arches', 'Middle arches', None), ('near-arches', 'Near arches', None), ('planter', 'Near planter', None)],
+    'hanginggardens': [('main-garden', 'Main floating garden', None), ('near-garden', 'Near floating garden', None)],
+    'moonstairs': [('stairs', 'Stairway', None), ('handrails', 'Handrails', None), ('night-leaves', 'Night leaves', None)],
+    'openceiling': [('courtyard-floor', 'Courtyard floor', None), ('courtyard-walls', 'Courtyard walls', None), ('fountain', 'Fountain', None), ('courtyard-plants', 'Courtyard plants', None)],
+    'mirrorgarden': [('lake-rim', 'Lake banks', None), ('upright-trees', 'Upright trees', None), ('inverted-trees', 'Inverted trees', None)],
 }
 
 

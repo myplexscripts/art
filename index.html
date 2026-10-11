@@ -19,12 +19,12 @@
 <link rel="icon" type="image/png" sizes="32x32" href="./favicon/favicon-32x32.png?v=2">
 <link rel="icon" type="image/png" sizes="16x16" href="./favicon/favicon-16x16.png?v=2">
 <link rel="manifest" href="./site.webmanifest?v=5">
-<link rel="stylesheet" href="./live/fonts.css?v=20261011-focus-finish">
-<link rel="stylesheet" href="./live/theme.css?v=20261011-focus-finish">
-<script type="module" src="./live/theme.js?v=20261011-focus-finish"></script>
-<script type="module" src="./live/typography.js?v=20261011-focus-finish"></script>
-<link rel="stylesheet" href="./live/welcome.css?v=20261011-focus-finish">
-<script type="module" src="./live/welcome.js?v=20261011-focus-finish"></script>
+<link rel="stylesheet" href="./live/fonts.css?v=20261011-dreamscapes">
+<link rel="stylesheet" href="./live/theme.css?v=20261011-dreamscapes">
+<script type="module" src="./live/theme.js?v=20261011-dreamscapes"></script>
+<script type="module" src="./live/typography.js?v=20261011-dreamscapes"></script>
+<link rel="stylesheet" href="./live/welcome.css?v=20261011-dreamscapes">
+<script type="module" src="./live/welcome.js?v=20261011-dreamscapes"></script>
 <script>
   // cold: a scene's own address, so the scene covers the page at once. intro: the first visit of a session, when the
   // page prints itself in piece by piece; /?intro plays it every time, for looking at it.
@@ -110,7 +110,7 @@
       (() => { const h = document.currentScript.previousElementSibling, c = document.createElement('canvas').getContext('2d'), k = [...h.children];
         const kern = () => { const cs = getComputedStyle(h); c.font = cs.fontWeight + ' 200px ' + cs.fontFamily; const w = (t) => c.measureText(t).width;
           for (let i = 1; i < k.length; i++) k[i].style.marginLeft = (w(k[i - 1].textContent + k[i].textContent) - w(k[i - 1].textContent) - w(k[i].textContent)) / 200 + 'em'; };
-        kern(); import('./live/typography.js?v=20261011-focus-finish').then(({ fontReady }) => fontReady.then(kern)); })();
+        kern(); import('./live/typography.js?v=20261011-dreamscapes').then(({ fontReady }) => fontReady.then(kern)); })();
     </script>
     <p>Calming scenes for your screen. Open one, go fullscreen, and unwind.<span class="gallery-actions"><button class="scenes-theme" type="button" role="switch" aria-checked="false" aria-label="Dark gallery">Dark mode <em>off</em></button></span></p>
   </header>
@@ -121,11 +121,11 @@
 <script type="module">
   // Every poster on this page is the real scene at card size. It is held still until the pointer rests on it, then it
   // runs; opening it carries the same clock into the full-screen scene, so the motion never jumps.
-  import './live/nozoom.js?v=20261011-focus-finish';
-  import { draw, makeLayout, SERIES, seriesLine } from './live/poster.js?v=20261011-focus-finish';
-  import { fontReady } from './live/typography.js?v=20261011-focus-finish';
-  import { galleryIsDark } from './live/theme.js?v=20261011-focus-finish';
-  import { openScene } from './live/player.js?v=20261011-focus-finish';
+  import './live/nozoom.js?v=20261011-dreamscapes';
+  import { draw, makeLayout, SERIES, seriesLine } from './live/poster.js?v=20261011-dreamscapes';
+  import { fontReady } from './live/typography.js?v=20261011-dreamscapes';
+  import { galleryIsDark } from './live/theme.js?v=20261011-dreamscapes';
+  import { openScene } from './live/player.js?v=20261011-dreamscapes';
   const LOOP = 30, STILL = 7.5, rows = document.getElementById('rows'), cards = [];
   // Only one poster runs at a time, the one under the pointer, and none while the page is being scrolled: drawing a
   // scene while the page moves is what makes scrolling drag. When scrolling stops, the poster under the pointer starts.
