@@ -1,15 +1,15 @@
 // The poster: a framed picture with a title, fitted to any screen shape. Each scene module supplies
 // make(W, H) (its geometry for a W x H window), paint(ctx, p, t, G), and its title, number, text ink and dark frame ink.
-import * as nocturne from './s-nocturne.js?v=20261011-clock-fix';
-import * as weather from './s-weather.js?v=20261011-clock-fix';
-import * as windows from './s-window.js?v=20261011-clock-fix';
-import * as daybreak from './s-daybreak.js?v=20261011-clock-fix';
-import * as deep from './s-deep.js?v=20261011-clock-fix';
-import * as orbit from './s-orbit.js?v=20261011-clock-fix';
-import * as music from './s-music.js?v=20261011-clock-fix';
-import * as geometry from './s-geometry.js?v=20261011-clock-fix';
-import { C, M, FONT } from './kit.js?v=20261011-clock-fix';
-import { scalePosterText } from './typography.js?v=20261011-clock-fix';
+import * as nocturne from './s-nocturne.js?v=20261011-clock-edge';
+import * as weather from './s-weather.js?v=20261011-clock-edge';
+import * as windows from './s-window.js?v=20261011-clock-edge';
+import * as daybreak from './s-daybreak.js?v=20261011-clock-edge';
+import * as deep from './s-deep.js?v=20261011-clock-edge';
+import * as orbit from './s-orbit.js?v=20261011-clock-edge';
+import * as music from './s-music.js?v=20261011-clock-edge';
+import * as geometry from './s-geometry.js?v=20261011-clock-edge';
+import { C, M, FONT } from './kit.js?v=20261011-clock-edge';
+import { scalePosterText } from './typography.js?v=20261011-clock-edge';
 
 // Each series lists its own scenes; a series with none yet is left out.
 export const SERIES = [nocturne, weather, windows, daybreak, deep, orbit, music, geometry].filter((s) => Object.keys(s.scenes).length);

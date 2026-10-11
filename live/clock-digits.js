@@ -19,12 +19,13 @@ export function makeClockDigits(face, formatter) {
   face.append(run);
   for (const part of schema) for (let i = 0; i < part.length; i++) {
     const element = document.createElement('span'); element.className = 'wz-clock-slot'; element.dataset.part = part.type;
-    run.append(element); part.slots.push({ element, glyph: null, motions: [], char: null });
+    run.append(element); part.slots.push({ element, glyph: null, motions: [], char: null, widthEm: 0 });
   }
   const context = document.createElement('canvas').getContext('2d');
-  let widthEm = 0, value = '', pulse = null;
+  let widthEm = 0, value = '', pulse = null, family = '', boundsCache = null;
   function measure() {
-    const family = getComputedStyle(face).fontFamily, cache = new Map();
+    family = getComputedStyle(face).fontFamily; boundsCache = null;
+    const cache = new Map();
     const width = chars => {
       const key = [...chars].sort().join('');
       if (cache.has(key)) return cache.get(key);
@@ -37,15 +38,41 @@ export function makeClockDigits(face, formatter) {
           widest = Math.max(widest, metric.width, (metric.actualBoundingBoxLeft ?? 0) + (metric.actualBoundingBoxRight ?? 0));
         }
       }
-      const result = widest / 200 + .004; cache.set(key, result); return result;
+      const result = widest / 200 + .004;
+      cache.set(key, result); return result;
     };
     widthEm = 0;
     for (const part of schema) for (const [index, slot] of part.slots.entries()) {
       const characters = part.type === 'hour' || part.type === 'minute' ? digits : part.type === 'literal'
         ? new Set(samples.flatMap(sample => [...sample[schema.indexOf(part)].value][index] ?? ' ')) : part.letters;
-      const em = width(characters); widthEm += em; slot.element.style.width = em + 'em';
+      slot.widthEm = width(characters); widthEm += slot.widthEm; slot.element.style.width = slot.widthEm + 'em';
     }
+    centerPulse();
   }
+  function bounds(force = false) {
+    let offset = 0, index = 0, first = null, last = null;
+    for (const part of schema) for (const slot of part.slots) {
+      if (slot.char?.trim()) { first ??= { slot, offset, index }; last = { slot, offset, index }; }
+      offset += slot.widthEm; index++;
+    }
+    if (!first) return { left: 0, right: widthEm };
+    const weight = face.style.fontWeight || getComputedStyle(face).fontWeight;
+    const pixels = parseFloat(face.style.fontSize) || parseFloat(getComputedStyle(face).fontSize) || 200;
+    const key = `${first.index}:${last.index}:${weight}:${pixels}`;
+    if (!force && boundsCache?.key === key) return boundsCache.rect;
+    context.font = `${weight} ${pixels}px ${family}`;
+    const start = context.measureText(first.slot.char), end = context.measureText(last.slot.char);
+    const rect = { left: first.offset + (first.slot.widthEm - start.width / pixels) / 2 - (start.actualBoundingBoxLeft ?? 0) / pixels,
+      right: last.offset + (last.slot.widthEm - end.width / pixels) / 2 + (end.actualBoundingBoxRight ?? end.width) / pixels };
+    // Freeze these placement measurements between gestures and hour-field changes.
+    // A thin minute digit can replace a wide one without shifting every other cell.
+    boundsCache = { key, rect }; return rect;
+  }
+  function centerPulse() {
+    const { left, right } = bounds();
+    run.style.transformOrigin = `${(left + right) / 2 / widthEm * 100}% 50%`;
+  }
+  function refreshBounds() { const rect = bounds(true); centerPulse(); return rect; }
   function cancelMotions(slot) {
     for (const animation of slot.motions) { animation.onfinish = null; animation.cancel(); }
     slot.motions = [];
@@ -70,6 +97,7 @@ export function makeClockDigits(face, formatter) {
       const fixed = part.type === 'hour' || part.type === 'minute' ? [...padding, ...characters] : [...characters, ...padding];
       part.slots.forEach((slot, i) => change(slot, fixed[i], animate));
     });
+    centerPulse();
     return value;
   }
   function cancelPulse() { pulse?.cancel(); pulse = null; }
@@ -81,6 +109,6 @@ export function makeClockDigits(face, formatter) {
     { duration: 460, easing: 'linear' });
   }
   measure();
-  return { update, measure, held, cancelPulse, get widthEm() { return widthEm; }, get value() { return value; },
+  return { update, measure, held, cancelPulse, bounds, refreshBounds, get widthEm() { return widthEm; }, get value() { return value; },
     destroy() { cancelPulse(); schema.forEach(part => part.slots.forEach(cancelMotions)); } };
 }

@@ -1,5 +1,5 @@
 // Original Music Series No. 02: wound cassette tape, a receiver and an afternoon studio.
-import { TAU, paper, makeRoom, box, disc, oval, stroke, polygon, word, hash, wood, screw, books, plant } from './music-kit.js?v=20261011-clock-fix';
+import { TAU, paper, makeRoom, box, disc, oval, stroke, polygon, word, hash, wood, screw, books, plant } from './music-kit.js?v=20261011-clock-edge';
 export const title = 'TAPE LOOP', no = 'No. 02', text = '#47303a', dark = '#2a2435', audio = false;
 export const make = makeRoom;
 const K = { wall: '#d98264', sun: '#edb975', rust: '#ac5148', ink: '#2a2435', blue: '#486e83', dim: '#658da0', tape: '#694352', mint: '#abc3b1' };

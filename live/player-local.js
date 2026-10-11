@@ -2,14 +2,14 @@
 // A full-screen poster is drawn live every frame and recomposed to the screen's shape, with its controls
 // and sound. The main page opens it over itself, growing out of the poster that was tapped, or at once for a scene's own address.
 // For checking: ?debug shows a readout, ?res=3840 forces the long side, ?t=40 starts the clock 40 s in.
-import './nozoom.js?v=20261011-clock-fix';
-import { draw, makeLayout, styleFor, SCENES } from './poster.js?v=20261011-clock-fix';
-import { hex, makeClockColor, makePaletteSampler, makeSceneColorSampler } from './clock-palette.js?v=20261011-clock-fix';
-import { makeClockDigits, CLOCK_LINE_HEIGHT } from './clock-digits.js?v=20261011-clock-fix';
-import { depthLayersFor, makeDepthRenderer } from './clock-depth.js?v=20261011-clock-fix';
-import { COLOR_CSS, makeColorPicker } from './clock-color-picker.js?v=20261011-clock-fix';
-import { fontReady, MIN_FONT_SIZE, TEXT_SCALE } from './typography.js?v=20261011-clock-fix';
-import { lockPage } from './scroll-lock.js?v=20261011-clock-fix';
+import './nozoom.js?v=20261011-clock-edge';
+import { draw, makeLayout, styleFor, SCENES } from './poster.js?v=20261011-clock-edge';
+import { hex, makeClockColor, makePaletteSampler, makeSceneColorSampler } from './clock-palette.js?v=20261011-clock-edge';
+import { makeClockDigits, CLOCK_LINE_HEIGHT } from './clock-digits.js?v=20261011-clock-edge';
+import { depthLayersFor, makeDepthRenderer } from './clock-depth.js?v=20261011-clock-edge';
+import { COLOR_CSS, makeColorPicker } from './clock-color-picker.js?v=20261011-clock-edge';
+import { fontReady, MIN_FONT_SIZE, TEXT_SCALE } from './typography.js?v=20261011-clock-edge';
+import { lockPage } from './scroll-lock.js?v=20261011-clock-edge';
 
 const LOOP = 30, MAXPX = 3840, CREAM = '#f2e5c3', FLIGHT = 650, CLOCK_FADE = 180;
 const MAX_CLOCK_SCALE = 8, CLOCK_BLEED = .03;
@@ -173,7 +173,7 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
   if (clockColor.mode !== 'white') colouredChoice = clockColor;
   let clockInk = null, clockFontsReady = false, paletteAt = -Infinity, colorPicker = null;
   const clockHue = SCENES[name].clockHue;
-  const samplePalette = makePaletteSampler(scene, clockFace, SCENES[name].dark);
+  const samplePalette = makePaletteSampler(scene, clockFace, SCENES[name].dark, clockRect);
   function syncClockChoice() {
     clockFace.setAttribute('aria-pressed', String(clockColor.mode !== 'white'));
     if (clockColor.mode === 'white') clockFace.style.color = '#fff';
@@ -207,20 +207,47 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
   };
   let clockScale = savedNumber('wavz-clock-scale', 1, .5, MAX_CLOCK_SCALE), clockWeight = savedNumber('wavz-clock-weight', 800, 100, 900);
   const positionKey = 'wavz-clock-position-' + name;
-  let position = { x: .5, y: .5 }, positionAnimation = null;
+  let position = { x: .5, y: .5 }, positionAnimation = null, edgeAnchor = null, legacyPosition = false;
   try {
     const saved = JSON.parse(localStorage.getItem(positionKey));
-    if (saved && Number.isFinite(saved.x) && Number.isFinite(saved.y)) position = { x: clamp(saved.x, 0, 1), y: clamp(saved.y, 0, 1) };
+    if (saved && Number.isFinite(saved.x) && Number.isFinite(saved.y)) {
+      position = { x: clamp(saved.x, 0, 1), y: clamp(saved.y, 0, 1) };
+      if (['left', 'right'].includes(saved.edge)) edgeAnchor = saved.edge;
+      legacyPosition = saved.version !== 2;
+    }
   } catch {}
-  const clockCenter = () => { const r = clockFace.getBoundingClientRect(), art = root.getBoundingClientRect(); return { x: r.x + r.width / 2 - art.x, y: r.y + r.height / 2 - art.y }; };
-  // Bound the lettering, not its invisible touch padding or the hold animation.
-  const clockSize = () => { const size = parseFloat(clockFace.style.fontSize) || 0; return {
-    halfW: Math.min(size * clockDigits.widthEm / 2, root.clientWidth / 2),
-    halfH: Math.min(size * CLOCK_LINE_HEIGHT / 2, root.clientHeight / 2) }; };
+  // The fixed run can begin with a blank hour cell. Place and bound its visible ink,
+  // while leaving every character cell and the fitted font size unchanged.
+  const clockSize = () => {
+    const size = parseFloat(clockFace.style.fontSize) || 0, { left, right } = clockDigits.bounds();
+    return { halfW: Math.min(size * (right - left) / 2, root.clientWidth / 2),
+      halfH: Math.min(size * CLOCK_LINE_HEIGHT / 2, root.clientHeight / 2),
+      offset: size * (left + right - clockDigits.widthEm) / 2, left: left * size, right: right * size };
+  };
+  const clockCenter = () => { const r = clockFace.getBoundingClientRect(), art = root.getBoundingClientRect(); return {
+    x: r.x + r.width / 2 + clockSize().offset - art.x, y: r.y + r.height / 2 - art.y }; };
+  function clockRect() {
+    const r = clockFace.getBoundingClientRect(), size = clockSize();
+    return { left: r.left + 20 + size.left, right: r.left + 20 + size.right, top: r.top + 20, bottom: r.bottom - 20 };
+  }
+  const saveClockPosition = () => {
+    legacyPosition = false;
+    localStorage.setItem(positionKey, JSON.stringify({ ...position, version: 2, ...(edgeAnchor ? { edge: edgeAnchor } : {}) }));
+  };
+  function moveClock(x, y) {
+    const { halfW, halfH } = clockSize(), w = root.clientWidth, h = root.clientHeight;
+    const nextX = clamp(x, halfW, w - halfW);
+    if (halfW * 2 < w - .5 || Math.abs(x - w / 2) > .5)
+      edgeAnchor = x <= halfW + .5 ? 'left' : x >= w - halfW - .5 ? 'right' : null;
+    position = { x: nextX / w, y: clamp(y, halfH, h - halfH) / h }; placeClock();
+  }
   function placeClock() {
-    const { halfW, halfH } = clockSize();
-    clockFace.style.left = clamp(position.x * root.clientWidth, halfW, root.clientWidth - halfW) + 'px';
+    const { halfW, halfH, offset } = clockSize();
+    const x = edgeAnchor === 'left' ? halfW : edgeAnchor === 'right' ? root.clientWidth - halfW
+      : clamp(position.x * root.clientWidth, halfW, root.clientWidth - halfW);
+    clockFace.style.left = x - offset + 'px';
     clockFace.style.top = clamp(position.y * root.clientHeight, halfH, root.clientHeight - halfH) + 'px';
+    position.x = x / root.clientWidth;
   }
   function cancelPositionAnimation(freeze = true) {
     if (!positionAnimation) return;
@@ -231,16 +258,17 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
   const reassessPalette = () => { clockInk = null; paletteAt = -Infinity; };
   function centerClock() {
     cancelPositionAnimation();
+    clockDigits.refreshBounds();
     reassessPalette();
     const from = clockCenter(), x = root.clientWidth / 2, y = root.clientHeight / 2;
-    const { halfW, halfH } = clockSize();
-    position = { x: .5, y: .5 }; localStorage.removeItem(positionKey); placeClock();
+    const { halfW, halfH, offset } = clockSize();
+    edgeAnchor = null; legacyPosition = false; position = { x: .5, y: .5 }; localStorage.removeItem(positionKey); placeClock();
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (!reduced) {
       positionAnimation = clockFace.animate([
-        { left: from.x + 'px', top: from.y + 'px' },
-        { left: clamp(x + (x - from.x) * .07, halfW, root.clientWidth - halfW) + 'px', top: clamp(y + (y - from.y) * .07, halfH, root.clientHeight - halfH) + 'px', offset: .78 },
-        { left: x + 'px', top: y + 'px' },
+        { left: from.x - offset + 'px', top: from.y + 'px' },
+        { left: clamp(x + (x - from.x) * .07, halfW, root.clientWidth - halfW) - offset + 'px', top: clamp(y + (y - from.y) * .07, halfH, root.clientHeight - halfH) + 'px', offset: .78 },
+        { left: x - offset + 'px', top: y + 'px' },
       ], { duration: 650, easing: 'cubic-bezier(.16,1,.3,1)' });
       const animation = positionAnimation;
       animation.onfinish = () => { if (positionAnimation === animation) positionAnimation = null; reassessPalette(); };
@@ -258,9 +286,20 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
       root.clientWidth * (1 + CLOCK_BLEED * 2) / clockDigits.widthEm,
       root.clientHeight * (1 + CLOCK_BLEED * 2) / CLOCK_LINE_HEIGHT));
     clockFace.style.fontSize = fitted + 'px';
+    clockDigits.refreshBounds();
     // A saved zoom must describe the visible size, otherwise shrinking has a dead zone.
     if (clockFontsReady) { clockScale = fitted / base; if (size > fitted) saveClockStyle(); }
+    const migrate = clockFontsReady && legacyPosition;
+    if (migrate && !edgeAnchor) {
+      const w = root.clientWidth, x = position.x * w, oldHalf = Math.min(fitted * clockDigits.widthEm / 2, w / 2);
+      // Recognize saved edge attempts made with the old full-run bounds, including
+      // the earlier touch-padding bounds. A centred large clock stays centred.
+      const oldEdges = [oldHalf, Math.min(oldHalf + 21, w / 2)];
+      if (x < w / 2 - 1 && (x <= oldHalf + 1 || oldEdges.some(edge => Math.abs(x - edge) <= 1))) edgeAnchor = 'left';
+      else if (x > w / 2 + 1 && (x >= w - oldHalf - 1 || oldEdges.some(edge => Math.abs(x - (w - edge)) <= 1))) edgeAnchor = 'right';
+    }
     placeClock();
+    if (migrate) saveClockPosition();
   }
   const saveClockStyle = () => {
     localStorage.setItem('wavz-clock-scale', String(clockScale));
@@ -277,11 +316,28 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
     if (!clockOn || closed || closing) return;
     const now = new Date();
     const first = !clockDigits.value;
+    const beforeBounds = clockDigits.bounds();
     const text = clockDigits.update(now, clock.classList.contains('visible') && !wasHidden);
     clockFace.setAttribute('aria-label', 'Current time: ' + text + '. Tap for color, hold to move, triple tap to center.');
     clock.dateTime = now.toISOString();
     clock.setAttribute('aria-label', 'Current time: ' + text);
     if (first || wasHidden) fitClock();
+    else {
+      const afterBounds = clockDigits.bounds();
+      if (beforeBounds.left !== afterBounds.left || beforeBounds.right !== afterBounds.right) {
+        cancelPositionAnimation();
+        // Keep existing cells still when an hour appears/disappears, unless the user
+        // pinned an edge or the new character would leave the poster.
+        let needsPlacement = Boolean(edgeAnchor);
+        if (!edgeAnchor) {
+          const { offset, halfW } = clockSize(), x = parseFloat(clockFace.style.left) + offset;
+          position.x = x / root.clientWidth;
+          needsPlacement = x < halfW || x > root.clientWidth - halfW;
+        }
+        if (needsPlacement) placeClock();
+        if (localStorage.getItem(positionKey)) saveClockPosition();
+      }
+    }
     clockTimer = setTimeout(updateClock, 60000 - (now.getSeconds() * 1000 + now.getMilliseconds()) + 25);
   }
   // Capture gestures that start on the clock; a second finger may land beside it.
@@ -309,13 +365,16 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
     const ids = [...fingers.keys()]; fingers.clear(); gesture = null; pinched = false; tap = null;
     for (const id of ids) if (root.hasPointerCapture(id)) root.releasePointerCapture(id);
     saveClockStyle();
-    if (dragged) { localStorage.setItem(positionKey, JSON.stringify(position)); dragged = false; reassessPalette(); }
+    if (dragged) { saveClockPosition(); dragged = false; reassessPalette(); }
   };
   root.addEventListener('pointerdown', (e) => {
     if (!clockOn || flight || closing || colorPicker?.sampling || e.button !== 0 || ui.contains(e.target) || colorPicker?.element.contains(e.target)) return;
     if (!clockFace.contains(e.target) && !fingers.size) return;
     if (fingers.size >= 2) return;
-    if (!fingers.size) { cancelPositionAnimation(); clearTimeout(tapTimer); tap = { id: e.pointerId, x: e.clientX, y: e.clientY, time: performance.now() }; }
+    if (!fingers.size) {
+      cancelPositionAnimation(); clockDigits.refreshBounds(); position.x = clockCenter().x / root.clientWidth;
+      clearTimeout(tapTimer); tap = { id: e.pointerId, x: e.clientX, y: e.clientY, time: performance.now() };
+    }
     else tap = null;
     e.preventDefault(); fingers.set(e.pointerId, { x: e.clientX, y: e.clientY });
     root.setPointerCapture(e.pointerId); beginGesture();
@@ -338,10 +397,7 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
       gesture.distance = nextDistance;
     }
     else if (gesture.drag) {
-      const box = root.getBoundingClientRect(), { halfW, halfH } = clockSize();
-      const x = clamp(gesture.anchor.x + e.clientX - gesture.x, halfW, box.width - halfW);
-      const y = clamp(gesture.anchor.y + e.clientY - gesture.y, halfH, box.height - halfH);
-      position = { x: x / box.width, y: y / box.height }; placeClock(); dragged = true;
+      moveClock(gesture.anchor.x + e.clientX - gesture.x, gesture.anchor.y + e.clientY - gesture.y); dragged = true;
       return;
     } else {
       const dx = e.clientX - gesture.x, dy = e.clientY - gesture.y;
@@ -358,7 +414,7 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
     if (!fingers.size) {
       clearHold(); gesture = null; pinched = false; saveClockStyle();
       if (e.type !== 'pointerup') clearTaps();
-      if (dragged) { localStorage.setItem(positionKey, JSON.stringify(position)); dragged = false; reassessPalette(); }
+      if (dragged) { saveClockPosition(); dragged = false; reassessPalette(); }
     }
     else beginGesture();
     if (tapped) recordTap();
@@ -375,10 +431,10 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
     if (e.key === 'Home') { e.preventDefault(); clearTaps(); centerClock(); return; }
     if (e.shiftKey && ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
       e.preventDefault(); cancelPositionAnimation();
-      const p = clockCenter(), { halfW, halfH } = clockSize();
-      const x = clamp(p.x + (e.key === 'ArrowLeft' ? -16 : e.key === 'ArrowRight' ? 16 : 0), halfW, root.clientWidth - halfW);
-      const y = clamp(p.y + (e.key === 'ArrowUp' ? -16 : e.key === 'ArrowDown' ? 16 : 0), halfH, root.clientHeight - halfH);
-      position = { x: x / root.clientWidth, y: y / root.clientHeight }; placeClock(); localStorage.setItem(positionKey, JSON.stringify(position)); reassessPalette(); return;
+      const p = clockCenter();
+      moveClock(p.x + (e.key === 'ArrowLeft' ? -16 : e.key === 'ArrowRight' ? 16 : 0),
+        p.y + (e.key === 'ArrowUp' ? -16 : e.key === 'ArrowDown' ? 16 : 0));
+      saveClockPosition(); reassessPalette(); return;
     }
     if (['Enter', ' '].includes(e.key)) { e.preventDefault(); toggleClockColor(); return; }
     if (['ArrowLeft', 'ArrowRight'].includes(e.key)) clockWeight = clamp(clockWeight + (e.key === 'ArrowRight' ? 50 : -50), 100, 900);
@@ -497,7 +553,7 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
   async function startSound() {
     if (!hasAudio) return;
     // Once loaded, make and resume audio synchronously during the next iOS tap.
-    if (!soundFactory) soundFactory = (await import('./sound.js?v=20261011-clock-fix')).makeSound;
+    if (!soundFactory) soundFactory = (await import('./sound.js?v=20261011-clock-edge')).makeSound;
     if (closed || !on) return;
     if (sound) { levels(); sound.resume(); return; }
     sound = soundFactory(name, typeof SCENES[name].audio === 'string' ? SCENES[name].audio : name);

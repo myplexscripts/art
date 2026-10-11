@@ -1,5 +1,5 @@
 // Capture the coverage of real foreground objects while drawing the original art once.
-import { DEPTH_LAYERS } from './depth-layers.js?v=20261011-clock-fix';
+import { DEPTH_LAYERS } from './depth-layers.js?v=20261011-clock-edge';
 export const depthLayersFor = name => [{ id: 'front', label: 'In front' }, ...(DEPTH_LAYERS[name] ?? []).slice().reverse()];
 const PAINT = new Set(['fill', 'stroke', 'fillRect', 'strokeRect', 'clearRect', 'drawImage', 'fillText', 'strokeText', 'putImageData']);
 const STATE = ['globalAlpha', 'globalCompositeOperation', 'fillStyle', 'strokeStyle', 'lineWidth', 'lineCap', 'lineJoin', 'miterLimit', 'lineDashOffset', 'shadowBlur', 'shadowColor', 'shadowOffsetX', 'shadowOffsetY', 'font', 'textAlign', 'textBaseline', 'direction', 'fontKerning', 'fontStretch', 'fontVariantCaps', 'letterSpacing', 'wordSpacing', 'filter', 'imageSmoothingEnabled', 'imageSmoothingQuality'];

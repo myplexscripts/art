@@ -107,7 +107,7 @@ export function makeClockColor(rgb, sceneHue = null) {
   };
 }
 
-export function makePaletteSampler(canvas, face, background = '#000') {
+export function makePaletteSampler(canvas, face, background = '#000', getTextBounds = null) {
   const tiny = document.createElement('canvas'); tiny.width = tiny.height = 32;
   const c = tiny.getContext('2d', { willReadFrequently: true });
   return () => {
@@ -117,9 +117,9 @@ export function makePaletteSampler(canvas, face, background = '#000') {
     const at = (x, y) => { const i = (clamp(Math.round(y), 0, 31) * 32 + clamp(Math.round(x), 0, 31)) * 4; return [data[i], data[i + 1], data[i + 2]]; };
     for (let i = 0; i < data.length; i += 4) if (data[i + 3] > 240) palette.push([data[i], data[i + 1], data[i + 2]]);
     if (!palette.length) return null;
-    const art = canvas.getBoundingClientRect(), text = face.getBoundingClientRect();
-    const x0 = (text.left + 20 - art.left) / art.width * 31, x1 = (text.right - 20 - art.left) / art.width * 31;
-    const y0 = (text.top + 20 - art.top) / art.height * 31, y1 = (text.bottom - 20 - art.top) / art.height * 31;
+    const art = canvas.getBoundingClientRect(), text = getTextBounds?.() ?? face.getBoundingClientRect(), padding = getTextBounds ? 0 : 20;
+    const x0 = (text.left + padding - art.left) / art.width * 31, x1 = (text.right - padding - art.left) / art.width * 31;
+    const y0 = (text.top + padding - art.top) / art.height * 31, y1 = (text.bottom - padding - art.top) / art.height * 31;
     const behind = [];
     for (let i = 0; i < 9; i++) for (let j = 0; j < 5; j++) behind.push(at(x0 + (x1 - x0) * i / 8, y0 + (y1 - y0) * j / 4));
     const font = getComputedStyle(face), size = parseFloat(font.fontSize), weight = Number(font.fontWeight);

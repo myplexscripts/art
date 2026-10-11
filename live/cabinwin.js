@@ -3,9 +3,9 @@
 // corners of every pane and icicles hang along the top, dripping now and then. Inside it is warm and brown: a candle,
 // a kettle steaming, knitted curtains. The panes keep their size, so a wide screen gets a long row of them and a
 // phone a tall stack; the valley floor is a share of the glass and the rest is sky and mountain.
-import { mulberry, lerp, clamp, osc, noise1, poly, circle, pill, frac, TAU } from './geom.js?v=20261011-clock-fix';
-import { C, F } from './kit.js?v=20261011-clock-fix';
-import { hash, el, bez, bezT, pine } from './bits.js?v=20261011-clock-fix';
+import { mulberry, lerp, clamp, osc, noise1, poly, circle, pill, frac, TAU } from './geom.js?v=20261011-clock-edge';
+import { C, F } from './kit.js?v=20261011-clock-edge';
+import { hash, el, bez, bezT, pine } from './bits.js?v=20261011-clock-edge';
 
 export const title = 'CABIN WINDOW', no = 'No. 03', text = '#2e1a10', dark = '#1c0f09';
 const K = { sky: '#a9c9da', hill: '#7ea6bf', snow: '#edf3f1', shade: '#c5dae4', p1: '#3f6b86', p2: '#1f4059', log1: '#1c0f09', log2: '#3a2114', frame: '#6e4226' };

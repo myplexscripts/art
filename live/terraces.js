@@ -2,9 +2,9 @@
 // step held by a darker bank. The sun comes up over far blue mountains; mist slides between the levels and egrets
 // glide across now and then. The steps are stacked back to front, each one a rim, a bank and a sheet of water, all
 // built once in make; paint only slides them, sways the young rice and moves the glints.
-import { mulberry, clamp, lerp, osc, sway, noise1, poly, circle, pill, TAU } from './geom.js?v=20261011-clock-fix';
-import { C, F } from './kit.js?v=20261011-clock-fix';
-import { hash, bars } from './bits.js?v=20261011-clock-fix';
+import { mulberry, clamp, lerp, osc, sway, noise1, poly, circle, pill, TAU } from './geom.js?v=20261011-clock-edge';
+import { C, F } from './kit.js?v=20261011-clock-edge';
+import { hash, bars } from './bits.js?v=20261011-clock-edge';
 
 export const title = 'RICE TERRACES', no = 'No. 01', text = '#17403a', dark = '#0f2e2a';
 const P = { sky: '#f3a98b', r1: '#f6ba8c', r2: '#f9cf96', r3: '#f4c25c', m1: '#a9bdd3', m2: '#7f9fbd', j0: '#a9d0a6', j1: '#6fae90', j2: '#3f8672', j3: '#235f52', ink: '#123832' };
