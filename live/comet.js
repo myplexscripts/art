@@ -3,9 +3,9 @@
 // dust tail in dull gold, gold and cream that curls away, and a narrow straight ion tail in pale blue. Each streamer's
 // spine carries a slow wave that travels outward, so the tails ripple. Below, a frozen plain with a small probe, the
 // comet's light lying on the ice, and spikes of ice in the foreground.
-import { mulberry, lerp, clamp, osc, sway, noise1, poly, circle, pill, star4, TAU } from './geom.js?v=20261011-dreamscapes';
-import { C, F } from './kit.js?v=20261011-dreamscapes';
-import { hash, el, makeStars, paintStars, meteor } from './bits.js?v=20261011-dreamscapes';
+import { mulberry, lerp, clamp, osc, sway, noise1, poly, circle, pill, star4, TAU } from './geom.js?v=20261011-dreamscapes-motion';
+import { C, F } from './kit.js?v=20261011-dreamscapes-motion';
+import { hash, el, makeStars, paintStars, meteor } from './bits.js?v=20261011-dreamscapes-motion';
 
 export const title = 'COMET PASS', no = 'No. 05', text = '#121a44', dark = '#060920';
 const K = { sky: '#080b24', k1: '#0e1438', k2: '#172052', k3: '#25327a', dim: '#a07a44', ion: '#9fd8ec', ion2: '#4f8fc4', i1: '#b4dae6', i2: '#6fa3c4', i3: '#3f6d9c', i4: '#1f3d6c', ink: '#0a1230', night: '#141a40' };

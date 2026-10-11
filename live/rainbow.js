@@ -3,9 +3,9 @@
 // flat rays that turn slowly. In front a wet lane runs away over the nearest hill, and a branch hangs in from the top
 // left corner: drops swell at three leaf tips, fall, and spread rings in the puddles right underneath. Birds come back
 // in ones and in small flocks. The lane and branch hang off the left edge, the cloud off the right.
-import { mulberry, clamp, frac, lerp, osc, sway, noise1, poly, circle, pill, TAU } from './geom.js?v=20261011-dreamscapes';
-import { C, F } from './kit.js?v=20261011-dreamscapes';
-import { hash, el, bez, bezT, bars } from './bits.js?v=20261011-dreamscapes';
+import { mulberry, clamp, frac, lerp, osc, sway, noise1, poly, circle, pill, TAU } from './geom.js?v=20261011-dreamscapes-motion';
+import { C, F } from './kit.js?v=20261011-dreamscapes-motion';
+import { hash, el, bez, bezT, bars } from './bits.js?v=20261011-dreamscapes-motion';
 
 export const title = 'AFTER THE RAIN', no = 'No. 05', text = '#1d4034', dark = '#12281f';
 const R = { sky: '#8fbfd3', ray: '#a6d0dd', in: '#b9dde4', c1: '#8797a8', c2: '#66778b', c3: '#4d5d73', rain: '#6f93ab', red: '#c65a44', green: '#6aa86c', blue: '#4f84a6', h0: '#a5cfa4', h1: '#84bd83', h2: '#62a865', h3: '#459053', h4: '#2f7645', lane: '#b09465', rim: '#8a7350', leaf: '#1f5236', ink: '#143024' };

@@ -2,9 +2,9 @@
 // dark shelf a strip of clear evening sky still shows along the horizon. The wind blows left to right: rain is drawn
 // as slanted dashed strokes whose dashes only run down the slope, the wheat rolls in rows of travelling waves, scud
 // races under the shelf, and now and then a lighter pill swells and fades inside the tower (sheet lightning).
-import { mulberry, clamp, frac, lerp, osc, sway, noise1, poly, circle, pill, TAU } from './geom.js?v=20261011-dreamscapes';
-import { C, F } from './kit.js?v=20261011-dreamscapes';
-import { hash, el, bars } from './bits.js?v=20261011-dreamscapes';
+import { mulberry, clamp, frac, lerp, osc, sway, noise1, poly, circle, pill, TAU } from './geom.js?v=20261011-dreamscapes-motion';
+import { C, F } from './kit.js?v=20261011-dreamscapes-motion';
+import { hash, el, bars } from './bits.js?v=20261011-dreamscapes-motion';
 
 export const title = 'SUMMER STORM', no = 'No. 01', text = '#23234a', dark = '#15152e';
 const S = { sky: '#454277', sky2: '#524f8a', c1: '#b2b7dc', c2: '#7a81b5', c3: '#575d94', c4: '#2b2c52', scud: '#3b3b69', glow: '#d3d5ee', shaft: '#8a7397', far: '#5a4763', f1: '#a67d3b', f2: '#c9973a', f3: '#b5822f', stalk: '#5e3f22', ink: '#15152e' };

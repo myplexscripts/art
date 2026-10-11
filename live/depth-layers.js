@@ -45,9 +45,8 @@ export const DEPTH_LAYERS = {
   "blooms": [{"id": "outer-petals", "label": "Outer petals"}, {"id": "middle-petals", "label": "Middle petals"}, {"id": "newest-bloom", "label": "Newest bloom"}],
   "deepwaves": [{"id": "near-ripples", "label": "Near ripples"}, {"id": "inner-ripples", "label": "Inner ripples"}, {"id": "centre-ripple", "label": "Centre ripple"}],
   "seadoor": [{"id": "door-shadow", "label": "Doorway and its shadow"}, {"id": "stone-door", "label": "Stone doorway"}, {"id": "desert-grass", "label": "Desert grass"}],
-  "endlessarches": [{"id": "middle-arches", "label": "Middle arches"}, {"id": "near-arches", "label": "Near arches"}, {"id": "planter", "label": "Near planter"}],
+  "endlessarches": [{"id": "middle-arches", "label": "Middle arches"}, {"id": "near-arches", "label": "Near arches"}],
   "hanginggardens": [{"id": "main-garden", "label": "Main floating garden"}, {"id": "near-garden", "label": "Near floating garden"}],
   "moonstairs": [{"id": "stairs", "label": "Stairway"}, {"id": "handrails", "label": "Handrails"}, {"id": "night-leaves", "label": "Night leaves"}],
-  "openceiling": [{"id": "courtyard-floor", "label": "Courtyard floor"}, {"id": "courtyard-walls", "label": "Courtyard walls"}, {"id": "fountain", "label": "Fountain"}, {"id": "courtyard-plants", "label": "Courtyard plants"}],
   "mirrorgarden": [{"id": "lake-rim", "label": "Lake banks"}, {"id": "upright-trees", "label": "Upright trees"}, {"id": "inverted-trees", "label": "Inverted trees"}]
 };

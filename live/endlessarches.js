@@ -1,12 +1,12 @@
 // Dreamscapes No. 02: an endless arcade floats above a cloud sea.
-import { frac, makeWorld, box, disc, polygon, line, archRing, archJoints, cloud, sprig } from './dream-kit.js?v=20261011-dreamscapes';
+import { frac, makeWorld, box, disc, polygon, line, archRing, archJoints, cloud } from './dream-kit.js?v=20261011-dreamscapes-motion';
 export const title = 'Endless Arches', no = 'No. 02', dark = '#363146', text = '#363146', audio = 'mesa', grain = true;
 export const make = (W, H) => makeWorld(W, H, 51);
 const K = { sky: '#596578', horizon: '#7e8893', cloud: '#a9a79f', pale: '#cfbeb0', rose: '#a77272',
-  terracotta: '#b78275', light: '#d0a18a', dark: '#654f5e', floor: '#7e626b', joint: '#76505a', mint: '#85958b', gold: '#dfbd84' };
+  terracotta: '#b78275', light: '#d0a18a', dark: '#654f5e', floor: '#7e626b', joint: '#76505a' };
 export function paint(c, p, t, G) {
-  const { W, H, S } = G, travel = t / 68, phase = frac(travel), born = Math.floor(travel);
-  const cx = W * .5 + Math.sin(t * .024) * S * .013, vanishing = H * .53;
+  const { W, H, S } = G, travel = t / 20, phase = frac(travel), born = Math.floor(travel);
+  const cx = W * .5, vanishing = H * .53;
   c.save(); box(c, 0, 0, W, H, K.sky);
   disc(c, W * .64, H * .26, S * .22, K.horizon); disc(c, W * .64, H * .26, S * .13, K.pale);
   box(c, 0, vanishing, W, H - vanishing, K.horizon);
@@ -15,20 +15,20 @@ export function paint(c, p, t, G) {
     c.beginPath(); c.moveTo(-S, H + S);
     for (let i = 0; i <= 64; i++) {
       const f = i / 64, xx = f * (W + S * 2) - S;
-      c.lineTo(xx, yy + Math.sin(f * 13 + layer * .7 + t * .017) * S * .034 + Math.sin(f * 27 - t * .011) * S * .009);
+      c.lineTo(xx, yy + Math.sin(f * 13 + layer * .7 - t * .12) * S * .034 + Math.sin(f * 27 - t * .19) * S * .009);
     }
     c.lineTo(W + S, H + S); c.closePath(); c.fillStyle = [K.cloud, K.pale, '#bcb8ab'][layer]; c.fill();
   }
   // The narrow suspended walkway opens out as it approaches the viewer.
   polygon(c, [[cx - S * .04, vanishing], [cx + S * .04, vanishing], [cx + S * 1.28, H + S], [cx - S * 1.28, H + S]], K.floor);
   for (let i = 13; i >= -3; i--) {
-    const z = Math.exp(-(i - phase) * .32), yy = vanishing + S * .78 * z, width = S * .85 * z;
+    const z = Math.exp(-(i - phase) * .34), yy = vanishing + S * .78 * z, width = S * .85 * z;
     if (yy > H + S * .14) continue;
     box(c, cx - width, yy, width * 2, S * .008 * z, K.light);
     // Fine seams between the alternating diamond-cut floor tiles.
     for (let j = -3; j < 3; j++) {
-      const xx = cx + width * j / 3, yy2 = vanishing + S * .78 * z * Math.exp(-.32);
-      line(c, q => { q.moveTo(xx, yy); q.lineTo(cx + width * j / 3 * Math.exp(-.32), yy2); }, K.dark, S * .0018 * z);
+      const xx = cx + width * j / 3, yy2 = vanishing + S * .78 * z * Math.exp(-.34);
+      line(c, q => { q.moveTo(xx, yy); q.lineTo(cx + width * j / 3 * Math.exp(-.34), yy2); }, K.dark, S * .0018 * z);
     }
   }
   // Perspective is made entirely from flat, coloured outlines. Reindexing
@@ -59,16 +59,10 @@ export function paint(c, p, t, G) {
       line(c, q => { q.moveTo(cx, y + jamb * .17); q.lineTo(cx, y + jamb * .54); }, K.joint, S * .0015 * z);
     }
   }
-  // Slow clouds occasionally pass below the walkway, never across its masonry.
+  // Wisps move below the walkway at a separate speed from the advancing arches.
   for (const [side, offset] of [[-1, 0], [1, 1.8]]) {
-    const x = cx + side * S * (.69 + Math.sin(t * .018 + offset) * .12);
+    const x = cx + side * S * (.69 + Math.sin(t * .14 + offset) * .12);
     cloud(c, x, H * .86, S * .49, S * .10, K.pale);
   }
-  c.depthLayer?.('planter');
-  const px = W * .08, py = H * .94, size = S * .12;
-  polygon(c, [[px - size * .37, py - size * .14], [px + size * .37, py - size * .14],
-    [px + size * .28, py + size * .29], [px - size * .28, py + size * .29]], K.dark);
-  box(c, px - size * .40, py - size * .16, size * .80, size * .11, K.light);
-  sprig(c, px, py - size * .16, size, t, K.mint, '#53656a', 29);
   c.restore();
 }

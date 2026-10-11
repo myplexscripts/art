@@ -1,5 +1,5 @@
-import { focusTimer, countdownText } from './focus-timer.js?v=20261011-dreamscapes';
-import { lockPage } from './scroll-lock.js?v=20261011-dreamscapes';
+import { focusTimer, countdownText } from './focus-timer.js?v=20261011-dreamscapes-motion';
+import { lockPage } from './scroll-lock.js?v=20261011-dreamscapes-motion';
 
 const FACE = 'var(--face, "Barlow Condensed", system-ui, sans-serif)';
 export const FOCUS_CSS = `

@@ -1,6 +1,6 @@
 // Nocturne Series No. 01: Moonpath. Geometry lives in geom.js; this paints it in the poster inks.
-import { makeScene, circle, pill, star4, poly, edge, shapes, osc, sway, mulberry, frac, TAU } from './geom.js?v=20261011-dreamscapes';
-import { C, F } from './kit.js?v=20261011-dreamscapes';
+import { makeScene, circle, pill, star4, poly, edge, shapes, osc, sway, mulberry, frac, TAU } from './geom.js?v=20261011-dreamscapes-motion';
+import { C, F } from './kit.js?v=20261011-dreamscapes-motion';
 
 export const title = 'MOONPATH', no = 'No. 01', text = C.navy, dark = C.ink;
 export const make = makeScene;

@@ -1,10 +1,10 @@
-import * as beach from './beach.js?v=20261011-dreamscapes';
-import * as jungle from './jungle.js?v=20261011-dreamscapes';
-import * as harbor from './harbor.js?v=20261011-dreamscapes';
-import * as campfire from './campfire.js?v=20261011-dreamscapes';
-import * as train from './train.js?v=20261011-dreamscapes';
-import * as mesa from './mesa.js?v=20261011-dreamscapes';
-import * as aurora from './aurora.js?v=20261011-dreamscapes';
+import * as beach from './beach.js?v=20261011-dreamscapes-motion';
+import * as jungle from './jungle.js?v=20261011-dreamscapes-motion';
+import * as harbor from './harbor.js?v=20261011-dreamscapes-motion';
+import * as campfire from './campfire.js?v=20261011-dreamscapes-motion';
+import * as train from './train.js?v=20261011-dreamscapes-motion';
+import * as mesa from './mesa.js?v=20261011-dreamscapes-motion';
+import * as aurora from './aurora.js?v=20261011-dreamscapes-motion';
 
 export const name = 'Nocturne Series';
 export const scenes = { beach, jungle, harbor, campfire, train, mesa, aurora };
