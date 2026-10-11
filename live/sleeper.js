@@ -3,9 +3,9 @@
 // country slides by outside, drawn from noise along endless strips (far hills slow, trees and telegraph poles fast),
 // with small towns and level crossings coming past and the moon holding still. A wide screen gets two windows side
 // by side, a phone one tall one with a vent light across its top; the wall between and around them stays the same.
-import { mulberry, lerp, clamp, osc, noise1, poly, circle, pill, frac, TAU } from './geom.js';
-import { C, F } from './kit.js';
-import { hash, el, makeStars, paintStars, meteor, pine } from './bits.js';
+import { mulberry, lerp, clamp, osc, noise1, poly, circle, pill, frac, TAU } from './geom.js?v=20261011-ui';
+import { C, F } from './kit.js?v=20261011-ui';
+import { hash, el, makeStars, paintStars, meteor, pine } from './bits.js?v=20261011-ui';
 
 export const title = 'SLEEPER CAR', no = 'No. 02', text = '#14183a', dark = '#080b1a';
 const S = { sky: '#0c1838', h1: '#122650', h2: '#1a3a6c', far: '#2d5f92', mid: '#1c4270', field: '#143258', near: '#0d2040', ink: '#080b1a', wall: '#1c1428', panel: '#2e1f38', wood: '#6b3f2b', fold: '#8f4a2c' };

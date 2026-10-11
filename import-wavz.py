@@ -11,6 +11,15 @@ from urllib.request import Request, urlopen
 
 ORIGIN = 'https://wavz.us/'
 ROOT = Path(__file__).resolve().parent
+ASSET_VERSION = '20261011-ui'
+
+def version_assets(version=None):
+    """One release URL for the entire local module graph prevents mixed cached UI."""
+    pattern = r'''(["'])((?:\./|\.\./)[^"'\s?]+\.(?:js|css))(?:\?[^"'\s]*)?\1'''
+    for path in [ROOT / 'index.html', *sorted((ROOT / 'live').glob('*.js'))]:
+        text = path.read_text()
+        text = re.sub(pattern, lambda m: m[1] + m[2] + (f'?v={version}' if version else '') + m[1], text)
+        path.write_text(text)
 
 def references(text, suffix):
     if suffix == '.html':
@@ -58,6 +67,7 @@ def main():
 
 def adapt_for_local_hosting():
     """Keep navigation/assets relative, omit upstream analytics, and use vendored audio."""
+    version_assets()
     path = ROOT / 'index.html'
     text = path.read_text()
     text = re.sub(r'<script async src="https://www.googletagmanager.com/gtag/js\?id=G-PKL1DBXEWK"></script>\s*<script>.*?</script>\s*', '', text, count=1, flags=re.S)
@@ -79,19 +89,23 @@ def adapt_for_local_hosting():
     # Leave browser/OS chrome untinted; the iOS status bar overlays the artwork.
     manifest.pop('theme_color', None)
     for icon in manifest['icons']:
-        icon['src'] = './' + icon['src'].lstrip('/')
+        icon['src'] = './' + icon['src'].removeprefix('./').lstrip('/')
     path.write_text(json.dumps(manifest, indent=2) + '\n')
     # Retain the locally authored series when refreshing the WAVZ snapshot.
     if (ROOT / 'live/s-music.js').exists():
         path = ROOT / 'index.html'
         path.write_text(path.read_text().replace('Made by <a href="https://nicksaulino.com" rel="author">Nick Saulino</a>', 'WAVZ originals by <a href="https://nicksaulino.com" rel="author">Nick Saulino</a> · Music and Essentials: original rooms and playlist-art interpretations'))
         text = path.read_text().replace('  .posters canvas { width: 100%; height: 100%; display: block; }', '  .posters canvas { width: 100%; height: 100%; display: block; }\n  .posters a.textless canvas { position: relative; z-index: 1; }')
-        text = text.replace("    a.draggable = false;", "    a.classList.toggle('textless', scene.textless === true);\n    a.draggable = false;")
+        if "a.classList.toggle('textless'" not in text:
+            text = text.replace("    a.draggable = false;", "    a.classList.toggle('textless', scene.textless === true);\n    a.draggable = false;")
         path.write_text(text)
         path = ROOT / 'live/poster.js'
-        text = path.read_text().replace("import * as orbit from './s-orbit.js';", "import * as orbit from './s-orbit.js';\nimport * as music from './s-music.js';")
+        text = path.read_text()
+        if "import * as music from './s-music.js';" not in text:
+            text = text.replace("import * as orbit from './s-orbit.js';", "import * as orbit from './s-orbit.js';\nimport * as music from './s-music.js';")
         text = text.replace('[nocturne, weather, windows, daybreak, deep, orbit]', '[nocturne, weather, windows, daybreak, deep, orbit, music]')
-        text = text.replace('  const VW = width(aspect), VH = VW / aspect, m = M * frame;', '  // Text-free artwork always fills its canvas, including gallery cards and frame transitions.\n  if (scene.textless) frame = 0;\n  const VW = width(aspect), VH = VW / aspect, m = M * frame;')
+        if 'if (scene.textless) frame = 0;' not in text:
+            text = text.replace('  const VW = width(aspect), VH = VW / aspect, m = M * frame;', '  // Text-free artwork always fills its canvas, including gallery cards and frame transitions.\n  if (scene.textless) frame = 0;\n  const VW = width(aspect), VH = VW / aspect, m = M * frame;')
         path.write_text(text)
         path = ROOT / 'live/player.js'
         text = path.read_text().replace('.wz-ui [hidden], .wz-mark[hidden]', '.wz-ui [hidden], .wz-ui .wz-row[hidden], .wz-mark[hidden], .wz-grain[hidden]')
@@ -119,9 +133,11 @@ def adapt_for_local_hosting():
         adapt_local_viewer()
         adapt_scenes()
     adapt_typography()
+    adapt_gallery()
     if (ROOT / 'live/clock-depth.js').exists():
         from scene_depth import apply_depth
         apply_depth(ROOT)
+    version_assets(ASSET_VERSION)
 
 def adapt_local_viewer():
     """Retain full-bleed playback, the clock and locally hosted fonts during a source refresh."""
@@ -178,17 +194,19 @@ def adapt_typography():
         text = text.replace("  import { draw, makeLayout, SERIES } from './live/poster.js';", "  import { draw, makeLayout, SERIES } from './live/poster.js';\n  import { fontReady } from './live/typography.js';")
     text = text.replace('document.fonts.ready.then(() => { for (const card of cards) card.paint(); });', 'fontReady.then(() => { for (const card of cards) card.paint(); });')
     text = text.replace('{ brand: false, dark }', '{ brand: false, dark, cssWidth: r.width }')
-    marker = '  /* Text sizes are 1.2 times the original hierarchy, with a 12px minimum. */'
-    if marker not in text:
+    marker = '  /* Text follows the enlarged hierarchy; interface labels and captions have a 16px floor. */'
+    old_marker = '  /* Text sizes are 1.2 times the original hierarchy, with a 12px minimum. */'
+    if marker not in text and old_marker not in text:
         def scale_font(match):
             def scale_number(number):
                 value = float(number[1]) * 1.2
                 if number[2] == 'px':
-                    value = max(12, value)
+                    value = max(16, value)
                 return f'{value:g}{number[2]}'
             return match[1] + re.sub(r'([\d.]+)(px|vw|vmin)', scale_number, match[2]) + ';'
         text = re.sub(r'(\bfont(?:-size)?\s*:\s*)([^;{}]+);', scale_font, text)
         text = text.replace('  h1 { margin:', marker + '\n  h1 { margin:', 1)
+    text = text.replace(old_marker, marker)
     text = text.replace('  let player = null;', '  let player = null, departing = null;')
     text = text.replace('    player?.close();', '    departing?.close({ immediate: true }); departing = null;\n    player?.close({ immediate: true });')
     text = text.replace('const was = player; player = null;', 'const was = player; departing = was; player = null;')
@@ -202,6 +220,48 @@ def adapt_typography():
     if 'const spec = scalePosterText(' not in text:
         text = text.replace('  const spec = mix ? blend(', '  const base = mix ? blend(')
         text = text.replace('titleSpec(styleFor(aspect, brand), VW, VH);', 'titleSpec(styleFor(aspect, brand), VW, VH);\n  const spec = scalePosterText(base, { VW, VH, cssWidth, margin: M });')
+    path.write_text(text)
+
+def adapt_gallery():
+    """Keep system-aware appearance, safe-area spacing and readable HTML captions."""
+    if not (ROOT / 'live/theme.js').exists():
+        return
+    path = ROOT / 'index.html'
+    text = path.read_text()
+    if 'src="./live/theme.js"' not in text:
+        text = text.replace('</head>', '<link rel="stylesheet" href="./live/theme.css">\n<script type="module" src="./live/theme.js"></script>\n</head>')
+    if "// Set appearance before painting" not in text:
+        text = text.replace('<title>Scenes</title>', '''<title>Scenes</title>
+<script>
+  // Set appearance before painting, including cold loads with a dark system preference.
+  { let theme; try { theme = localStorage.getItem('scenes-theme'); } catch {}
+    document.documentElement.dataset.theme = ['light', 'dark'].includes(theme) ? theme : matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; }
+</script>''')
+    text = text.replace('html { background: var(--cream);', 'html { background: var(--gallery-paper);')
+    text = text.replace('color: var(--navy); font-family: var(--face)', 'color: var(--gallery-ink); font-family: var(--face)')
+    text = re.sub(r'  html\.edge body \{ padding: env\(safe-area-inset-top\)[^\n]*\}\n', '', text)
+    text = re.sub(r'  \.page \{[^\n]*\}', '  .page { container-type: inline-size; box-sizing: border-box; padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px); }', text, count=1)
+    text = text.replace('color: var(--rust); }', 'color: var(--gallery-accent); }')
+    text = text.replace('color: var(--navy); background: none; border: 2px solid var(--navy);', 'color: var(--gallery-ink); background: none; border: 2px solid currentColor;')
+    text = re.sub(r'display: block; aspect-ratio: 3\s*/\s*4; scroll-snap-align: start;', 'display: block; scroll-snap-align: start; text-decoration: none; color: inherit;', text)
+    text = text.replace('.posters canvas { width: 100%; height: 100%; display: block; }', '.posters canvas { width: 100%; height: auto; aspect-ratio: 3 / 4; display: block; }')
+    guide = '<button class="scenes-guide" type="button">Welcome &amp; iPhone setup</button>'
+    if 'class="scenes-theme"' not in text:
+        text = text.replace(guide, '<span class="gallery-actions">' + guide + '<button class="scenes-theme" type="button" role="switch" aria-checked="false" aria-label="Dark gallery">Dark mode <em>off</em></button></span>')
+    text = text.replace('import { draw, makeLayout, SERIES }', 'import { draw, makeLayout, SERIES, seriesLine }')
+    if "import { galleryIsDark }" not in text:
+        text = text.replace("  import { openScene }", "  import { galleryIsDark } from './live/theme.js';\n  import { openScene }")
+    if "className: 'poster-caption'" not in text:
+        caption = """const caption = Object.assign(document.createElement('span'), { className: 'poster-caption' });
+    caption.append(Object.assign(document.createElement('strong'), { className: 'poster-title', textContent: scene.title }), Object.assign(document.createElement('span'), { className: 'poster-meta', textContent: seriesLine(scene) }));
+    a.append(canvas, caption);"""
+        text = text.replace('a.append(canvas);', caption)
+    text = re.sub(r"const dark = (?:\(localStorage.getItem\('wavz-frame'\) \?\? 'light'\)|localStorage.getItem\('wavz-frame'\)) === 'dark';", 'const dark = galleryIsDark();', text)
+    text = text.replace('{ brand: false, dark, cssWidth: r.width }', '{ brand: false, dark, frame: 0, cssWidth: r.width }')
+    if "addEventListener('scenes-theme-change'," not in text:
+        text = text.replace('  fontReady.then(', "  addEventListener('scenes-theme-change', () => size());\n  fontReady.then(", 1)
+    if 'thumbnailFrame:' not in text:
+        text = text.replace('player = openScene(name, { from:', 'player = openScene(name, { thumbnailFrame: 0, from:')
     path.write_text(text)
 
 def adapt_scenes():

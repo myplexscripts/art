@@ -8,16 +8,23 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Scenes">
 <title>Scenes</title>
+<script>
+  // Set appearance before painting, including cold loads with a dark system preference.
+  { let theme; try { theme = localStorage.getItem('scenes-theme'); } catch {}
+    document.documentElement.dataset.theme = ['light', 'dark'].includes(theme) ? theme : matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; }
+</script>
 <meta name="description" content="Living posters for your screen. Each scene is drawn live in your browser, fits any screen, and is made to be left running.">
 <link rel="apple-touch-icon" sizes="180x180" href="./favicon/apple-touch-icon.png?v=2">
 <link rel="icon" type="image/svg+xml" href="./favicon/favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="./favicon/favicon-32x32.png?v=2">
 <link rel="icon" type="image/png" sizes="16x16" href="./favicon/favicon-16x16.png?v=2">
 <link rel="manifest" href="./site.webmanifest?v=5">
-<link rel="stylesheet" href="./live/fonts.css">
-<script type="module" src="./live/typography.js"></script>
-<link rel="stylesheet" href="./live/welcome.css">
-<script type="module" src="./live/welcome.js"></script>
+<link rel="stylesheet" href="./live/fonts.css?v=20261011-ui">
+<link rel="stylesheet" href="./live/theme.css?v=20261011-ui">
+<script type="module" src="./live/theme.js?v=20261011-ui"></script>
+<script type="module" src="./live/typography.js?v=20261011-ui"></script>
+<link rel="stylesheet" href="./live/welcome.css?v=20261011-ui">
+<script type="module" src="./live/welcome.js?v=20261011-ui"></script>
 <script>
   // cold: a scene's own address, so the scene covers the page at once. intro: the first visit of a session, when the
   // page prints itself in piece by piece; /?intro plays it every time, for looking at it.
@@ -41,35 +48,34 @@
   @view-transition { navigation: auto; }
   :root { --cream: #f2e5c3; --navy: #0e1c3a; --orange: #dd7f45; --rust: #8f4520; --face: "Barlow Condensed", system-ui, sans-serif; --display: "Barlow Condensed", system-ui, sans-serif; }
   /* room is kept for the scrollbar from the start, so the page does not step sideways when the posters give it height */
-  html { background: var(--cream); scrollbar-gutter: stable; }
+  html { background: var(--gallery-paper); scrollbar-gutter: stable; }
   /* The rows of posters run out to the edges of the page. They measure it by this box (100cqw), not by the window
      (100vw), which is wider than the page by the scrollbar and would make the page scroll sideways. */
-  .page { container-type: inline-size; }
-  html.edge body { padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }   /* the page keeps clear of the clock, the notch and the home bar */   /* the rows run out to 100vw, which is wider than the page when there is a scrollbar */
-  body { margin: 0; position: relative; min-height: 100vh; color: var(--navy); font-family: var(--face); touch-action: pan-y; }
+  .page { container-type: inline-size; box-sizing: border-box; padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px); }
+  body { margin: 0; position: relative; min-height: 100vh; color: var(--gallery-ink); font-family: var(--face); touch-action: pan-y; }
   /* print grain over the whole page; it scrolls with the paper */
   body::after { content: ""; position: absolute; inset: 0; background: var(--grain, none); background-size: var(--grain-size, 256px); pointer-events: none; }
   main { max-width: 1180px; margin: 0 auto; padding: clamp(20px, 4vw, 48px) clamp(16px, 4vw, 44px) 56px; }
   header { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
-  /* Text sizes are 1.2 times the original hierarchy, with a 12px minimum. */
+  /* Text follows the enlarged hierarchy; interface labels and captions have a 16px floor. */
   h1 { margin: 0; font-family: var(--display); font-size: clamp(76.8px, 15.6vw, 180px); line-height: .82; font-weight: 700; letter-spacing: -.01em; }
   header p { margin: 0 0 6px; max-width: 21em; font-size: clamp(20.4px, 2.4vw, 26.4px); line-height: 1.3; font-weight: 600; text-align: right; }
   .rule { height: 6px; background: var(--orange); margin: clamp(14px, 2vw, 22px) 0; }
-  h2 { margin: 0 0 clamp(10px, 2vw, 18px); font-family: var(--display); font-size: clamp(18px, 2.16vw, 24px); letter-spacing: .14em; text-transform: uppercase; color: var(--rust); }
+  h2 { margin: 0 0 clamp(10px, 2vw, 18px); font-family: var(--display); font-size: clamp(18px, 2.16vw, 24px); letter-spacing: .14em; text-transform: uppercase; color: var(--gallery-accent); }
   /* each series is a row of posters to slide through; it runs out to the edges of the screen */
   .series { margin-top: clamp(18px, 3vw, 34px); display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: clamp(4px, 1vw, 10px); }
   .series h2 { margin: 0; }
-  .series button { font: 700 21.6px/1 var(--face); color: var(--navy); background: none; border: 2px solid var(--navy); border-radius: 999px; width: 42px; height: 38px; cursor: pointer; touch-action: manipulation; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+  .series button { font: 700 21.6px/1 var(--face); color: var(--gallery-ink); background: none; border: 2px solid currentColor; border-radius: 999px; width: 42px; height: 38px; cursor: pointer; touch-action: manipulation; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
   .series button:disabled { opacity: .25; cursor: default; }
   .series div { display: flex; gap: 8px; }
   .posters { --pad: max(clamp(16px, 4vw, 44px), (100cqw - 1180px) / 2); display: flex; gap: clamp(10px, 2vw, 24px); overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding: 0 var(--pad); padding: 8px var(--pad) 14px; margin: 0 calc(50% - 50cqw); touch-action: pan-x pan-y; scrollbar-width: none; overscroll-behavior-x: contain; }
   .posters::-webkit-scrollbar { display: none; }
-  .posters a { flex: 0 0 clamp(230px, 72vw, 390px); display: block; aspect-ratio: 3 / 4; scroll-snap-align: start; }
+  .posters a { flex: 0 0 clamp(230px, 72vw, 390px); display: block; scroll-snap-align: start; text-decoration: none; color: inherit; }
   /* a long press on a poster is ours (it runs the poster): no link preview, no lifting the picture to drag it, no selecting */
   .posters a, .posters canvas { -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; -webkit-user-drag: none; }
   @media (hover: none) { .series div { display: none; } }
   .posters a:focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; }
-  .posters canvas { width: 100%; height: 100%; display: block; }
+  .posters canvas { width: 100%; height: auto; aspect-ratio: 3 / 4; display: block; }
   .posters a.textless canvas { position: relative; z-index: 1; }
   /* Arriving: the wordmark's letters rise from behind their baseline one after another, the orange rule is drawn across,
      the line of copy follows, and then the rows deal their posters in from the left, one row after another down the
@@ -104,9 +110,9 @@
       (() => { const h = document.currentScript.previousElementSibling, c = document.createElement('canvas').getContext('2d'), k = [...h.children];
         const kern = () => { const cs = getComputedStyle(h); c.font = cs.fontWeight + ' 200px ' + cs.fontFamily; const w = (t) => c.measureText(t).width;
           for (let i = 1; i < k.length; i++) k[i].style.marginLeft = (w(k[i - 1].textContent + k[i].textContent) - w(k[i - 1].textContent) - w(k[i].textContent)) / 200 + 'em'; };
-        kern(); import('./live/typography.js').then(({ fontReady }) => fontReady.then(kern)); })();
+        kern(); import('./live/typography.js?v=20261011-ui').then(({ fontReady }) => fontReady.then(kern)); })();
     </script>
-    <p>Calming scenes for your screen. Open one, go fullscreen, and unwind.<button class="scenes-guide" type="button">Welcome &amp; iPhone setup</button></p>
+    <p>Calming scenes for your screen. Open one, go fullscreen, and unwind.<span class="gallery-actions"><button class="scenes-guide" type="button">Welcome &amp; iPhone setup</button><button class="scenes-theme" type="button" role="switch" aria-checked="false" aria-label="Dark gallery">Dark mode <em>off</em></button></span></p>
   </header>
   <div class="rule"></div>
   <div id="rows"></div>
@@ -115,10 +121,11 @@
 <script type="module">
   // Every poster on this page is the real scene at card size. It is held still until the pointer rests on it, then it
   // runs; opening it carries the same clock into the full-screen scene, so the motion never jumps.
-  import './live/nozoom.js';
-  import { draw, makeLayout, SERIES } from './live/poster.js';
-  import { fontReady } from './live/typography.js';
-  import { openScene } from './live/player.js';
+  import './live/nozoom.js?v=20261011-ui';
+  import { draw, makeLayout, SERIES, seriesLine } from './live/poster.js?v=20261011-ui';
+  import { fontReady } from './live/typography.js?v=20261011-ui';
+  import { galleryIsDark } from './live/theme.js?v=20261011-ui';
+  import { openScene } from './live/player.js?v=20261011-ui';
   const LOOP = 30, STILL = 7.5, rows = document.getElementById('rows'), cards = [];
   // Only one poster runs at a time, the one under the pointer, and none while the page is being scrolled: drawing a
   // scene while the page moves is what makes scrolling drag. When scrolling stops, the poster under the pointer starts.
@@ -149,7 +156,9 @@
     a.href = '?scene=' + name; a.setAttribute('aria-label', `${scene.title}, ${series.name} ${scene.no}`);
     a.classList.toggle('textless', scene.textless === true);
     a.draggable = false; a.addEventListener('dragstart', (e) => e.preventDefault());
-    a.append(canvas); a.style.setProperty('--i', Math.min(wrap.children.length, 6)); wrap.append(a);
+    const caption = Object.assign(document.createElement('span'), { className: 'poster-caption' });
+    caption.append(Object.assign(document.createElement('strong'), { className: 'poster-title', textContent: scene.title }), Object.assign(document.createElement('span'), { className: 'poster-meta', textContent: seriesLine(scene) }));
+    a.append(canvas, caption); a.style.setProperty('--i', Math.min(wrap.children.length, 6)); wrap.append(a);
     const card = { name, scene, canvas, ctx: canvas.getContext('2d'), t: STILL, run: 0 };
     cards.push(card);
     const paint = () => { if (card.L) { card.ctx.setTransform(card.k, 0, 0, card.k, 0, 0); draw(card.ctx, card.t / LOOP, card.L, card.t); } };
@@ -194,17 +203,18 @@
    }
    wrap.addEventListener('scroll', ends, { passive: true }); addEventListener('resize', ends); requestAnimationFrame(ends);
   }
-  // the cards follow the frame chosen in the player, light or dark
-  const size = (redraw = null, only = false) => { const dark = localStorage.getItem('wavz-frame') === 'dark'; for (const c of cards) {
+  // Gallery captions follow the gallery theme; the artwork keeps its own palette.
+  const size = (redraw = null, only = false) => { const dark = galleryIsDark(); for (const c of cards) {
     if (only && c.name !== redraw) continue;
     const r = c.canvas.getBoundingClientRect(), d = Math.min(2, devicePixelRatio), w = Math.round(r.width * d), h = Math.round(r.height * d);
     // a poster is only drawn again when its size or the frame it should wear has changed, or when it is asked for by name
     if (!w || (redraw !== c.name && w === c.canvas.width && h === c.canvas.height && c.dark === dark)) continue;
-    c.canvas.width = w; c.canvas.height = h; c.dark = dark; c.L = makeLayout(w / h, c.scene, { brand: false, dark, cssWidth: r.width }); c.k = w / c.L.VW;
+    c.canvas.width = w; c.canvas.height = h; c.dark = dark; c.L = makeLayout(w / h, c.scene, { brand: false, dark, frame: 0, cssWidth: r.width }); c.k = w / c.L.VW;
     c.ctx.setTransform(c.k, 0, 0, c.k, 0, 0); draw(c.ctx, c.t / LOOP, c.L, c.t);
   } };
   let pending; addEventListener('resize', () => { clearTimeout(pending); pending = setTimeout(() => size(), 120); }); size();
   fontReady.then(() => { for (const card of cards) card.paint(); });
+  addEventListener('scenes-theme-change', () => size());
 
   // Tapping a poster opens the scene over this page, growing out of the poster to fill the screen, and the address
   // becomes the scene's own. Going back shrinks it into the poster again. A scene's address opened directly, or
@@ -221,7 +231,7 @@
     const card = cards.find((c) => c.name === name); play(null);
     // back goes back when this page is what lies behind; a scene opened cold has nothing of ours behind it, so its
     // address is swapped for the page's and the scene is closed here
-    player = openScene(name, { from: grow ? rectOf(name) : null, home: () => { if (history.state?.scene && !history.state.cold) history.back(); else { history.replaceState(null, '', location.pathname); leave(); } }, at: grow ? card.t : null });
+    player = openScene(name, { from: grow ? rectOf(name) : null, thumbnailFrame: 0, home: () => { if (history.state?.scene && !history.state.cold) history.back(); else { history.replaceState(null, '', location.pathname); leave(); } }, at: grow ? card.t : null });
     window.gtag?.('event', 'page_view', { page_location: location.href });
   }
   addEventListener('popstate', (e) => { if (e.state?.scene) open(e.state.scene, false); else leave(); });

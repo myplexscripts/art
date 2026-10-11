@@ -1,6 +1,6 @@
 // One fixed face for the interface, clocks and canvas lettering.
 export const FONT = '"Barlow Condensed", system-ui, sans-serif';
-export const MIN_FONT_SIZE = 12, TEXT_SCALE = 1.2;
+export const MIN_FONT_SIZE = 16, TEXT_SCALE = 1.2;
 
 // Load every weight before fitting the clock, so later weight gestures keep the same face.
 export const fontReady = Promise.all(Array.from({ length: 9 }, (_, i) =>

@@ -1,4 +1,5 @@
 // A once-only welcome, plus a replayable, fully illustrated iPhone installation guide.
+import { lockPage } from './scroll-lock.js?v=20261011-ui';
 const KEY = 'scenes-welcome-v1';
 const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 const standalone = () => navigator.standalone || matchMedia('(display-mode: standalone)').matches;
@@ -18,8 +19,9 @@ function showWelcome(skipSplash = false) {
   const dialog = document.createElement('dialog'); dialog.className = 'scenes-welcome';
   dialog.setAttribute('aria-label', 'Welcome to Scenes');
   dialog.innerHTML = `<div class="welcome-shell">
-    <div class="welcome-top"><span class="welcome-wordmark">Scenes</span><button class="welcome-skip" type="button">Explore Scenes <span aria-hidden="true">↗</span></button></div>
+    <div class="welcome-top"><span class="welcome-wordmark">Scenes</span><button class="welcome-skip" type="button">Skip</button></div>
     <div class="welcome-progress" aria-hidden="true"><i></i><i></i><i></i></div>
+    <div class="welcome-content">
     <section class="welcome-splash" aria-labelledby="welcome-title"><div class="splash-posters" aria-hidden="true"><i class="splash-stacks"></i><i class="splash-bloom"></i><i class="splash-waves"></i></div><p class="welcome-kicker">A little room to breathe</p><h1 id="welcome-title">Scenes</h1><p>Find your quiet corner.</p><div class="splash-rule"></div></section>
     <section class="welcome-features" hidden aria-labelledby="features-title"><div class="welcome-copy"><p class="welcome-kicker">Made for slower moments</p><h2 id="features-title">Living art.<br>Your quiet corner.</h2><p>Pick a scene. Let the room soften.</p><ul class="welcome-feature-list"><li><b>40 living scenes</b><span>From moonlit shores to moving geometry.</span></li><li><b>Set the sound</b><span>Blend music and ambience, or enjoy the quiet.</span></li><li><b>Make the clock yours</b><span>Tap for colour. Pinch for size. Swipe for weight.</span></li><li><b>Put time in its place</b><span>Hold to move. Triple tap to float back to centre.</span></li></ul></div>
       <div class="welcome-demo"><div class="demo-art" aria-hidden="true"><canvas width="604" height="680"></canvas><span class="demo-clock">9:41</span><div class="demo-controls">AMBIENCE <i></i> MUSIC <i></i></div></div><div class="demo-caption"><b>Deep Waves</b><span>GEOMETRY · No. 03</span></div><p class="demo-gesture" aria-live="off">Tap for a scene colour</p></div>
@@ -35,13 +37,17 @@ function showWelcome(skipSplash = false) {
         <div class="phone-launched"><svg viewBox="0 0 240 480" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="240" height="480" fill="#183340"/><g fill="none" stroke-width="44"><circle cx="120" cy="185" r="305" stroke="#25475b"/><circle cx="120" cy="185" r="247" stroke="#2e566d"/><circle cx="120" cy="185" r="189" stroke="#38657d"/><circle cx="120" cy="185" r="131" stroke="#42748b"/><circle cx="120" cy="185" r="73" stroke="#4b8298"/></g></svg><b>9:41</b></div><div class="phone-touch"></div><div class="phone-home-line"></div>
       </div><button class="install-play" type="button">Pause animation</button></div>
     </section>
-    <nav class="welcome-actions" aria-label="Welcome navigation"><button class="welcome-back" type="button" hidden>← Back</button><span class="welcome-note">A slower moment starts here.</span><button class="welcome-next" type="button">Continue <span aria-hidden="true">→</span></button></nav>
+    </div>
+    <nav class="welcome-actions" aria-label="Welcome navigation"><button class="welcome-back" type="button" hidden>← Back</button><span class="welcome-note">A slower moment starts here.</span><button class="welcome-next" type="button">Next <span aria-hidden="true">→</span></button></nav>
   </div>`;
   document.body.append(dialog);
   const $ = s => dialog.querySelector(s), sections = ['splash', 'features', 'install'];
   let stage = 'splash', step = 0, timer = 0, raf = 0, playing = !reduced(), completed = false, ended = false, demoStarted = 0, remaining = 0, deadline = 0;
   const canvas = $('.demo-art canvas'), ctx = canvas.getContext('2d'); let demoScene = null;
   const previousFocus = document.activeElement;
+  const page = document.querySelector('.page'), wasInert = page?.inert;
+  const unlock = lockPage({ freeze: true });
+  if (page) page.inert = true;
   const api = { close: finish }; current = api;
   dialog.showModal();
   if (!reduced()) dialog.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 250 });
@@ -49,17 +55,18 @@ function showWelcome(skipSplash = false) {
     if (ended) return; ended = true;
     clearTimeout(timer); cancelAnimationFrame(raf); document.removeEventListener('visibilitychange', visibility);
     try { localStorage.setItem(KEY, '1'); } catch {}
-    dialog.close(); dialog.remove(); if (current === api) current = null;
+    dialog.close(); dialog.remove(); if (page) page.inert = wasInert;
+    unlock(); if (current === api) current = null;
     if (previousFocus?.isConnected) previousFocus.focus({ preventScroll: true });
   }
   function changeStage(next) {
     clearTimeout(timer); stage = next; dialog.dataset.stage = next;
     sections.forEach(s => $('.welcome-' + s).hidden = s !== next);
+    $('.welcome-content').scrollTop = 0;
     $('.welcome-back').hidden = next !== 'install'; $('.welcome-actions').hidden = next === 'splash';
     $('.welcome-note').textContent = next === 'features' && standalone() ? 'Already at home. Enjoy the full screen.' : next === 'install' ? 'Follow along, or choose any step.' : 'Your clock remembers its place in every scene.';
-    $('.welcome-next').innerHTML = next === 'features' && !standalone() ? 'See iPhone setup <span aria-hidden="true">→</span>' : 'Explore Scenes <span aria-hidden="true">↗</span>';
     if (next === 'features') {
-      if (!demoScene) import('./s-geometry.js').then(({ scenes }) => { if (!ended) { demoScene = scenes.deepwaves; demoStarted = performance.now(); drawDemo(demoStarted); } });
+      if (!demoScene) import('./s-geometry.js?v=20261011-ui').then(({ scenes }) => { if (!ended) { demoScene = scenes.deepwaves; demoStarted = performance.now(); drawDemo(demoStarted); } });
       else drawDemo(performance.now());
     }
     if (next === 'install') { cancelAnimationFrame(raf); showStep(0); }
@@ -101,8 +108,12 @@ function showWelcome(skipSplash = false) {
   }
   document.addEventListener('visibilitychange', visibility);
   $('.welcome-skip').addEventListener('click', finish);
-  $('.welcome-next').addEventListener('click', () => { if (stage === 'features' && !standalone()) changeStage('install'); else finish(); });
-  $('.welcome-back').addEventListener('click', () => changeStage('features'));
+  $('.welcome-next').addEventListener('click', () => {
+    if (stage === 'features' && !standalone()) changeStage('install');
+    else if (stage === 'install' && step < steps.length - 1) showStep(step + 1);
+    else finish();
+  });
+  $('.welcome-back').addEventListener('click', () => { if (step > 0) showStep(step - 1); else changeStage('features'); });
   dialog.addEventListener('cancel', e => { e.preventDefault(); finish(); });
   dialog.addEventListener('keydown', e => { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); finish(); } });
   dialog.querySelectorAll('.install-steps button').forEach(b => b.addEventListener('click', () => showStep(+b.dataset.step)));

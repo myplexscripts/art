@@ -1,9 +1,9 @@
 // The scenes of this series, in order. Each is a module with make, paint, title, no, text and dark.
-import * as terraces from './terraces.js';
-import * as lavender from './lavender.js';
-import * as alpine from './alpine.js';
-import * as balloons from './balloons.js';
-import * as savanna from './savanna.js';
+import * as terraces from './terraces.js?v=20261011-ui';
+import * as lavender from './lavender.js?v=20261011-ui';
+import * as alpine from './alpine.js?v=20261011-ui';
+import * as balloons from './balloons.js?v=20261011-ui';
+import * as savanna from './savanna.js?v=20261011-ui';
 
 export const name = 'Daybreak Series';
 export const scenes = { terraces, lavender, alpine, balloons, savanna };

@@ -3,9 +3,9 @@
 // band to navy at the bottom. A whale crosses in some of the long time slots, now and then with a calf under her; a
 // loose ball of small fish wheels as one body lower down, and a ray or a turtle goes over between times.
 // Nothing stands on anything here, so a wider or taller frame is simply more water.
-import { mulberry, clamp, osc, noise1, poly, circle, frac, TAU } from './geom.js';
-import { C, F } from './kit.js';
-import { hash, el } from './bits.js';
+import { mulberry, clamp, osc, noise1, poly, circle, frac, TAU } from './geom.js?v=20261011-ui';
+import { C, F } from './kit.js?v=20261011-ui';
+import { hash, el } from './bits.js?v=20261011-ui';
 
 export const title = 'OPEN BLUE', no = 'No. 05', text = '#0e2f5a', dark = '#081a36';
 const K = { w: ['#c5efe0', '#86d3d6', '#4eaecb', '#2f86b4', '#1f6297', '#15457a', '#0e2f5a'], light: '#e8f8e6', whale: '#0b2344', ink: '#081a36' };

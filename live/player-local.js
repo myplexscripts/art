@@ -2,12 +2,13 @@
 // A full-screen poster is drawn live every frame and recomposed to the screen's shape, with its controls
 // and sound. The main page opens it over itself, growing out of the poster that was tapped, or at once for a scene's own address.
 // For checking: ?debug shows a readout, ?res=3840 forces the long side, ?t=40 starts the clock 40 s in.
-import './nozoom.js';
-import { draw, makeLayout, styleFor, SCENES } from './poster.js';
-import { hex, makeClockColor, makePaletteSampler } from './clock-palette.js';
-import { depthLayersFor, makeDepthRenderer } from './clock-depth.js';
-import { COLOR_CSS, makeColorPicker } from './clock-color-picker.js';
-import { fontReady, MIN_FONT_SIZE, TEXT_SCALE } from './typography.js';
+import './nozoom.js?v=20261011-ui';
+import { draw, makeLayout, styleFor, SCENES } from './poster.js?v=20261011-ui';
+import { hex, makeClockColor, makePaletteSampler } from './clock-palette.js?v=20261011-ui';
+import { depthLayersFor, makeDepthRenderer } from './clock-depth.js?v=20261011-ui';
+import { COLOR_CSS, makeColorPicker } from './clock-color-picker.js?v=20261011-ui';
+import { fontReady, MIN_FONT_SIZE, TEXT_SCALE } from './typography.js?v=20261011-ui';
+import { lockPage } from './scroll-lock.js?v=20261011-ui';
 
 const LOOP = 30, MAXPX = 3840, CREAM = '#f2e5c3', FLIGHT = 650, CLOCK_FADE = 180;
 // Keep authored depth and saved choices intact while the feature is unavailable in the app.
@@ -51,7 +52,7 @@ const CSS = `
   .wz-ui:not(.two) .wz-clock-toggle { order: 3; } .wz-ui:not(.two) .wz-color-toggle { order: 4; } .wz-ui:not(.two) .wz-full { order: 5; } .wz-ui:not(.two) label { order: 2; }
   .wz-ui.two .wz-r1 { justify-content: space-between; gap: 10px; } .wz-ui.two .wz-r2 { gap: 14px; } .wz-ui.two label { flex: 1 1 0; }
   .wz-ui.tight { gap: 14px; } .wz-ui.tight .wz-word { display: none; }
-  .wz-ui a, .wz-ui button { font: 600 15.6px/1 ${FACE}; letter-spacing: .06em; text-transform: uppercase; color: inherit; background: none; border: 0; padding: 11px 0 9px; border-bottom: 3px solid transparent; text-decoration: none; cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 7px; }
+  .wz-ui a, .wz-ui button { font: 600 16px/1 ${FACE}; letter-spacing: .06em; text-transform: uppercase; color: inherit; background: none; border: 0; padding: 11px 0 9px; border-bottom: 3px solid transparent; text-decoration: none; cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 7px; }
   .wz-ui a:hover, .wz-ui button:not(:disabled):hover, .wz-ui a:focus-visible, .wz-ui button:focus-visible { border-bottom-color: #dd7f45; outline: none; }
   .wz-ui em { font-style: normal; color: var(--sub); }
   .wz-ui .wz-color-toggle { min-width: 40px; min-height: 44px; justify-content: center; }
@@ -70,12 +71,12 @@ const CSS = `
   .wz-ui input[type=range]::-moz-range-thumb { width: 13px; height: 13px; border: 0; border-radius: 50%; background: currentColor; }
   .wz-ui [hidden], .wz-ui .wz-row[hidden], .wz-grain[hidden] { display: none; }
   .wz-ui label button { transition: opacity .25s; }
-  .wz-ui button.wz-trk { width: 24px; height: 24px; padding: 1px 0 0; justify-content: center; border: 2px solid currentColor; border-radius: 50%; letter-spacing: 0; font-size: 14.4px; flex: none; }
+  .wz-ui button.wz-trk { width: 24px; height: 24px; padding: 1px 0 0; justify-content: center; border: 2px solid currentColor; border-radius: 50%; letter-spacing: 0; font-size: 16px; flex: none; }
   .wz-ui button.wz-trk:not(:disabled):hover, .wz-ui button.wz-trk:focus-visible { border-color: #dd7f45; }
   .wz-ui label.muted input, .wz-ui label.muted .wz-trk { opacity: .35; }
   .wz-ui label.muted .wz-trk { cursor: default; }
   .wz-ui label.muted .wz-mute { opacity: .5; text-decoration: line-through; }
-  .wz-hud { position: absolute; left: 10px; top: 8px; font: 14.4px ${FACE}; color: #0e1c3a; background: rgba(242, 229, 195, .85); padding: 3px 7px; border-radius: 4px; white-space: pre-wrap; max-width: 92%; z-index: 4; pointer-events: none; }
+  .wz-hud { position: absolute; left: 10px; top: 8px; font: 16px ${FACE}; color: #0e1c3a; background: rgba(242, 229, 195, .85); padding: 3px 7px; border-radius: 4px; white-space: pre-wrap; max-width: 92%; z-index: 4; pointer-events: none; }
 ` + COLOR_CSS;
 const HTML = `<canvas class="wz-scene"></canvas><canvas class="wz-foreground" hidden aria-hidden="true"></canvas><div class="wz-grain"></div><time class="wz-clock" hidden><span class="wz-clock-face" role="button" tabindex="0" aria-pressed="false" title="Tap for white or your chosen colour. More colours in the toolbar. Hold to move. Triple tap to center. Pinch to resize. Swipe for weight. Keyboard: Enter for colour; Home to center; + / − for size; left / right arrows for weight."></span></time>
   <nav class="wz-ui off" aria-label="Scene controls"><div class="wz-row wz-r1"><a class="wz-home wz-it" style="--i:0" href="./" aria-label="Back to all scenes"><svg class="wz-arrow" viewBox="0 0 24 14"><path d="M0 7 9 0v4.6h15v4.8H9V14z"/></svg><span class="wz-word">Scenes</span></a><button class="wz-clock-toggle wz-it" style="--i:3" aria-pressed="false">Clock<em class="wz-word">off</em></button><button class="wz-color-toggle wz-it" style="--i:4" aria-label="Choose clock colour" title="Choose clock colour"><span class="wz-color-dot" aria-hidden="true"></span><span class="wz-word">Colour</span></button><button class="wz-full wz-it" style="--i:5" aria-label="Fullscreen" title="Fullscreen"><svg viewBox="0 0 20 20"><path d="M2 7V2h5M13 2h5v5M18 13v5h-5M7 18H2v-5"/></svg></button></div>
@@ -93,7 +94,7 @@ const ease = (u) => (u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2);
 // from: the on-screen rectangle to grow out of (none: appear full screen at once). home: called for the back arrow
 // instead of following its link, when the page that opened the player is still underneath. at: the scene's clock, in
 // seconds, at the moment of opening, so a poster already moving on the page carries on without a jump.
-export function openScene(first, { from = null, home = null, at = null } = {}) {
+export function openScene(first, { from = null, home = null, at = null, thumbnailFrame = 1 } = {}) {
   if (!document.getElementById('wz-css')) document.head.append(Object.assign(document.createElement('style'), { id: 'wz-css', textContent: CSS }));
   const q = new URLSearchParams(location.search), force = +q.get('res') || 0, skip = at === null ? +q.get('t') || 0 : at - performance.now() / 1000, debug = q.has('debug');
   const root = Object.assign(document.createElement('div'), { className: 'wz-player', innerHTML: HTML }), $ = (c) => root.querySelector('.' + c);
@@ -102,11 +103,11 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
   const depthOptions = depthLayersFor(first), depthKey = 'wavz-clock-depth-' + first;
   const savedDepth = localStorage.getItem(depthKey);
   const depthSelection = depthOptions.some(o => o.id === savedDepth) ? savedDepth : 'front';
-  const before = { title: document.title, bg: document.body.style.background, htmlBg: document.documentElement.style.background, overflow: document.documentElement.style.overflow, gutter: document.documentElement.style.scrollbarGutter };
+  const before = { title: document.title, bg: document.body.style.background, htmlBg: document.documentElement.style.background };
   const textless = SCENES[first].textless === true;
   let name = first, L, k = 1, flight = null, closed = false, closing = false, closeTimer = 0, clockSettled = false, sound = null, on = false;
   document.body.append(root);
-  document.documentElement.style.overflow = 'hidden'; document.documentElement.style.scrollbarGutter = 'auto';   // the scene takes the scrollbar's room too
+  const unlock = lockPage();   // the scene takes the scrollbar's room too
 
   // ---- layout: the canvas takes the player's size; the poster is composed for that shape
   let frame1 = null;
@@ -398,7 +399,7 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
     const t0 = performance.now(), duration = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : FLIGHT, W = innerWidth, H = innerHeight, long = Math.max(W, H), s = (force || Math.min(MAXPX, long * devicePixelRatio)) / long;
     ui.classList.add('off');
     // The thumbnail frame fades away into completely edge-to-edge playback.
-    const page = { f: 1, d: localStorage.getItem('wavz-frame') === 'dark' ? 1 : 0 }, A = small === 'a' ? page : cur, B = small === 'a' ? cur : page;
+    const page = { f: thumbnailFrame, d: document.documentElement.dataset.theme === 'dark' ? 1 : 0 }, A = small === 'a' ? page : cur, B = small === 'a' ? cur : page;
     flight = (now) => {
       b = target();
       const u = duration ? Math.min(1, (now - t0) / duration) : 1, e = ease(u), m = (key) => a[key] + (b[key] - a[key]) * e, r = { left: m('left'), top: m('top'), width: m('width'), height: m('height') };
@@ -477,7 +478,7 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
   async function startSound() {
     if (!hasAudio) return;
     // Once loaded, make and resume audio synchronously during the next iOS tap.
-    if (!soundFactory) soundFactory = (await import('./sound.js')).makeSound;
+    if (!soundFactory) soundFactory = (await import('./sound.js?v=20261011-ui')).makeSound;
     if (closed || !on) return;
     if (sound) { levels(); sound.resume(); return; }
     sound = soundFactory(name, typeof SCENES[name].audio === 'string' ? SCENES[name].audio : name);
@@ -531,7 +532,8 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
       const leave = () => {
         if (closed) return;
         clock.hidden = true;
-        document.title = before.title; document.body.style.background = before.bg; document.documentElement.style.background = before.htmlBg; document.documentElement.style.overflow = before.overflow; document.documentElement.style.scrollbarGutter = before.gutter; document.documentElement.style.transition = document.body.style.transition = '';
+        document.title = before.title; document.body.style.background = before.bg; document.documentElement.style.background = before.htmlBg; document.documentElement.style.transition = document.body.style.transition = '';
+        unlock();
         if (isFull()) leaveFull.call(document);
         if (to && !immediate) fly(root.getBoundingClientRect(), to, 'b', end); else end();
       };

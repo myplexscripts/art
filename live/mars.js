@@ -2,9 +2,9 @@
 // bands and dunes with wind ripples in front. A small pale sun sits in flat rings and two moons cross at their own
 // speeds. A rover crawls across the middle distance leaving tracks, a small base blinks on the far plain, and dust
 // devils wander through in time slots.
-import { mulberry, clamp, frac, osc, sway, noise1, poly, circle, pill, TAU } from './geom.js';
-import { C, F } from './kit.js';
-import { hash, el, bars } from './bits.js';
+import { mulberry, clamp, frac, osc, sway, noise1, poly, circle, pill, TAU } from './geom.js?v=20261011-ui';
+import { C, F } from './kit.js?v=20261011-ui';
+import { hash, el, bars } from './bits.js?v=20261011-ui';
 
 export const title = 'RED PLANET', no = 'No. 04', text = '#3a1712', dark = '#2a100e';
 const R = { sky: '#dc9c78', k1: '#e4ab84', k2: '#ecbd94', k3: '#f4d2ab', vol: '#ca8463', vol2: '#bd7455', m1: '#b96a4c', m2: '#a35638', p1: '#c9744a', p2: C.rust, p3: '#974a2e', d1: '#7c3a26', d2: '#5c281c', ink: '#2e1310', ochre: '#dc9a50', dust: '#e6b38c', shade: '#c9b48c' };

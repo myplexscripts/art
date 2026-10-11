@@ -2,9 +2,9 @@
 // lamp with a flat halo, a bench and two bare trees in front. The houses run shoulder to shoulder for as wide as the
 // frame is; extra height becomes more sky and more snowy square. Snow falls in three depths (small and slow far off,
 // big and fast up close), all leaning the same way with a wind that strengthens and slackens.
-import { mulberry, clamp, frac, osc, sway, noise1, poly, circle, pill, TAU } from './geom.js';
-import { C, F } from './kit.js';
-import { hash, el, bars, crescent, pine } from './bits.js';
+import { mulberry, clamp, frac, osc, sway, noise1, poly, circle, pill, TAU } from './geom.js?v=20261011-ui';
+import { C, F } from './kit.js?v=20261011-ui';
+import { hash, el, bars, crescent, pine } from './bits.js?v=20261011-ui';
 
 export const title = 'FIRST SNOW', no = 'No. 02', text = '#27255a', dark = '#151433';
 const N = { sky: '#272657', s2: '#34316b', s3: '#453f80', s4: '#5d5192', hill: '#3a3572', w1: '#2a2553', w2: '#383168', w3: '#221e47', roof: '#191739', snow: '#cfe0ee', shade: '#9db6d6', near: '#f1f6fa', halo: '#8a5a72', ink: '#151433' };
