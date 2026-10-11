@@ -1,8 +1,8 @@
 // Nocturne Series No. 06: Desert Mesa. A big moon comes up behind the buttes; in front, saguaros and a wind pump
 // that never stops turning. The series' blues give way to dusk violets and rust, with the same cream, gold and orange.
-import { mulberry, clamp, osc, sway, noise1, poly, circle, pill, TAU } from './geom.js?v=20261011-clock-edge';
-import { C, F } from './kit.js?v=20261011-clock-edge';
-import { hash, el, makeStars, paintStars, meteor, bars } from './bits.js?v=20261011-clock-edge';
+import { mulberry, clamp, osc, sway, noise1, poly, circle, pill, TAU } from './geom.js?v=20261011-focus';
+import { C, F } from './kit.js?v=20261011-focus';
+import { hash, el, makeStars, paintStars, meteor, bars } from './bits.js?v=20261011-focus';
 
 export const title = 'DESERT MESA', no = 'No. 06', text = '#241640', dark = '#120b22';
 const D = { sky: '#1a1338', r1: '#2c1a4c', r2: '#55285a', r3: '#93405a', far: '#b55f4e', mid: '#4a2148', near: '#3d1d42', f1: '#7a3550', f2: '#5c284c', f3: '#3d1d42', ink: '#120b22' };

@@ -3,9 +3,9 @@
 // and then. The room (wall, frame, counter, cup, plant, pendant lamp, curtain) is the dark border; its thickness is
 // in design units, so a wide screen gets a wide window of several panes and a phone a tall one with a transom.
 // The street hangs off the bottom of the glass; extra height becomes taller houses and more sky.
-import { mulberry, lerp, clamp, osc, noise1, poly, circle, pill, frac, TAU } from './geom.js?v=20261011-clock-edge';
-import { C, F } from './kit.js?v=20261011-clock-edge';
-import { hash, el } from './bits.js?v=20261011-clock-edge';
+import { mulberry, lerp, clamp, osc, noise1, poly, circle, pill, frac, TAU } from './geom.js?v=20261011-focus';
+import { C, F } from './kit.js?v=20261011-focus';
+import { hash, el } from './bits.js?v=20261011-focus';
 
 export const title = 'RAINY CAFE', no = 'No. 01', text = '#1c1430', dark = '#0d0916';
 const P = { sky: '#2b2146', far: '#3a2d5c', b1: '#1f5560', b2: '#174551', b3: '#2a6a72', shade: '#102c3a', road: '#141c34', wet: '#22395a', neon: '#e0647f', dim: '#6a3358', rain: '#7fa3b0', wall: '#0d0916', wood: '#2a1a30', woodHi: '#40264a' };

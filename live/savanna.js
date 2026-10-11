@@ -2,9 +2,9 @@
 // four bands of grass, lighter far and darker near, each with a fringe of blades that leans in waves travelling along
 // it. Giraffes walk the horizon very slowly, birds cross the sun in a loose V now and then, and dust lies in bars low
 // over the grass. Tall seed heads nod along the bottom edge.
-import { mulberry, clamp, osc, sway, noise1, poly, circle, TAU } from './geom.js?v=20261011-clock-edge';
-import { C, F } from './kit.js?v=20261011-clock-edge';
-import { hash, el, bars } from './bits.js?v=20261011-clock-edge';
+import { mulberry, clamp, osc, sway, noise1, poly, circle, TAU } from './geom.js?v=20261011-focus';
+import { C, F } from './kit.js?v=20261011-focus';
+import { hash, el, bars } from './bits.js?v=20261011-focus';
 
 export const title = 'SAVANNA SUNRISE', no = 'No. 05', text = '#4a2414', dark = '#27140d';
 const P = { sky: '#d0603a', r1: C.orange, r2: '#e8913f', r3: '#f2a743', hills: '#b65634', g1: '#b8702e', g2: '#8c4f24', g3: '#5f321c', ink: '#2b1710' };

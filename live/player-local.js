@@ -2,14 +2,16 @@
 // A full-screen poster is drawn live every frame and recomposed to the screen's shape, with its controls
 // and sound. The main page opens it over itself, growing out of the poster that was tapped, or at once for a scene's own address.
 // For checking: ?debug shows a readout, ?res=3840 forces the long side, ?t=40 starts the clock 40 s in.
-import './nozoom.js?v=20261011-clock-edge';
-import { draw, makeLayout, styleFor, SCENES } from './poster.js?v=20261011-clock-edge';
-import { hex, makeClockColor, makePaletteSampler, makeSceneColorSampler } from './clock-palette.js?v=20261011-clock-edge';
-import { makeClockDigits, CLOCK_LINE_HEIGHT } from './clock-digits.js?v=20261011-clock-edge';
-import { depthLayersFor, makeDepthRenderer } from './clock-depth.js?v=20261011-clock-edge';
-import { COLOR_CSS, makeColorPicker } from './clock-color-picker.js?v=20261011-clock-edge';
-import { fontReady, MIN_FONT_SIZE, TEXT_SCALE } from './typography.js?v=20261011-clock-edge';
-import { lockPage } from './scroll-lock.js?v=20261011-clock-edge';
+import './nozoom.js?v=20261011-focus';
+import { draw, makeLayout, styleFor, SCENES } from './poster.js?v=20261011-focus';
+import { hex, makeClockColor, makePaletteSampler, makeSceneColorSampler } from './clock-palette.js?v=20261011-focus';
+import { makeClockDigits, CLOCK_LINE_HEIGHT } from './clock-digits.js?v=20261011-focus';
+import { depthLayersFor, makeDepthRenderer } from './clock-depth.js?v=20261011-focus';
+import { COLOR_CSS, makeColorPicker } from './clock-color-picker.js?v=20261011-focus';
+import { fontReady, MIN_FONT_SIZE, TEXT_SCALE } from './typography.js?v=20261011-focus';
+import { lockPage } from './scroll-lock.js?v=20261011-focus';
+import { focusTimer, countdownFormatter, countdownText } from './focus-timer.js?v=20261011-focus';
+import { FOCUS_CSS, makeFocusPanel, installGalleryFocus } from './focus-controls.js?v=20261011-focus';
 
 const LOOP = 30, MAXPX = 3840, CREAM = '#f2e5c3', FLIGHT = 650, CLOCK_FADE = 180;
 const MAX_CLOCK_SCALE = 8, CLOCK_BLEED = .03;
@@ -47,7 +49,7 @@ const CSS = `
   /* The strip and its controls slide out of sight to reveal the artwork underneath. */
   .wz-ui[data-mode=strip].off, .wz-ui[data-mode=strip].swap { transform: translateY(101%); transition-delay: .1s; }
   .wz-it { transition: opacity .3s ease calc(var(--i) * 45ms + 110ms), transform .45s cubic-bezier(.2, .8, .2, 1) calc(var(--i) * 45ms + 110ms); }
-  .wz-ui.off .wz-it, .wz-ui.swap .wz-it { opacity: 0; transform: translateY(12px); transition-duration: .18s; transition-delay: calc((5 - var(--i)) * 22ms); }
+  .wz-ui.off .wz-it, .wz-ui.swap .wz-it { opacity: 0; transform: translateY(12px); transition-duration: .18s; transition-delay: calc((6 - var(--i)) * 22ms); }
   .wz-ui input[type=range] { clip-path: inset(0 0 0 0); transition: opacity .25s, clip-path .55s cubic-bezier(.3, .7, .2, 1) calc(var(--i) * 45ms + 240ms); }
   .wz-ui.off input[type=range], .wz-ui.swap input[type=range] { clip-path: inset(0 100% 0 0); transition-delay: 0s; transition-duration: .2s; }
   @media (prefers-reduced-motion: reduce) { .wz-clock { transition: none; } .wz-ui, .wz-ui .wz-it, .wz-ui input[type=range] { transition-duration: .01s !important; transition-delay: 0s !important; } }
@@ -55,9 +57,14 @@ const CSS = `
   .wz-row { display: flex; align-items: center; justify-content: center; gap: 6px 22px; }
   .wz-ui:not(.two) { flex-direction: row; align-items: center; gap: 22px; }
   .wz-ui:not(.two) .wz-row { display: contents; }
-  .wz-ui:not(.two) .wz-clock-toggle { order: 3; } .wz-ui:not(.two) .wz-color-toggle { order: 4; } .wz-ui:not(.two) .wz-full { order: 5; } .wz-ui:not(.two) label { order: 2; }
+  .wz-ui:not(.two) .wz-clock-toggle { order: 3; } .wz-ui:not(.two) .wz-focus-toggle { order: 4; } .wz-ui:not(.two) .wz-color-toggle { order: 5; } .wz-ui:not(.two) .wz-full { order: 6; } .wz-ui:not(.two) label { order: 2; }
   .wz-ui.two .wz-r1 { justify-content: space-between; gap: 10px; } .wz-ui.two .wz-r2 { gap: 14px; } .wz-ui.two label { flex: 1 1 0; }
   .wz-ui.tight { gap: 14px; } .wz-ui.tight .wz-word { display: none; }
+  .wz-ui.tight .wz-focus-word { display: none; }
+  .wz-focus-readout { font-variant-numeric: tabular-nums; letter-spacing: 0; }
+  .wz-ui .wz-focus-toggle { min-height: 44px; }
+  .wz-focus-toggle[data-status=paused] svg { opacity: .5; }
+  .wz-focus-toggle[data-status=completed] { border-bottom-color: #dd7f45; }
   .wz-ui a, .wz-ui button { font: 600 16px/1 ${FACE}; letter-spacing: .06em; text-transform: uppercase; color: inherit; background: none; border: 0; padding: 11px 0 9px; border-bottom: 3px solid transparent; text-decoration: none; cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 7px; }
   .wz-ui a:hover, .wz-ui button:not(:disabled):hover, .wz-ui a:focus-visible, .wz-ui button:focus-visible { border-bottom-color: #dd7f45; outline: none; }
   .wz-ui em { font-style: normal; color: var(--sub); }
@@ -83,9 +90,9 @@ const CSS = `
   .wz-ui label.muted .wz-trk { cursor: default; }
   .wz-ui label.muted .wz-mute { opacity: .5; text-decoration: line-through; }
   .wz-hud { position: absolute; left: 10px; top: 8px; font: 16px ${FACE}; color: #0e1c3a; background: rgba(242, 229, 195, .85); padding: 3px 7px; border-radius: 4px; white-space: pre-wrap; max-width: 92%; z-index: 4; pointer-events: none; }
-` + COLOR_CSS;
+` + COLOR_CSS + FOCUS_CSS;
 const HTML = `<canvas class="wz-scene"></canvas><canvas class="wz-foreground" hidden aria-hidden="true"></canvas><div class="wz-grain"></div><time class="wz-clock" hidden><span class="wz-clock-face" role="button" tabindex="0" aria-pressed="false" title="Tap for white or your chosen colour. More colours in the toolbar. Hold to move. Triple tap to center. Pinch to resize. Swipe for weight. Keyboard: Enter for colour; Home to center; + / − for size; left / right arrows for weight."></span></time>
-  <nav class="wz-ui off" aria-label="Scene controls"><div class="wz-row wz-r1"><a class="wz-home wz-it" style="--i:0" href="./" aria-label="Back to all scenes"><svg class="wz-arrow" viewBox="0 0 24 14"><path d="M0 7 9 0v4.6h15v4.8H9V14z"/></svg><span class="wz-word">Scenes</span></a><button class="wz-clock-toggle wz-it" style="--i:3" aria-pressed="false">Clock<em class="wz-word">off</em></button><button class="wz-color-toggle wz-it" style="--i:4" aria-label="Choose clock colour" title="Choose clock colour"><span class="wz-color-dot" aria-hidden="true"></span><span class="wz-word">Colour</span></button><button class="wz-full wz-it" style="--i:5" aria-label="Fullscreen" title="Fullscreen"><svg viewBox="0 0 20 20"><path d="M2 7V2h5M13 2h5v5M18 13v5h-5M7 18H2v-5"/></svg></button></div>
+  <nav class="wz-ui off" aria-label="Scene controls"><div class="wz-row wz-r1"><a class="wz-home wz-it" style="--i:0" href="./" aria-label="Back to all scenes"><svg class="wz-arrow" viewBox="0 0 24 14"><path d="M0 7 9 0v4.6h15v4.8H9V14z"/></svg><span class="wz-word">Scenes</span></a><button class="wz-clock-toggle wz-it" style="--i:3" aria-pressed="false">Clock<em class="wz-word">off</em></button><button class="wz-focus-toggle wz-it" style="--i:4" aria-label="Focus timer" title="Focus timer"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.5"/><path d="M10 5v5l3 2"/></svg><span class="wz-focus-word">Focus</span><em class="wz-focus-readout" hidden></em></button><button class="wz-color-toggle wz-it" style="--i:5" aria-label="Choose clock colour" title="Choose clock colour"><span class="wz-color-dot" aria-hidden="true"></span><span class="wz-word">Colour</span></button><button class="wz-full wz-it" style="--i:6" aria-label="Fullscreen" title="Fullscreen"><svg viewBox="0 0 20 20"><path d="M2 7V2h5M13 2h5v5M18 13v5h-5M7 18H2v-5"/></svg></button></div>
   <div class="wz-row wz-r2"><label class="wz-it" style="--i:1"><button class="wz-mute" data-bus="amb" title="Mute or unmute">Ambience</button><input class="wz-amb" type="range" min="0" max="1" step="0.01" aria-label="Ambience volume"></label><label class="wz-it" style="--i:2"><button class="wz-mute" data-bus="mus" title="Mute or unmute">Music</button><input class="wz-mus" type="range" min="0" max="1" step="0.01" aria-label="Music volume"><button class="wz-trk" title="Next track">A</button></label></div></nav><div class="wz-hud" hidden></div>`;
 const title = (scene) => 'Scenes: ' + scene.title.toLowerCase().replace(/\b[a-z]+/g, (w, i) => (i && ['at', 'of', 'the', 'in'].includes(w) ? w : w[0].toUpperCase() + w.slice(1)));
 // Print grain: one small tile of noise, made once and repeated over the scene, so it costs nothing per frame or per size.
@@ -159,8 +166,10 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
   const clock = $('wz-clock'), clockFace = $('wz-clock-face'), clockToggle = $('wz-clock-toggle');
   clock.id = 'wz-clock-' + ++clockId; clockToggle.setAttribute('aria-controls', clock.id);
   const clockFormat = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' });
-  const clockDigits = makeClockDigits(clockFace, clockFormat);
-  let clockOn = localStorage.getItem('wavz-clock') === '1', clockTimer = 0;
+  let clockDigits = makeClockDigits(clockFace, clockFormat);
+  let normalClockOn = localStorage.getItem('wavz-clock') === '1', clockOn = normalClockOn, clockTimer = 0;
+  let focusMode = false, focusVisible = localStorage.getItem('scenes-focus-visible') !== '0';
+  let focusPanel = null, clockSwitching = false, clockSwitchTimer = 0, pendingMode = null;
   const colorKey = 'wavz-clock-ink-' + name;
   let clockColor = { mode: localStorage.getItem('wavz-clock-color') === 'palette' ? 'adaptive' : 'white' };
   let colouredChoice = { mode: 'adaptive' };
@@ -302,7 +311,7 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
     if (migrate) saveClockPosition();
   }
   const saveClockStyle = () => {
-    localStorage.setItem('wavz-clock-scale', String(clockScale));
+    localStorage.setItem(focusMode ? 'scenes-focus-scale' : 'wavz-clock-scale', String(clockScale));
     localStorage.setItem('wavz-clock-weight', String(clockWeight));
   };
   function updateClock() {
@@ -311,16 +320,19 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
     clock.hidden = !clockOn || closing;
     if (!clockOn) clock.classList.remove('visible');
     clockToggle.setAttribute('aria-pressed', String(clockOn));
+    clockToggle.firstChild.textContent = focusMode ? 'Timer' : 'Clock';
     clockToggle.querySelector('em').textContent = clockOn ? 'on' : 'off';
-    clockToggle.setAttribute('aria-label', 'Clock: ' + (clockOn ? 'on' : 'off'));
+    clockToggle.setAttribute('aria-label', (focusMode ? 'Countdown: ' : 'Clock: ') + (clockOn ? 'on' : 'off'));
     if (!clockOn || closed || closing) return;
     const now = new Date();
     const first = !clockDigits.value;
     const beforeBounds = clockDigits.bounds();
-    const text = clockDigits.update(now, clock.classList.contains('visible') && !wasHidden);
-    clockFace.setAttribute('aria-label', 'Current time: ' + text + '. Tap for color, hold to move, triple tap to center.');
-    clock.dateTime = now.toISOString();
-    clock.setAttribute('aria-label', 'Current time: ' + text);
+    const focus = focusMode ? focusTimer.snapshot() : null;
+    const text = clockDigits.update(focusMode ? focus.seconds : now, clock.classList.contains('visible') && !wasHidden);
+    const label = focusMode ? `${focus.kind === 'focus' ? 'Focus' : 'Break'} ${focus.status === 'completed' ? 'complete' : 'remaining: ' + text}${focus.status === 'paused' ? ', paused' : ''}` : 'Current time: ' + text;
+    clockFace.setAttribute('aria-label', label + '. Tap for color, hold to move, triple tap to center.');
+    clock.dateTime = focusMode ? `PT${focus.seconds}S` : now.toISOString(); clock.dataset.mode = focusMode ? 'focus' : 'clock';
+    clock.setAttribute('aria-label', label);
     if (first || wasHidden) fitClock();
     else {
       const afterBounds = clockDigits.bounds();
@@ -338,7 +350,7 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
         if (localStorage.getItem(positionKey)) saveClockPosition();
       }
     }
-    clockTimer = setTimeout(updateClock, 60000 - (now.getSeconds() * 1000 + now.getMilliseconds()) + 25);
+    if (!focusMode) clockTimer = setTimeout(updateClock, 60000 - (now.getSeconds() * 1000 + now.getMilliseconds()) + 25);
   }
   // Capture gestures that start on the clock; a second finger may land beside it.
   const fingers = new Map();
@@ -368,7 +380,7 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
     if (dragged) { saveClockPosition(); dragged = false; reassessPalette(); }
   };
   root.addEventListener('pointerdown', (e) => {
-    if (!clockOn || flight || closing || colorPicker?.sampling || e.button !== 0 || ui.contains(e.target) || colorPicker?.element.contains(e.target)) return;
+    if (!clockOn || flight || closing || clockSwitching || focusPanel?.active || colorPicker?.sampling || e.button !== 0 || ui.contains(e.target) || colorPicker?.element.contains(e.target)) return;
     if (!clockFace.contains(e.target) && !fingers.size) return;
     if (fingers.size >= 2) return;
     if (!fingers.size) {
@@ -442,7 +454,12 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
     else return;
     e.preventDefault(); fitClock(); saveClockStyle();
   });
-  clockToggle.addEventListener('click', () => { stopClockGesture(); clockOn = !clockOn; localStorage.setItem('wavz-clock', clockOn ? '1' : '0'); updateClock(); });
+  clockToggle.addEventListener('click', () => {
+    stopClockGesture(); clockOn = !clockOn;
+    if (focusMode) { focusVisible = clockOn; localStorage.setItem('scenes-focus-visible', clockOn ? '1' : '0'); }
+    else { normalClockOn = clockOn; localStorage.setItem('wavz-clock', clockOn ? '1' : '0'); }
+    updateClock();
+  });
   const resumeClock = () => { if (document.visibilityState === 'visible') updateClock(); };
   document.addEventListener('visibilitychange', resumeClock);
   updateClock();
@@ -453,8 +470,14 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
     selected: clockColor, getPalette: () => samplePalette()?.dominant, sampleColor: makeSceneColorSampler(scene, SCENES[name].dark),
     onSelect: selectClockColor,
     onOpen() {
+      focusPanel?.close(false);
       stopClockGesture(); clearTimeout(hide); ui.hidden = true;
-      if (!clockOn) { clockOn = true; localStorage.setItem('wavz-clock', '1'); updateClock(); }
+      if (!clockOn) {
+        clockOn = true;
+        if (focusMode) { focusVisible = true; localStorage.setItem('scenes-focus-visible', '1'); }
+        else { normalClockOn = true; localStorage.setItem('wavz-clock', '1'); }
+        updateClock();
+      }
     },
     onClose() { ui.hidden = false; show(); },
   });
@@ -505,7 +528,7 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
     frame1(t);
     if (clockOn) updateClockColor(now, t);
     // The time appears only after the poster has landed, loaded its face and sampled its ink.
-    if (clockOn && clockSettled && clockFontsReady && !closing && !flight) clock.classList.add('visible');
+    if (clockOn && clockSettled && clockFontsReady && !clockSwitching && !closing && !flight) clock.classList.add('visible');
     ms += (performance.now() - t0 - ms) * 0.05; fps += (1000 / Math.max(1, now - last) - fps) * 0.05; last = now;
     if (debug && ++n % 3 === 0) hud.textContent = `${scene.width} x ${scene.height}  ${fps.toFixed(0)} fps  draw ${ms.toFixed(1)} ms  t ${t.toFixed(0)} s` + (notes.length ? '\n' + notes.join('\n') : '');
     requestAnimationFrame(tick);
@@ -513,7 +536,7 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
 
   // ---- controls: they show on any movement and fade after a few seconds
   let hide;
-  const show = (e) => { if (flight || closing || colorPicker.active || (e && (clockFace.contains(e.target) || fingers.size))) return; ui.classList.remove('off'); clearTimeout(hide); hide = setTimeout(() => ui.classList.add('off'), 3500); };
+  const show = (e) => { if (flight || closing || colorPicker.active || focusPanel?.active || (e && (clockFace.contains(e.target) || fingers.size))) return; ui.classList.remove('off'); clearTimeout(hide); hide = setTimeout(() => ui.classList.add('off'), 3500); };
   for (const type of ['pointermove', 'pointerdown']) root.addEventListener(type, show);
   addEventListener('keydown', show);
   // Use DOM fullscreen where supported. On iPhone, keep the full-bleed page/PWA
@@ -526,11 +549,12 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
   // the screen is kept awake while a scene is up, where the browser allows it: these are made to be left running
   let awake = null; const wake2 = () => { if (!closed && document.visibilityState === 'visible') navigator.wakeLock?.request('screen').then((w) => { awake = w; }, () => {}); };
   wake2(); document.addEventListener('visibilitychange', wake2);
-  root.addEventListener('dblclick', (e) => { if (!colorPicker.active && !ui.contains(e.target) && !clockFace.contains(e.target)) toggleFull(); });
+  root.addEventListener('dblclick', (e) => { if (!colorPicker.active && !focusPanel?.active && !ui.contains(e.target) && !clockFace.contains(e.target)) toggleFull(); });
   if (home) $('wz-home').addEventListener('click', (e) => { e.preventDefault(); home(); });
   const esc = (e) => {
     if (e.key !== 'Escape' || e.defaultPrevented || closing) return;
-    if (colorPicker.active) { e.preventDefault(); colorPicker.close(); }
+    if (focusPanel?.active) { e.preventDefault(); focusPanel.close(); }
+    else if (colorPicker.active) { e.preventDefault(); colorPicker.close(); }
     else if (!isFull() && !flight) $('wz-home').click();
   };
   addEventListener('keydown', esc);
@@ -553,7 +577,7 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
   async function startSound() {
     if (!hasAudio) return;
     // Once loaded, make and resume audio synchronously during the next iOS tap.
-    if (!soundFactory) soundFactory = (await import('./sound.js?v=20261011-clock-edge')).makeSound;
+    if (!soundFactory) soundFactory = (await import('./sound.js?v=20261011-focus')).makeSound;
     if (closed || !on) return;
     if (sound) { levels(); sound.resume(); return; }
     sound = soundFactory(name, typeof SCENES[name].audio === 'string' ? SCENES[name].audio : name);
@@ -583,6 +607,48 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
   // yet lets sound play because the page before had one.)
   if (on) startSound().then(() => setTimeout(() => { if (on && !closed && !sound?.running()) arm(); }, 600));
 
+  // ---- focus: the same movable, coloured, textured clock becomes a countdown.
+  // Its size has a separate preference, so ending a timer restores the clock's size.
+  installGalleryFocus();
+  focusPanel = makeFocusPanel({ root, button: $('wz-focus-toggle'),
+    onOpen() { colorPicker.close(false); stopClockGesture(); clearTimeout(hide); ui.hidden = true; },
+    onClose() { ui.hidden = false; show(); },
+  });
+  let focusInitialized = false, focusId = null;
+  function syncFocus(state) {
+    if (closed || closing) return;
+    const button = $('wz-focus-toggle'), readout = button.querySelector('em');
+    button.dataset.status = state.status; readout.hidden = !state.active;
+    readout.textContent = state.status === 'completed' ? 'done' : countdownText(state.seconds);
+    button.querySelector('.wz-focus-word').textContent = state.active && state.kind === 'break' ? 'Break' : 'Focus';
+    button.setAttribute('aria-label', state.active ? `${state.kind === 'focus' ? 'Focus' : 'Break'} timer: ${state.status === 'completed' ? 'complete' : countdownText(state.seconds)}${state.status === 'paused' ? ', paused' : ''}. Open controls.` : 'Focus timer');
+    if (focusInitialized && state.active && state.id !== focusId) {
+      focusVisible = true; localStorage.setItem('scenes-focus-visible', '1'); if (focusMode) clockOn = true;
+    }
+    focusInitialized = true; focusId = state.id ?? null;
+    if (state.active === focusMode) {
+      const cancelled = clockSwitching;
+      if (clockSwitching) { clearTimeout(clockSwitchTimer); clockSwitching = false; pendingMode = null; }
+      if (focusMode || cancelled) updateClock();
+      return;
+    }
+    if (clockSwitching && pendingMode === state.active) return;
+    clearTimeout(clockSwitchTimer); clearTimeout(clockTimer); stopClockGesture();
+    const visible = !clock.hidden && Number(getComputedStyle(clock).opacity) > 0;
+    clockSwitching = true; pendingMode = state.active; clock.classList.remove('visible');
+    const swap = () => {
+      if (closed || closing) return;
+      clockDigits.destroy(); clockFace.replaceChildren();
+      focusMode = focusTimer.snapshot().active; clockOn = focusMode ? focusVisible : normalClockOn;
+      clockScale = savedNumber(focusMode ? 'scenes-focus-scale' : 'wavz-clock-scale', 1, .5, MAX_CLOCK_SCALE);
+      clockDigits = makeClockDigits(clockFace, focusMode ? countdownFormatter : clockFormat);
+      clockSwitching = false; pendingMode = null; reassessPalette(); updateClock(); fitClock();
+    };
+    if (visible && !matchMedia('(prefers-reduced-motion: reduce)').matches) clockSwitchTimer = setTimeout(swap, CLOCK_FADE);
+    else swap();
+  }
+  const unsubscribeFocus = focusTimer.subscribe(syncFocus);
+
   // ---- open
   hud.hidden = !debug; document.title = title(SCENES[name]);
   if (from) { place(from); paint(); fly(from, full(), 'a', () => { place(null); fit(); clockSettled = true; show(); }); }
@@ -591,6 +657,7 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
 
   function end() {
     clearTimeout(closeTimer);
+    clearTimeout(clockSwitchTimer); unsubscribeFocus(); focusPanel.destroy();
     colorPicker.close(false);
     stopClockGesture();
     clockDigits.destroy();
@@ -613,7 +680,8 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
         if (isFull()) leaveFull.call(document);
         if (to && !immediate) fly(root.getBoundingClientRect(), to, 'b', end); else end();
       };
-      clearTimeout(closeTimer); clearTimeout(clockTimer); closing = true; clockSettled = false;
+      clearTimeout(closeTimer); clearTimeout(clockTimer); clearTimeout(clockSwitchTimer); unsubscribeFocus(); closing = true; clockSettled = false;
+      focusPanel.close(false);
       stopClockGesture(); colorPicker.close(false); root.inert = true; ui.classList.add('off');
       on = false; sound?.stop(); sound = null;
       const visible = !clock.hidden && Number(getComputedStyle(clock).opacity) > 0;

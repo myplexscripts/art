@@ -2,6 +2,7 @@
 // Only a changed character rolls; sizing never depends on the currently displayed digits.
 const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 const normalize = text => text.replace(/[\u00a0\u202f]/g, ' ');
+const numeric = type => ['hour', 'minute', 'second'].includes(type);
 export const CLOCK_LINE_HEIGHT = 1.12;
 
 export function makeClockDigits(face, formatter) {
@@ -43,7 +44,7 @@ export function makeClockDigits(face, formatter) {
     };
     widthEm = 0;
     for (const part of schema) for (const [index, slot] of part.slots.entries()) {
-      const characters = part.type === 'hour' || part.type === 'minute' ? digits : part.type === 'literal'
+      const characters = numeric(part.type) ? digits : part.type === 'literal'
         ? new Set(samples.flatMap(sample => [...sample[schema.indexOf(part)].value][index] ?? ' ')) : part.letters;
       slot.widthEm = width(characters); widthEm += slot.widthEm; slot.element.style.width = slot.widthEm + 'em';
     }
@@ -94,7 +95,7 @@ export function makeClockDigits(face, formatter) {
     const current = parts(date); value = current.map(part => part.value).join(''); face.dataset.time = value;
     schema.forEach((part, index) => {
       const characters = [...current[index].value], padding = Array(part.length - characters.length).fill(' ');
-      const fixed = part.type === 'hour' || part.type === 'minute' ? [...padding, ...characters] : [...characters, ...padding];
+      const fixed = numeric(part.type) ? [...padding, ...characters] : [...characters, ...padding];
       part.slots.forEach((slot, i) => change(slot, fixed[i], animate));
     });
     centerPulse();

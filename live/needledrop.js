@@ -1,8 +1,8 @@
 // Music Series No. 01: Needle Drop. Original geometric artwork and animation.
 // A vinyl deck beneath a late-night listening-room window. Every motion is visual;
 // the scene deliberately has no soundtrack or audio-dependent behaviour.
-import { C, FONT } from './kit.js?v=20261011-clock-edge';
-import { hash, screw, wood, plant, steam, books } from './music-kit.js?v=20261011-clock-edge';
+import { C, FONT } from './kit.js?v=20261011-focus';
+import { hash, screw, wood, plant, steam, books } from './music-kit.js?v=20261011-focus';
 
 export const title = 'NEEDLE DROP', no = 'No. 01', text = '#31243a', dark = '#241d30';
 export const audio = false;

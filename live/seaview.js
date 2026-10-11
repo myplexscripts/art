@@ -4,9 +4,9 @@
 // glints. Geraniums nod on the sill. The curtain is one filled shape whose free edge and hem are travelling waves,
 // so its folds run down and along it. The horizon is a share of the glass; the hill hangs off the right edge and
 // the curtain off the left, so extra width becomes open sea between them.
-import { mulberry, lerp, clamp, osc, noise1, poly, circle, pill, star4, frac, TAU } from './geom.js?v=20261011-clock-edge';
-import { C, F } from './kit.js?v=20261011-clock-edge';
-import { hash, el } from './bits.js?v=20261011-clock-edge';
+import { mulberry, lerp, clamp, osc, noise1, poly, circle, pill, star4, frac, TAU } from './geom.js?v=20261011-focus';
+import { C, F } from './kit.js?v=20261011-focus';
+import { hash, el } from './bits.js?v=20261011-focus';
 
 export const title = 'SEA VIEW', no = 'No. 05', text = '#12306c', dark = '#0e2658';
 const M = { sky: '#a6d8ec', sea1: '#1f5fae', sea2: '#2f7ac8', sea3: '#74b6e2', hill: '#9db56b', cyp: '#24553f', white: '#fcf7ea', shade: '#d8caab', wall: '#12306c' };

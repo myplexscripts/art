@@ -1,4 +1,4 @@
-import { hex } from './clock-palette.js?v=20261011-clock-edge';
+import { hex } from './clock-palette.js?v=20261011-focus';
 
 export const COLOR_CSS = `
   .wz-color-editor { position: absolute; inset: 0; z-index: 5; pointer-events: none; color: #f2e5c3; font-family: var(--face, "Barlow Condensed", system-ui, sans-serif); }
