@@ -11,7 +11,7 @@ from urllib.request import Request, urlopen
 
 ORIGIN = 'https://wavz.us/'
 ROOT = Path(__file__).resolve().parent
-ASSET_VERSION = '20261011-clock'
+ASSET_VERSION = '20261011-clock-fix'
 
 def version_assets(version=None):
     """One release URL for the entire local module graph prevents mixed cached UI."""

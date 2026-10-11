@@ -2,9 +2,9 @@
 // the corals stand on it, small toward the back and large in front (brain domes, branching corals, sea fans, tube
 // sponges, anemones and one giant clam). The surface's light lies on the sand as pale shapes that swell and slide.
 // Four small schools wander, and a turtle crosses high up now and then. Extra width or height becomes more reef.
-import { mulberry, clamp, osc, sway, noise1, poly, circle, TAU } from './geom.js?v=20261011-clock';
-import { C, F } from './kit.js?v=20261011-clock';
-import { hash, el } from './bits.js?v=20261011-clock';
+import { mulberry, clamp, osc, sway, noise1, poly, circle, TAU } from './geom.js?v=20261011-clock-fix';
+import { C, F } from './kit.js?v=20261011-clock-fix';
+import { hash, el } from './bits.js?v=20261011-clock-fix';
 
 export const title = 'CORAL GARDEN', no = 'No. 02', text = '#14506a', dark = '#0d3347';
 const K = { w: ['#93ded3', '#63cbc9', '#3fb5c0', '#2c9fb3'], light: '#c9f1e2', reef1: '#1d8198', reef2: '#14607a', sand: '#e6d3a0', rip: '#cdb681', pink: '#e8718d', pinkD: '#c14f72', violet: '#7d55a8', violetD: '#4d3578' };

@@ -1,5 +1,5 @@
 // Overlapping translucent aqua loops, inspired by Pure Chill.
-import { make, setup, gradient, TAU } from './art-kit.js?v=20261011-clock';
+import { make, setup, gradient, TAU } from './art-kit.js?v=20261011-clock-fix';
 export { make };
 export const title='Tidal Bloom', no='No. 08', text='#068a8b', dark='#063f48', audio=false, textless=true;
 function loop(path,r,t,phase,reverse=false) {
