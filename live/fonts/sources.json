@@ -1,6 +1,6 @@
 {
   "catalogue": "https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Manrope:wght@200..800&display=swap",
-  "retrieved": "2026-10-10",
+  "retrieved": "2026-10-11",
   "fonts": [
     {
       "family": "Inter",
@@ -11,6 +11,77 @@
       "family": "Manrope",
       "source": "https://fonts.gstatic.com/s/manrope/v20/xn7gYHE41ni1AdIRggexSg.woff2",
       "bytes": 24836
+    },
+    {
+      "family": "Barlow Condensed",
+      "weight": "100",
+      "source": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxxL3I-JCGChYJ8VI-L6OO_au7B43Lj2FHz.woff2",
+      "file": "barlow-condensed-latin-100.woff2",
+      "bytes": 20612
+    },
+    {
+      "family": "Barlow Condensed",
+      "weight": "200",
+      "source": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B497yz3bWuQ.woff2",
+      "file": "barlow-condensed-latin-200.woff2",
+      "bytes": 20800
+    },
+    {
+      "family": "Barlow Condensed",
+      "weight": "300",
+      "source": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B47rxz3bWuQ.woff2",
+      "file": "barlow-condensed-latin-300.woff2",
+      "bytes": 21080
+    },
+    {
+      "family": "Barlow Condensed",
+      "weight": "400",
+      "source": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTx3L3I-JCGChYJ8VI-L6OO_au7B6xHT2g.woff2",
+      "file": "barlow-condensed-latin-400.woff2",
+      "bytes": 21164
+    },
+    {
+      "family": "Barlow Condensed",
+      "weight": "500",
+      "source": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B4-Lwz3bWuQ.woff2",
+      "file": "barlow-condensed-latin-500.woff2",
+      "bytes": 21424
+    },
+    {
+      "family": "Barlow Condensed",
+      "weight": "600",
+      "source": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B4873z3bWuQ.woff2",
+      "file": "barlow-condensed-latin-600.woff2",
+      "bytes": 22308
+    },
+    {
+      "family": "Barlow Condensed",
+      "weight": "700",
+      "source": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B46r2z3bWuQ.woff2",
+      "file": "barlow-condensed-latin-700.woff2",
+      "bytes": 22444
+    },
+    {
+      "family": "Barlow Condensed",
+      "weight": "800",
+      "source": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B47b1z3bWuQ.woff2",
+      "file": "barlow-condensed-latin-800.woff2",
+      "bytes": 22464
+    },
+    {
+      "family": "Barlow Condensed",
+      "weight": "900",
+      "source": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B45L0z3bWuQ.woff2",
+      "file": "barlow-condensed-latin-900.woff2",
+      "bytes": 21968
+    },
+    {
+      "family": "Oswald",
+      "weight": "200 700",
+      "source": "https://fonts.gstatic.com/s/oswald/v57/TK3iWkUHHAIjg752GT8G.woff2",
+      "file": "oswald-latin-variable.woff2",
+      "bytes": 28488
     }
-  ]
+  ],
+  "preview_catalogue": "https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@100;200;300;400;500;600;700;800;900&family=Oswald:wght@200..700&display=swap"
 }

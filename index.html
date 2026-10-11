@@ -15,6 +15,7 @@
 <link rel="icon" type="image/png" sizes="16x16" href="./favicon/favicon-16x16.png?v=2">
 <link rel="manifest" href="./site.webmanifest?v=5">
 <link rel="stylesheet" href="./live/fonts.css">
+<script type="module" src="./live/font-preview.js"></script>
 <link rel="stylesheet" href="./live/welcome.css">
 <script type="module" src="./live/welcome.js"></script>
 <script>
@@ -52,6 +53,8 @@
   header { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
   h1 { margin: 0; font-family: var(--display); font-size: clamp(64px, 13vw, 150px); line-height: .82; font-weight: 700; letter-spacing: -.01em; }
   header p { margin: 0 0 6px; max-width: 21em; font-size: clamp(17px, 2vw, 22px); line-height: 1.3; font-weight: 600; text-align: right; }
+  .scenes-tools { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 10px 16px; margin-top: 12px; }
+  .scenes-tools .scenes-guide { margin: 0; }
   .rule { height: 6px; background: var(--orange); margin: clamp(14px, 2vw, 22px) 0; }
   h2 { margin: 0 0 clamp(10px, 2vw, 18px); font-family: var(--display); font-size: clamp(15px, 1.8vw, 20px); letter-spacing: .14em; text-transform: uppercase; color: var(--rust); }
   /* each series is a row of posters to slide through; it runs out to the edges of the screen */
@@ -87,7 +90,7 @@
   .posters.in a { opacity: 1; animation: deal .75s cubic-bezier(.2, .8, .2, 1) both; animation-delay: calc(var(--d, 0s) + var(--r) * .24s + var(--i) * 80ms + .1s); }
   .series.seen, .posters.seen a { opacity: 1; animation: none; }
   @media (prefers-reduced-motion: reduce) { html.intro h1 span, html.intro .rule, html.intro header p, .series.in, .posters.in a { animation: none; } }
-  @media (max-width: 560px) { header p { text-align: left; } }
+  @media (max-width: 560px) { header p { text-align: left; } .scenes-tools { justify-content: flex-start; } }
 </style>
 </head>
 <body>
@@ -99,12 +102,12 @@
       // The wordmark is set as separate letters so they can rise one by one, and letters set apart lose their kerning (the A
       // and V sit too far from each other). Each is pulled back by what the font would have kerned it, so the word is
       // the same width as if it were set whole.
-      (() => { const h = document.currentScript.previousElementSibling, cs = getComputedStyle(h), c = document.createElement('canvas').getContext('2d'), k = [...h.children];
-        const kern = () => { c.font = cs.fontWeight + ' 200px ' + cs.fontFamily; const w = (t) => c.measureText(t).width;
+      (() => { const h = document.currentScript.previousElementSibling, c = document.createElement('canvas').getContext('2d'), k = [...h.children];
+        const kern = () => { const cs = getComputedStyle(h); c.font = cs.fontWeight + ' 200px ' + cs.fontFamily; const w = (t) => c.measureText(t).width;
           for (let i = 1; i < k.length; i++) k[i].style.marginLeft = (w(k[i - 1].textContent + k[i].textContent) - w(k[i - 1].textContent) - w(k[i].textContent)) / 200 + 'em'; };
-        kern(); document.fonts.ready.then(kern); })();
+        kern(); document.fonts.ready.then(kern); addEventListener('scenes-font-change', kern); })();
     </script>
-    <p>Calming scenes for your screen. Open one, go fullscreen, and unwind.<button class="scenes-guide" type="button">Welcome &amp; iPhone setup</button></p>
+    <p>Calming scenes for your screen. Open one, go fullscreen, and unwind.<span class="scenes-tools"><button class="scenes-guide" type="button">Welcome &amp; iPhone setup</button><span data-font-preview></span></span></p>
   </header>
   <div class="rule"></div>
   <div id="rows"></div>
@@ -202,18 +205,20 @@
   } };
   let pending; addEventListener('resize', () => { clearTimeout(pending); pending = setTimeout(() => size(), 120); }); size();
   document.fonts.ready.then(() => { for (const card of cards) card.paint(); });
+  addEventListener('scenes-font-change', () => { for (const card of cards) card.paint(); });
 
   // Tapping a poster opens the scene over this page, growing out of the poster to fill the screen, and the address
   // becomes the scene's own. Going back shrinks it into the poster again. A scene's address opened directly, or
   // reloaded, is this same page with the scene already open over it, so leaving it shrinks into its poster all the same.
-  let player = null;
+  let player = null, departing = null;
   history.scrollRestoration = 'manual';   // going back must not move the page under the poster as it shrinks home
   const rectOf = (name) => { const r = cards.find((c) => c.name === name).canvas.getBoundingClientRect(); return { left: r.left, top: r.top, width: r.width, height: r.height }; };
   const resolveSceneName = name => ({ endlesslayers: 'stacks', petalorbit: 'blooms', sand: 'deepwaves' }[name] ?? name);
   function open(name, grow) {
     name = resolveSceneName(name);
     if (!cards.some(c => c.name === name)) { leave(); return; }
-    player?.close();
+    departing?.close({ immediate: true }); departing = null;
+    player?.close({ immediate: true });
     const card = cards.find((c) => c.name === name); play(null);
     // back goes back when this page is what lies behind; a scene opened cold has nothing of ours behind it, so its
     // address is swapped for the page's and the scene is closed here
@@ -223,14 +228,14 @@
   addEventListener('popstate', (e) => { if (e.state?.scene) open(e.state.scene, false); else leave(); });
   function leave() {
     if (!player) return;
-    const was = player; player = null;
+    const was = player; departing = was; player = null;
     // the scene may have been changed inside the player: bring its poster into view before shrinking back into it
     const card = cards.find((c) => c.name === was.name); card.t = was.time;
     const r = card.canvas.getBoundingClientRect();
     if (r.bottom < 60 || r.top > innerHeight - 60 || r.right < 60 || r.left > innerWidth - 60) card.canvas.parentNode.scrollIntoView({ behavior: 'instant', block: 'center', inline: 'center' });
     // the poster is found again on every frame of the way back, so it is met where it really is even if the page shifts
     // only the poster being returned to is drawn now; the rest catch up with a changed frame once the scene has landed
-    size(was.name, true); was.close({ to: () => rectOf(was.name) }); setTimeout(() => size(), 800);
+    size(was.name, true); was.close({ to: () => rectOf(was.name) }); setTimeout(() => size(), 1000);
   }
   // every row deals itself in on arrival, one after another down the page; under a scene opened cold, they are simply there
   const cold = document.documentElement.classList.contains('cold');

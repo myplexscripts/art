@@ -1,13 +1,13 @@
 import { fromHex, hex } from './clock-palette.js';
 
 export const COLOR_CSS = `
-  .wz-color-editor { position: absolute; inset: 0; z-index: 5; pointer-events: none; color: #f2e5c3; font-family: "Inter", system-ui, sans-serif; }
+  .wz-color-editor { position: absolute; inset: 0; z-index: 5; pointer-events: none; color: #f2e5c3; font-family: var(--face, "Inter", system-ui, sans-serif); }
   .wz-color-editor[hidden], .wz-color-editor [hidden] { display: none; }
   .wz-color-panel { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); box-sizing: border-box; width: min(100%, 520px); max-height: 100%; overflow-y: auto; overscroll-behavior: contain; background: var(--paper); border-top: 2px solid #f2e5c3; padding: 20px max(20px, env(safe-area-inset-right, 0px)) calc(16px + env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 0px)); pointer-events: auto; }
   .wz-color-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 16px; }
   .wz-color-heading strong { font-size: 20px; font-weight: 650; letter-spacing: -.035em; }
   .wz-color-scene { font-size: 10px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; text-align: right; }
-  .wz-color-editor button { font: 600 12px/1.2 "Inter", system-ui, sans-serif; color: inherit; cursor: pointer; background: none; }
+  .wz-color-editor button { font: 600 12px/1.2 var(--face, "Inter", system-ui, sans-serif); color: inherit; cursor: pointer; background: none; }
   .wz-color-modes { display: flex; gap: 10px; margin-bottom: 18px; }
   .wz-color-mode { flex: 1; min-height: 40px; padding: 10px 12px; border: 1px solid #f2e5c366; border-radius: 8px; }
   .wz-color-mode[aria-pressed=true] { border-color: #dd7f45; color: #f0bd4d; }
@@ -20,7 +20,7 @@ export const COLOR_CSS = `
   .wz-color-custom input[type=color] { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; padding: 0; border: 0; }
   .wz-color-editor button:focus-visible, .wz-color-hex:focus-visible, .wz-color-custom:focus-within { outline: 1px solid #f0bd4d; outline-offset: 5px; border-radius: 8px; }
   .wz-color-hex-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 16px; font-size: 12px; }
-  .wz-color-hex { width: 104px; min-height: 36px; box-sizing: border-box; border: 1px solid #f2e5c366; border-radius: 6px; background: transparent; color: inherit; padding: 8px 10px; font: 500 13px/1 "Inter", system-ui, sans-serif; }
+  .wz-color-hex { width: 104px; min-height: 36px; box-sizing: border-box; border: 1px solid #f2e5c366; border-radius: 6px; background: transparent; color: inherit; padding: 8px 10px; font: 500 13px/1 var(--face, "Inter", system-ui, sans-serif); }
   .wz-color-hex[aria-invalid=true] { border-color: #dd7f45; }
   .wz-color-footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 18px; }
   .wz-color-note { margin: 0; max-width: 300px; font-size: 11px; line-height: 1.5; }

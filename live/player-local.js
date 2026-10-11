@@ -7,11 +7,12 @@ import { draw, makeLayout, styleFor, SCENES } from './poster.js';
 import { hex, makeClockColor, makePaletteSampler } from './clock-palette.js';
 import { depthLayersFor, makeDepthRenderer } from './clock-depth.js';
 import { COLOR_CSS, makeColorPicker } from './clock-color-picker.js';
+import { makeFontSwitcher, previewFontReady } from './font-preview.js';
 
-const LOOP = 30, MAXPX = 3840, CREAM = '#f2e5c3', FLIGHT = 650;
+const LOOP = 30, MAXPX = 3840, CREAM = '#f2e5c3', FLIGHT = 650, CLOCK_FADE = 180;
 // Keep authored depth and saved choices intact while the feature is unavailable in the app.
 const DEPTH_ENABLED = false;
-const FACE = '"Inter", system-ui, sans-serif';
+const FACE = 'var(--face, "Inter", system-ui, sans-serif)';
 const colorSetting = saved => {
   if (saved && ['white', 'adaptive'].includes(saved.mode)) return { mode: saved.mode };
   if (saved && ['poster', 'custom'].includes(saved.mode) && Array.isArray(saved.rgb) && saved.rgb.length === 3 && saved.rgb.every(v => Number.isFinite(v) && v >= 0 && v <= 255)) return { mode: saved.mode, rgb: saved.rgb.map(Math.round) };
@@ -25,7 +26,9 @@ const CSS = `
   .wz-foreground { pointer-events: none; z-index: 2; }
   .wz-foreground[hidden], .wz-ui[hidden] { display: none; }
   .wz-grain { pointer-events: none; z-index: 3; }
-  .wz-clock { position: absolute; inset: 0; display: grid; place-items: center; z-index: 1; pointer-events: none; margin: 0; color: #fff; opacity: 1; font: 800 clamp(40px, 14vmin, 180px)/1 "Inter", system-ui, sans-serif; letter-spacing: -.04em; white-space: nowrap; text-shadow: none; }
+  .wz-clock { position: absolute; inset: 0; display: grid; place-items: center; z-index: 1; pointer-events: none; margin: 0; color: #fff; opacity: 0; transition: opacity ${CLOCK_FADE}ms ease; font: 800 clamp(40px, 14vmin, 180px)/1 ${FACE}; letter-spacing: -.04em; white-space: nowrap; text-shadow: none; }
+  .wz-clock.visible { opacity: 1; }
+  .wz-clock:not(.visible) .wz-clock-face { pointer-events: none; }
   /* Shape the whole time as one text run: the colon and AM/PM space keep their natural widths. */
   .wz-clock-face { position: absolute; left: 50%; top: 50%; width: max-content; transform: translate(-50%, -50%); pointer-events: auto; touch-action: none; -webkit-touch-callout: none; padding: 20px; cursor: ew-resize; display: inline-block; font-kerning: normal; opacity: 1; }
   .wz-clock-face.dragging { cursor: grabbing; }
@@ -37,15 +40,15 @@ const CSS = `
   /* The strip and its controls slide out of sight to reveal the artwork underneath. */
   .wz-ui[data-mode=strip].off, .wz-ui[data-mode=strip].swap { transform: translateY(101%); transition-delay: .1s; }
   .wz-it { transition: opacity .3s ease calc(var(--i) * 45ms + 110ms), transform .45s cubic-bezier(.2, .8, .2, 1) calc(var(--i) * 45ms + 110ms); }
-  .wz-ui.off .wz-it, .wz-ui.swap .wz-it { opacity: 0; transform: translateY(12px); transition-duration: .18s; transition-delay: calc((5 - var(--i)) * 22ms); }
+  .wz-ui.off .wz-it, .wz-ui.swap .wz-it { opacity: 0; transform: translateY(12px); transition-duration: .18s; transition-delay: calc((6 - var(--i)) * 22ms); }
   .wz-ui input[type=range] { clip-path: inset(0 0 0 0); transition: opacity .25s, clip-path .55s cubic-bezier(.3, .7, .2, 1) calc(var(--i) * 45ms + 240ms); }
   .wz-ui.off input[type=range], .wz-ui.swap input[type=range] { clip-path: inset(0 100% 0 0); transition-delay: 0s; transition-duration: .2s; }
-  @media (prefers-reduced-motion: reduce) { .wz-ui, .wz-ui .wz-it, .wz-ui input[type=range] { transition-duration: .01s !important; transition-delay: 0s !important; } }
+  @media (prefers-reduced-motion: reduce) { .wz-clock { transition: none; } .wz-ui, .wz-ui .wz-it, .wz-ui input[type=range] { transition-duration: .01s !important; transition-delay: 0s !important; } }
   .wz-ui[data-mode=strip] { background: var(--paper); border-top: 2px solid ${CREAM}; padding: 8px max(16px, var(--wz-safe-right)) calc(8px + var(--wz-safe-bottom)) max(16px, var(--wz-safe-left)); }
   .wz-row { display: flex; align-items: center; justify-content: center; gap: 6px 22px; }
   .wz-ui:not(.two) { flex-direction: row; align-items: center; gap: 22px; }
   .wz-ui:not(.two) .wz-row { display: contents; }
-  .wz-ui:not(.two) .wz-clock-toggle { order: 3; } .wz-ui:not(.two) .wz-color-toggle { order: 4; } .wz-ui:not(.two) .wz-full { order: 5; } .wz-ui:not(.two) label { order: 2; }
+  .wz-ui:not(.two) .wz-clock-toggle { order: 3; } .wz-ui:not(.two) .wz-color-toggle { order: 4; } .wz-ui:not(.two) .wz-font-preview { order: 5; } .wz-ui:not(.two) .wz-full { order: 6; } .wz-ui:not(.two) label { order: 2; }
   .wz-ui.two .wz-r1 { justify-content: space-between; gap: 10px; } .wz-ui.two .wz-r2 { gap: 14px; } .wz-ui.two label { flex: 1 1 0; }
   .wz-ui.tight { gap: 14px; } .wz-ui.tight .wz-word { display: none; }
   .wz-ui a, .wz-ui button { font: 600 13px/1 ${FACE}; letter-spacing: .06em; text-transform: uppercase; color: inherit; background: none; border: 0; padding: 11px 0 9px; border-bottom: 3px solid transparent; text-decoration: none; cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 7px; }
@@ -57,6 +60,7 @@ const CSS = `
   .wz-ui svg.wz-arrow { width: 21px; height: 12px; fill: currentColor; stroke: none; margin-top: -1px; transition: transform .2s; }
   .wz-ui a:hover .wz-arrow { transform: translateX(-3px); }
   .wz-ui label { display: flex; align-items: center; gap: 9px; min-width: 0; }
+  .wz-ui .wz-font-preview, .wz-ui.two .wz-font-preview { flex: none; width: 32px; }
   .wz-ui input[type=range] { color: inherit; -webkit-appearance: none; appearance: none; background: none; margin: 0; height: 30px; flex: 0 1 120px; width: 120px; min-width: 36px; cursor: pointer; }
   .wz-ui.two input[type=range] { flex-grow: 1; }
   .wz-ui.tight input[type=range] { flex-basis: 80px; }
@@ -101,7 +105,7 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
   const depthSelection = depthOptions.some(o => o.id === savedDepth) ? savedDepth : 'front';
   const before = { title: document.title, bg: document.body.style.background, htmlBg: document.documentElement.style.background, overflow: document.documentElement.style.overflow, gutter: document.documentElement.style.scrollbarGutter };
   const textless = SCENES[first].textless === true;
-  let name = first, L, k = 1, flight = null, closed = false, sound = null, on = false;
+  let name = first, L, k = 1, flight = null, closed = false, closing = false, closeTimer = 0, clockSettled = false, sound = null, on = false;
   document.body.append(root);
   document.documentElement.style.overflow = 'hidden'; document.documentElement.style.scrollbarGutter = 'auto';   // the scene takes the scrollbar's room too
 
@@ -130,7 +134,7 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
     ui.dataset.mode = 'strip';
     Object.assign(ui.style, { left: '0', width: '100%', height: '' });
     const css = getComputedStyle(ui), room = w - parseFloat(css.paddingLeft) - parseFloat(css.paddingRight);
-    ui.classList.toggle('two', room < 740); ui.classList.toggle('tight', room < 320 || room >= 740 && room < 860);
+    ui.classList.toggle('two', room < 820); ui.classList.toggle('tight', room < 320 || room >= 820 && room < 940);
   }
   grain.style.backgroundImage = `url(${tile()})`; grain.style.backgroundSize = 512 / devicePixelRatio + 'px';
   grain.hidden = textless && SCENES[first].grain !== true;
@@ -170,7 +174,7 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
     colorPicker?.sync(clockColor);
   }
   function updateClockColor(now, t) {
-    if (clockColor.mode !== 'adaptive' || !clockOn || !clockFontsReady || !L || flight || positionAnimation || gesture?.drag) return;
+    if (clockColor.mode !== 'adaptive' || !clockOn || !clockFontsReady || !L || flight || closing || positionAnimation || gesture?.drag) return;
     if (!clockInk) {
       // Read only a freshly drawn, settled poster at the clock's final placement.
       const chosen = samplePalette();
@@ -251,11 +255,12 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
   };
   function updateClock() {
     clearTimeout(clockTimer);
-    clock.hidden = !clockOn;
+    clock.hidden = !clockOn || closing;
+    if (!clockOn) clock.classList.remove('visible');
     clockToggle.setAttribute('aria-pressed', String(clockOn));
     clockToggle.querySelector('em').textContent = clockOn ? 'on' : 'off';
     clockToggle.setAttribute('aria-label', 'Clock: ' + (clockOn ? 'on' : 'off'));
-    if (!clockOn || closed) return;
+    if (!clockOn || closed || closing) return;
     const now = new Date();
     const text = clockFormat.format(now).replace(/[\u00a0\u202f]/g, ' ');
     clockFace.textContent = text;
@@ -292,7 +297,7 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
     if (dragged) { localStorage.setItem(positionKey, JSON.stringify(position)); dragged = false; reassessPalette(); }
   };
   root.addEventListener('pointerdown', (e) => {
-    if (!clockOn || flight || e.button !== 0 || ui.contains(e.target) || colorPicker?.element.contains(e.target)) return;
+    if (!clockOn || flight || closing || e.button !== 0 || ui.contains(e.target) || colorPicker?.element.contains(e.target)) return;
     if (!clockFace.contains(e.target) && !fingers.size) return;
     if (fingers.size >= 2) return;
     if (!fingers.size) { cancelPositionAnimation(); clearTimeout(tapTimer); tap = { id: e.pointerId, x: e.clientX, y: e.clientY, time: performance.now() }; }
@@ -365,7 +370,12 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
   const resumeClock = () => { if (document.visibilityState === 'visible') updateClock(); };
   document.addEventListener('visibilitychange', resumeClock);
   updateClock();
-  document.fonts.ready.then(() => { if (!closed) { fitClock(); clockFontsReady = true; } });
+  const fontChanged = () => { if (!closed && !closing) fitClock(); };
+  addEventListener('scenes-font-change', fontChanged);
+  Promise.all([document.fonts.ready, previewFontReady()]).then(() => { if (!closed) { fitClock(); clockFontsReady = true; } });
+  const fontSwitcher = makeFontSwitcher({ compact: true });
+  fontSwitcher.element.classList.add('wz-font-preview', 'wz-it'); fontSwitcher.element.style.setProperty('--i', 5);
+  $('wz-full').style.setProperty('--i', 6); $('wz-full').before(fontSwitcher.element);
 
   // ---- colour: three prominent poster inks, any custom colour, white or adaptive ink.
   colorPicker = makeColorPicker({ root, face: clockFace, button: $('wz-color-toggle'), title: SCENES[name].title,
@@ -391,13 +401,13 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
   function fly(a, bIn, small, done) {
     const target = typeof bIn === 'function' ? bIn : () => bIn; let b = target();
     const style = (r, key) => styleFor(r.width / r.height, small !== key), from = style(a, 'a'), to = style(b, 'b');
-    const t0 = performance.now(), W = innerWidth, H = innerHeight, long = Math.max(W, H), s = (force || Math.min(MAXPX, long * devicePixelRatio)) / long;
+    const t0 = performance.now(), duration = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : FLIGHT, W = innerWidth, H = innerHeight, long = Math.max(W, H), s = (force || Math.min(MAXPX, long * devicePixelRatio)) / long;
     ui.classList.add('off');
     // The thumbnail frame fades away into completely edge-to-edge playback.
     const page = { f: 1, d: localStorage.getItem('wavz-frame') === 'dark' ? 1 : 0 }, A = small === 'a' ? page : cur, B = small === 'a' ? cur : page;
     flight = (now) => {
       b = target();
-      const u = Math.min(1, (now - t0) / FLIGHT), e = ease(u), m = (key) => a[key] + (b[key] - a[key]) * e, r = { left: m('left'), top: m('top'), width: m('width'), height: m('height') };
+      const u = duration ? Math.min(1, (now - t0) / duration) : 1, e = ease(u), m = (key) => a[key] + (b[key] - a[key]) * e, r = { left: m('left'), top: m('top'), width: m('width'), height: m('height') };
       mix = { from, to, e, f: A.f + (B.f - A.f) * e, d: A.d + (B.d - A.d) * e }; place(r); fit(false);
       Object.assign(grain.style, { inset: 'auto', left: -r.left + 'px', top: -r.top + 'px', width: W + 'px', height: H + 'px' });
       if (u === 1) { flight = null; mix = null; Object.assign(grain.style, { inset: '', left: '', top: '', width: '', height: '' }); done(); }
@@ -424,6 +434,8 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
     const t0 = performance.now(), t = now / 1000 + skip;
     frame1(t);
     if (clockOn) updateClockColor(now, t);
+    // The time appears only after the poster has landed, loaded its face and sampled its ink.
+    if (clockOn && clockSettled && clockFontsReady && !closing && !flight) clock.classList.add('visible');
     ms += (performance.now() - t0 - ms) * 0.05; fps += (1000 / Math.max(1, now - last) - fps) * 0.05; last = now;
     if (debug && ++n % 3 === 0) hud.textContent = `${scene.width} x ${scene.height}  ${fps.toFixed(0)} fps  draw ${ms.toFixed(1)} ms  t ${t.toFixed(0)} s` + (notes.length ? '\n' + notes.join('\n') : '');
     requestAnimationFrame(tick);
@@ -431,7 +443,7 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
 
   // ---- controls: they show on any movement and fade after a few seconds
   let hide;
-  const show = (e) => { if (flight || colorPicker.active || (e && (clockFace.contains(e.target) || fingers.size))) return; ui.classList.remove('off'); clearTimeout(hide); hide = setTimeout(() => ui.classList.add('off'), 3500); };
+  const show = (e) => { if (flight || closing || colorPicker.active || (e && (clockFace.contains(e.target) || fingers.size))) return; ui.classList.remove('off'); clearTimeout(hide); hide = setTimeout(() => ui.classList.add('off'), 3500); };
   for (const type of ['pointermove', 'pointerdown']) root.addEventListener(type, show);
   addEventListener('keydown', show);
   // Use DOM fullscreen where supported. On iPhone, keep the full-bleed page/PWA
@@ -447,7 +459,7 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
   root.addEventListener('dblclick', (e) => { if (!colorPicker.active && !ui.contains(e.target) && !clockFace.contains(e.target)) toggleFull(); });
   if (home) $('wz-home').addEventListener('click', (e) => { e.preventDefault(); home(); });
   const esc = (e) => {
-    if (e.key !== 'Escape' || e.defaultPrevented) return;
+    if (e.key !== 'Escape' || e.defaultPrevented || closing) return;
     if (colorPicker.active) { e.preventDefault(); colorPicker.close(); }
     else if (!isFull() && !flight) $('wz-home').click();
   };
@@ -503,11 +515,12 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
 
   // ---- open
   hud.hidden = !debug; document.title = title(SCENES[name]);
-  if (from) { place(from); paint(); fly(from, full(), 'a', () => { place(null); fit(); show(); }); }
-  else { place(null); fit(); paint(); show(); }
+  if (from) { place(from); paint(); fly(from, full(), 'a', () => { place(null); fit(); clockSettled = true; show(); }); }
+  else { place(null); fit(); paint(); clockSettled = true; show(); }
   requestAnimationFrame(tick);
 
   function end() {
+    clearTimeout(closeTimer); fontSwitcher.destroy(); removeEventListener('scenes-font-change', fontChanged);
     colorPicker.close(false);
     stopClockGesture();
     closed = true; awake?.release().catch(() => {}); document.removeEventListener('visibilitychange', wake2); sound?.stop(); clearTimeout(hide); clearTimeout(pending); clearTimeout(clockTimer); document.removeEventListener('visibilitychange', resumeClock);
@@ -519,11 +532,23 @@ export function openScene(first, { from = null, home = null, at = null } = {}) {
     get name() { return name; },
     get time() { return performance.now() / 1000 + skip; },
     // to: a rectangle to shrink back into before going; the page's own look is put back first so it shows through
-    close({ to = null } = {}) {
-      document.title = before.title; document.body.style.background = before.bg; document.documentElement.style.background = before.htmlBg; document.documentElement.style.overflow = before.overflow; document.documentElement.style.scrollbarGutter = before.gutter; document.documentElement.style.transition = document.body.style.transition = '';
-      if (isFull()) leaveFull.call(document);
-      on = false; sound?.stop(); sound = null;   // the sound starts fading as the scene starts to leave
-      if (to && !closed) fly(root.getBoundingClientRect(), to, 'b', end); else end();
+    close({ to = null, immediate = false } = {}) {
+      if (closed || closing && !immediate) return;
+      const leave = () => {
+        if (closed) return;
+        clock.hidden = true;
+        document.title = before.title; document.body.style.background = before.bg; document.documentElement.style.background = before.htmlBg; document.documentElement.style.overflow = before.overflow; document.documentElement.style.scrollbarGutter = before.gutter; document.documentElement.style.transition = document.body.style.transition = '';
+        if (isFull()) leaveFull.call(document);
+        if (to && !immediate) fly(root.getBoundingClientRect(), to, 'b', end); else end();
+      };
+      clearTimeout(closeTimer); clearTimeout(clockTimer); closing = true; clockSettled = false;
+      stopClockGesture(); colorPicker.close(false); root.inert = true; ui.classList.add('off');
+      on = false; sound?.stop(); sound = null;
+      const visible = !clock.hidden && Number(getComputedStyle(clock).opacity) > 0;
+      clock.classList.remove('visible');
+      // Finish fading the time while the artwork remains full size; then shrink the poster.
+      if (!immediate && visible && !matchMedia('(prefers-reduced-motion: reduce)').matches) closeTimer = setTimeout(leave, CLOCK_FADE);
+      else leave();
     },
   };
 }
