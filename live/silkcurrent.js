@@ -1,5 +1,5 @@
 // A flowing, pearlescent ribbon inspired by the archive's Ambient Chill cover.
-import { make, setup, gradient, glow, disc } from './art-kit.js?v=20261011-focus';
+import { make, setup, gradient, glow, disc } from './art-kit.js?v=20261011-focus-finish';
 export { make };
 export const title='Silk Current', no='No. 06', text='#beeaff', dark='#061443', audio=false, textless=true;
 

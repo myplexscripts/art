@@ -1,5 +1,5 @@
 // Original Music Series No. 05: patch cables, analog oscillators and a little scope.
-import { paper, makeRoom, box, disc, oval, stroke, polygon, word, knob, hash, wood, screw, plant, books } from './music-kit.js?v=20261011-focus';
+import { paper, makeRoom, box, disc, oval, stroke, polygon, word, knob, hash, wood, screw, plant, books } from './music-kit.js?v=20261011-focus-finish';
 export const title = 'SIGNAL BLOOM', no = 'No. 05', text = '#254e46', dark = '#173c38', audio = false;
 export const make = makeRoom;
 const K={wall:'#a0b9a2',ink:'#173c38',green:'#507e66',mint:'#c2cdb0',orange:'#dd7f45',gold:'#e8b767',blue:'#427e91'};

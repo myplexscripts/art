@@ -2,16 +2,16 @@
 // A full-screen poster is drawn live every frame and recomposed to the screen's shape, with its controls
 // and sound. The main page opens it over itself, growing out of the poster that was tapped, or at once for a scene's own address.
 // For checking: ?debug shows a readout, ?res=3840 forces the long side, ?t=40 starts the clock 40 s in.
-import './nozoom.js?v=20261011-focus';
-import { draw, makeLayout, styleFor, SCENES } from './poster.js?v=20261011-focus';
-import { hex, makeClockColor, makePaletteSampler, makeSceneColorSampler } from './clock-palette.js?v=20261011-focus';
-import { makeClockDigits, CLOCK_LINE_HEIGHT } from './clock-digits.js?v=20261011-focus';
-import { depthLayersFor, makeDepthRenderer } from './clock-depth.js?v=20261011-focus';
-import { COLOR_CSS, makeColorPicker } from './clock-color-picker.js?v=20261011-focus';
-import { fontReady, MIN_FONT_SIZE, TEXT_SCALE } from './typography.js?v=20261011-focus';
-import { lockPage } from './scroll-lock.js?v=20261011-focus';
-import { focusTimer, countdownFormatter, countdownText } from './focus-timer.js?v=20261011-focus';
-import { FOCUS_CSS, makeFocusPanel, installGalleryFocus } from './focus-controls.js?v=20261011-focus';
+import './nozoom.js?v=20261011-focus-finish';
+import { draw, makeLayout, styleFor, SCENES } from './poster.js?v=20261011-focus-finish';
+import { hex, makeClockColor, makePaletteSampler, makeSceneColorSampler } from './clock-palette.js?v=20261011-focus-finish';
+import { makeClockDigits, CLOCK_LINE_HEIGHT } from './clock-digits.js?v=20261011-focus-finish';
+import { depthLayersFor, makeDepthRenderer } from './clock-depth.js?v=20261011-focus-finish';
+import { COLOR_CSS, makeColorPicker } from './clock-color-picker.js?v=20261011-focus-finish';
+import { fontReady, MIN_FONT_SIZE, TEXT_SCALE } from './typography.js?v=20261011-focus-finish';
+import { lockPage } from './scroll-lock.js?v=20261011-focus-finish';
+import { focusTimer, countdownFormatter, countdownText } from './focus-timer.js?v=20261011-focus-finish';
+import { FOCUS_CSS, makeFocusPanel, installGalleryFocus } from './focus-controls.js?v=20261011-focus-finish';
 
 const LOOP = 30, MAXPX = 3840, CREAM = '#f2e5c3', FLIGHT = 650, CLOCK_FADE = 180;
 const MAX_CLOCK_SCALE = 8, CLOCK_BLEED = .03;
@@ -577,7 +577,7 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
   async function startSound() {
     if (!hasAudio) return;
     // Once loaded, make and resume audio synchronously during the next iOS tap.
-    if (!soundFactory) soundFactory = (await import('./sound.js?v=20261011-focus')).makeSound;
+    if (!soundFactory) soundFactory = (await import('./sound.js?v=20261011-focus-finish')).makeSound;
     if (closed || !on) return;
     if (sound) { levels(); sound.resume(); return; }
     sound = soundFactory(name, typeof SCENES[name].audio === 'string' ? SCENES[name].audio : name);
@@ -614,18 +614,29 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
     onOpen() { colorPicker.close(false); stopClockGesture(); clearTimeout(hide); ui.hidden = true; },
     onClose() { ui.hidden = false; show(); },
   });
-  let focusInitialized = false, focusId = null;
+  let focusInitialized = false, focusId = null, focusStatus = null;
+  const audioCompletionKey = 'scenes-focus-audio-ended';
   function syncFocus(state) {
     if (closed || closing) return;
+    // Stop each finished session once, including one that expired while the app
+    // was suspended. An explicit unmute afterwards remains the user's choice.
+    if (state.status === 'completed' && (localStorage.getItem(audioCompletionKey) !== state.id
+      || (state.id === focusId && ['running', 'paused'].includes(focusStatus)))) {
+      on = false;
+      for (const bus of ['amb', 'mus']) { muted[bus] = true; localStorage.setItem(KEY[bus] + '-off', '1'); }
+      levels(true); sound?.stop(); sound = null;
+      removeEventListener('pointerup', wake); removeEventListener('keydown', wake);
+      localStorage.setItem(audioCompletionKey, state.id);
+    }
     const button = $('wz-focus-toggle'), readout = button.querySelector('em');
-    button.dataset.status = state.status; readout.hidden = !state.active;
+    button.dataset.status = state.status; readout.hidden = !state.active || (state.status === 'completed' && !state.completionVisible);
     readout.textContent = state.status === 'completed' ? 'done' : countdownText(state.seconds);
     button.querySelector('.wz-focus-word').textContent = state.active && state.kind === 'break' ? 'Break' : 'Focus';
     button.setAttribute('aria-label', state.active ? `${state.kind === 'focus' ? 'Focus' : 'Break'} timer: ${state.status === 'completed' ? 'complete' : countdownText(state.seconds)}${state.status === 'paused' ? ', paused' : ''}. Open controls.` : 'Focus timer');
     if (focusInitialized && state.active && state.id !== focusId) {
       focusVisible = true; localStorage.setItem('scenes-focus-visible', '1'); if (focusMode) clockOn = true;
     }
-    focusInitialized = true; focusId = state.id ?? null;
+    focusInitialized = true; focusId = state.id ?? null; focusStatus = state.status;
     if (state.active === focusMode) {
       const cancelled = clockSwitching;
       if (clockSwitching) { clearTimeout(clockSwitchTimer); clockSwitching = false; pendingMode = null; }

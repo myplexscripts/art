@@ -3,6 +3,7 @@
 const KEY = 'scenes-focus-v1', SOUND_KEY = 'scenes-focus-chime';
 const CHIME = new URL('./audio/scenes-chime.mp3', import.meta.url);
 const MAX_DURATION = 99 * 60000;
+const COMPLETION_NOTICE_MS = 5000;
 const listeners = new Set();
 const read = key => { try { return localStorage.getItem(key); } catch { return null; } };
 const write = (key, value) => { try { value === null ? localStorage.removeItem(key) : localStorage.setItem(key, value); } catch {} };
@@ -23,9 +24,11 @@ state = restore(read(KEY));
 
 const remaining = () => !state || state.status === 'completed' ? 0
   : state.status === 'running' ? Math.max(0, Math.min(state.duration, state.deadline - Date.now())) : state.remaining;
+const noticeRemaining = () => state?.status === 'completed' && Number.isFinite(state.completedAt)
+  ? Math.max(0, state.completedAt + COMPLETION_NOTICE_MS - Date.now()) : 0;
 const persist = () => write(KEY, state ? JSON.stringify(state) : null);
 const snapshot = () => { const left = remaining(); return { ...(state ?? { status: 'idle', kind: 'focus', duration: 25 * 60000 }),
-  active: Boolean(state), remaining: left, seconds: Math.ceil(left / 1000), soundEnabled }; };
+  active: Boolean(state), remaining: left, seconds: Math.ceil(left / 1000), soundEnabled, completionVisible: noticeRemaining() > 0 }; };
 const emit = () => { const value = snapshot(); for (const fn of listeners) fn(value); };
 
 function prepareChime() {
@@ -76,11 +79,12 @@ function tick() {
   clearTimeout(scheduled);
   const left = remaining();
   if (state?.status === 'running' && left <= 0) {
-    state = { ...state, status: 'completed', remaining: 0, deadline: null, notified: false };
+    state = { ...state, status: 'completed', remaining: 0, deadline: null, completedAt: Date.now(), notified: false };
     persist();
   }
   emit(); notify();
   if (state?.status === 'running') scheduled = setTimeout(tick, Math.max(40, left % 1000 || 1000) + 15);
+  else if (noticeRemaining() > 0) scheduled = setTimeout(tick, noticeRemaining() + 15);
 }
 
 export const focusTimer = {

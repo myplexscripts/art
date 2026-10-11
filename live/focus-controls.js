@@ -1,5 +1,5 @@
-import { focusTimer, countdownText } from './focus-timer.js?v=20261011-focus';
-import { lockPage } from './scroll-lock.js?v=20261011-focus';
+import { focusTimer, countdownText } from './focus-timer.js?v=20261011-focus-finish';
+import { lockPage } from './scroll-lock.js?v=20261011-focus-finish';
 
 const FACE = 'var(--face, "Barlow Condensed", system-ui, sans-serif)';
 export const FOCUS_CSS = `
@@ -132,11 +132,12 @@ export function installGalleryFocus() {
   let previousStatus = null;
   const announce = document.createElement('p'); announce.className = 'wz-focus-live'; announce.setAttribute('role', 'status'); document.body.append(announce);
   focusTimer.subscribe(state => {
-    dock.hidden = !state.active;
+    dock.hidden = !state.active || (state.status === 'completed' && !state.completionVisible);
     dock.querySelector('span').textContent = state.kind === 'focus' ? 'Focus' : 'Break';
     dock.querySelector('em').textContent = state.status === 'completed' ? 'complete' : state.status === 'paused' ? 'paused · ' + countdownText(state.seconds) : countdownText(state.seconds);
     dock.setAttribute('aria-label', `${state.kind === 'focus' ? 'Focus' : 'Break'} timer: ${dock.querySelector('em').textContent}. Open controls.`);
     if (state.status === 'completed' && previousStatus !== 'completed') announce.textContent = state.kind === 'focus' ? 'Focus session complete.' : 'Break complete.';
+    if (!state.completionVisible) announce.textContent = '';
     previousStatus = state.status;
   });
 }

@@ -2,9 +2,9 @@
 // the shafts of light behind her. Her side is stove in amidships, so the ribs show and fish pass behind them; a broken
 // mast trails weed, and the anchor lies out ahead on its chain. The ship is sized to the frame's width and sits at a
 // fixed share of the height; extra height is more water above her, extra width more sea bed either side.
-import { mulberry, clamp, osc, sway, noise1, poly, circle, frac, TAU } from './geom.js?v=20261011-focus';
-import { C, F } from './kit.js?v=20261011-focus';
-import { hash, el } from './bits.js?v=20261011-focus';
+import { mulberry, clamp, osc, sway, noise1, poly, circle, frac, TAU } from './geom.js?v=20261011-focus-finish';
+import { C, F } from './kit.js?v=20261011-focus-finish';
+import { hash, el } from './bits.js?v=20261011-focus-finish';
 
 export const title = 'THE WRECK', no = 'No. 03', text = '#0e2b4d', dark = '#07142b';
 const K = { w: ['#5fa5c2', '#3a7ea6', '#255f8c', '#184670', '#103357'], light: '#a9d6dc', bed1: '#1d4d76', bed2: '#0f2c4f', hull: '#0a1c38', ink: '#07142b' };

@@ -2,9 +2,9 @@
 // the width and its cables hung between them. The fog is long flat pills in four pale tones: some banks are drawn
 // before the bridge and some after it, each sliding at its own speed, so towers and deck come and go. A beacon
 // pulses on each tower, a boat with a lamp crosses underneath now and then, and gulls glide through.
-import { mulberry, clamp, frac, lerp, osc, sway, noise1, poly, circle, pill, TAU } from './geom.js?v=20261011-focus';
-import { C, F } from './kit.js?v=20261011-focus';
-import { hash, pine } from './bits.js?v=20261011-focus';
+import { mulberry, clamp, frac, lerp, osc, sway, noise1, poly, circle, pill, TAU } from './geom.js?v=20261011-focus-finish';
+import { C, F } from './kit.js?v=20261011-focus-finish';
+import { hash, pine } from './bits.js?v=20261011-focus-finish';
 
 export const title = 'FOG BANK', no = 'No. 03', text = '#1e3238', dark = '#14252a';
 const K = { sky: '#9fb0b3', sky2: '#8ea2a6', ring: '#adbcbc', far: '#7e969b', head: '#5d7a80', w1: '#4f7379', w2: '#456870', w3: '#5a7f84', f1: '#dcdfd5', f2: '#cbd2cd', f3: '#b6c2c1', red: '#b5452d', red2: '#8c3322', pier: '#3c565c', ink: '#1e3238' };
