@@ -1,16 +1,16 @@
 // The poster: a framed picture with a title, fitted to any screen shape. Each scene module supplies
 // make(W, H) (its geometry for a W x H window), paint(ctx, p, t, G), and its title, number, text ink and dark frame ink.
-import * as nocturne from './s-nocturne.js?v=20261011-dreamscapes-motion';
-import * as weather from './s-weather.js?v=20261011-dreamscapes-motion';
-import * as windows from './s-window.js?v=20261011-dreamscapes-motion';
-import * as daybreak from './s-daybreak.js?v=20261011-dreamscapes-motion';
-import * as deep from './s-deep.js?v=20261011-dreamscapes-motion';
-import * as orbit from './s-orbit.js?v=20261011-dreamscapes-motion';
-import * as music from './s-music.js?v=20261011-dreamscapes-motion';
-import * as geometry from './s-geometry.js?v=20261011-dreamscapes-motion';
-import * as dreamscapes from './s-dreamscapes.js?v=20261011-dreamscapes-motion';
-import { C, M, FONT } from './kit.js?v=20261011-dreamscapes-motion';
-import { scalePosterText } from './typography.js?v=20261011-dreamscapes-motion';
+import * as nocturne from './s-nocturne.js?v=20261011-clock-controls';
+import * as weather from './s-weather.js?v=20261011-clock-controls';
+import * as windows from './s-window.js?v=20261011-clock-controls';
+import * as daybreak from './s-daybreak.js?v=20261011-clock-controls';
+import * as deep from './s-deep.js?v=20261011-clock-controls';
+import * as orbit from './s-orbit.js?v=20261011-clock-controls';
+import * as music from './s-music.js?v=20261011-clock-controls';
+import * as geometry from './s-geometry.js?v=20261011-clock-controls';
+import * as dreamscapes from './s-dreamscapes.js?v=20261011-clock-controls';
+import { C, M, FONT } from './kit.js?v=20261011-clock-controls';
+import { scalePosterText } from './typography.js?v=20261011-clock-controls';
 
 // Each series lists its own scenes; a series with none yet is left out.
 export const SERIES = [nocturne, weather, windows, daybreak, deep, orbit, music, geometry, dreamscapes].filter((s) => Object.keys(s.scenes).length);

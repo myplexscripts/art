@@ -2,16 +2,16 @@
 // A full-screen poster is drawn live every frame and recomposed to the screen's shape, with its controls
 // and sound. The main page opens it over itself, growing out of the poster that was tapped, or at once for a scene's own address.
 // For checking: ?debug shows a readout, ?res=3840 forces the long side, ?t=40 starts the clock 40 s in.
-import './nozoom.js?v=20261011-dreamscapes-motion';
-import { draw, makeLayout, styleFor, SCENES } from './poster.js?v=20261011-dreamscapes-motion';
-import { hex, makeClockColor, makePaletteSampler, makeSceneColorSampler } from './clock-palette.js?v=20261011-dreamscapes-motion';
-import { makeClockDigits, CLOCK_LINE_HEIGHT } from './clock-digits.js?v=20261011-dreamscapes-motion';
-import { depthLayersFor, makeDepthRenderer } from './clock-depth.js?v=20261011-dreamscapes-motion';
-import { COLOR_CSS, makeColorPicker } from './clock-color-picker.js?v=20261011-dreamscapes-motion';
-import { fontReady, MIN_FONT_SIZE, TEXT_SCALE } from './typography.js?v=20261011-dreamscapes-motion';
-import { lockPage } from './scroll-lock.js?v=20261011-dreamscapes-motion';
-import { focusTimer, countdownFormatter, countdownText } from './focus-timer.js?v=20261011-dreamscapes-motion';
-import { FOCUS_CSS, makeFocusPanel, installGalleryFocus } from './focus-controls.js?v=20261011-dreamscapes-motion';
+import './nozoom.js?v=20261011-clock-controls';
+import { draw, makeLayout, styleFor, SCENES } from './poster.js?v=20261011-clock-controls';
+import { hex, makeSceneColorSampler } from './clock-palette.js?v=20261011-clock-controls';
+import { makeClockDigits, CLOCK_LINE_HEIGHT } from './clock-digits.js?v=20261011-clock-controls';
+import { depthLayersFor, makeDepthRenderer } from './clock-depth.js?v=20261011-clock-controls';
+import { COLOR_CSS, makeColorPicker } from './clock-color-picker.js?v=20261011-clock-controls';
+import { fontReady, MIN_FONT_SIZE, TEXT_SCALE } from './typography.js?v=20261011-clock-controls';
+import { lockPage } from './scroll-lock.js?v=20261011-clock-controls';
+import { focusTimer, countdownFormatter, countdownText } from './focus-timer.js?v=20261011-clock-controls';
+import { FOCUS_CSS, makeFocusPanel, installGalleryFocus } from './focus-controls.js?v=20261011-clock-controls';
 
 const LOOP = 30, MAXPX = 3840, CREAM = '#f2e5c3', FLIGHT = 650, CLOCK_FADE = 180;
 const MAX_CLOCK_SCALE = 8, CLOCK_BLEED = .03;
@@ -19,7 +19,7 @@ const MAX_CLOCK_SCALE = 8, CLOCK_BLEED = .03;
 const DEPTH_ENABLED = false;
 const FACE = 'var(--face, "Barlow Condensed", system-ui, sans-serif)';
 const colorSetting = saved => {
-  if (saved && ['white', 'adaptive'].includes(saved.mode)) return { mode: saved.mode };
+  if (saved?.mode === 'white') return { mode: 'white' };
   if (saved && ['poster', 'custom'].includes(saved.mode) && Array.isArray(saved.rgb) && saved.rgb.length === 3 && saved.rgb.every(v => Number.isFinite(v) && v >= 0 && v <= 255)) return { mode: saved.mode, rgb: saved.rgb.map(Math.round) };
   return null;
 };
@@ -35,6 +35,8 @@ const CSS = `
   .wz-player.picking-scene-color .wz-clock-face { pointer-events: none; }
   .wz-clock { position: absolute; inset: 0; display: grid; place-items: center; z-index: 1; pointer-events: none; margin: 0; color: #fff; opacity: 0; transition: opacity ${CLOCK_FADE}ms ease; font: 800 clamp(48px, 16.8vmin, 216px)/1 ${FACE}; letter-spacing: -.04em; white-space: nowrap; text-shadow: none; }
   .wz-clock.visible { opacity: 1; }
+  .wz-clock.rolling { transition: none; }
+  .wz-clock.leaving .wz-clock-face { pointer-events: none; }
   .wz-clock:not(.visible) .wz-clock-face { pointer-events: none; }
   .wz-clock-face { position: absolute; left: 50%; top: 50%; width: max-content; transform: translate(-50%, -50%); pointer-events: auto; touch-action: none; -webkit-touch-callout: none; padding: 20px; cursor: ew-resize; display: inline-block; font-kerning: none; letter-spacing: 0; opacity: 1; }
   .wz-clock-run { display: flex; width: max-content; direction: ltr; }
@@ -170,44 +172,37 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
   let normalClockOn = localStorage.getItem('wavz-clock') === '1', clockOn = normalClockOn, clockTimer = 0;
   let focusMode = false, focusVisible = localStorage.getItem('scenes-focus-visible') !== '0';
   let focusPanel = null, clockSwitching = false, clockSwitchTimer = 0, pendingMode = null;
+  let clockLeaving = false, clockEnterPending = false, clockRollSerial = 0;
   const colorKey = 'wavz-clock-ink-' + name;
-  let clockColor = { mode: localStorage.getItem('wavz-clock-color') === 'palette' ? 'adaptive' : 'white' };
-  let colouredChoice = { mode: 'adaptive' };
+  let clockColor = { mode: 'white' }, colouredChoice = null;
   try {
     const saved = JSON.parse(localStorage.getItem(colorKey));
     clockColor = colorSetting(saved) ?? clockColor;
-    colouredChoice = colorSetting(saved?.choice) ?? colouredChoice;
-    if (colouredChoice.mode === 'white') colouredChoice = { mode: 'adaptive' };
+    const choice = colorSetting(saved?.choice);
+    if (choice && choice.mode !== 'white') colouredChoice = choice;
+    // Old automatic choices become white; valid manual RGB choices survive.
+    if (saved) localStorage.setItem(colorKey, JSON.stringify({ ...clockColor, ...(colouredChoice ? { choice: colouredChoice } : {}) }));
   } catch {}
   if (clockColor.mode !== 'white') colouredChoice = clockColor;
-  let clockInk = null, clockFontsReady = false, paletteAt = -Infinity, colorPicker = null;
-  const clockHue = SCENES[name].clockHue;
-  const samplePalette = makePaletteSampler(scene, clockFace, SCENES[name].dark, clockRect);
+  let clockFontsReady = false, colorPicker = null;
+  const sceneColors = makeSceneColorSampler(scene, SCENES[name].dark);
+  localStorage.removeItem('wavz-clock-color');
   function syncClockChoice() {
     clockFace.setAttribute('aria-pressed', String(clockColor.mode !== 'white'));
     if (clockColor.mode === 'white') clockFace.style.color = '#fff';
     else if (clockColor.rgb) clockFace.style.color = hex(clockColor.rgb);
     colorPicker?.sync(clockColor);
   }
-  function updateClockColor(now, t) {
-    if (clockColor.mode !== 'adaptive' || !clockOn || !clockFontsReady || !L || flight || closing || positionAnimation || gesture?.drag) return;
-    if (!clockInk) {
-      // Read only a freshly drawn, settled poster at the clock's final placement.
-      const chosen = samplePalette();
-      if (!chosen) return;
-      clockInk = makeClockColor(chosen.rgb, clockHue?.(t) ?? null);
-    } else if (!clockHue || now - paletteAt < 100) return;
-    paletteAt = now; clockFace.style.color = clockInk(clockHue?.(t));
-  }
   function selectClockColor(value) {
-    clockColor = value; clockInk = null; paletteAt = -Infinity;
+    clockColor = value;
     if (value.mode !== 'white') colouredChoice = value;
-    localStorage.setItem(colorKey, JSON.stringify({ ...value, choice: colouredChoice }));
-    if (['adaptive', 'white'].includes(value.mode)) localStorage.setItem('wavz-clock-color', value.mode === 'adaptive' ? 'palette' : 'white');
-    if (value.mode === 'custom') localStorage.setItem('wavz-clock-custom', hex(value.rgb));
+    localStorage.setItem(colorKey, JSON.stringify({ ...value, ...(colouredChoice ? { choice: colouredChoice } : {}) }));
     syncClockChoice();
   }
-  const toggleClockColor = () => selectClockColor(clockColor.mode === 'white' ? colouredChoice : { mode: 'white' });
+  const toggleClockColor = () => {
+    if (clockColor.mode !== 'white') selectClockColor({ mode: 'white' });
+    else if (colouredChoice) selectClockColor(colouredChoice);
+  };
   syncClockChoice();
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
   const savedNumber = (key, fallback, min, max) => {
@@ -235,10 +230,6 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
   };
   const clockCenter = () => { const r = clockFace.getBoundingClientRect(), art = root.getBoundingClientRect(); return {
     x: r.x + r.width / 2 + clockSize().offset - art.x, y: r.y + r.height / 2 - art.y }; };
-  function clockRect() {
-    const r = clockFace.getBoundingClientRect(), size = clockSize();
-    return { left: r.left + 20 + size.left, right: r.left + 20 + size.right, top: r.top + 20, bottom: r.bottom - 20 };
-  }
   const saveClockPosition = () => {
     legacyPosition = false;
     localStorage.setItem(positionKey, JSON.stringify({ ...position, version: 2, ...(edgeAnchor ? { edge: edgeAnchor } : {}) }));
@@ -264,11 +255,9 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
     if (freeze) position = { x: p.x / root.clientWidth, y: p.y / root.clientHeight };
     placeClock();
   }
-  const reassessPalette = () => { clockInk = null; paletteAt = -Infinity; };
   function centerClock() {
     cancelPositionAnimation();
     clockDigits.refreshBounds();
-    reassessPalette();
     const from = clockCenter(), x = root.clientWidth / 2, y = root.clientHeight / 2;
     const { halfW, halfH, offset } = clockSize();
     edgeAnchor = null; legacyPosition = false; position = { x: .5, y: .5 }; localStorage.removeItem(positionKey); placeClock();
@@ -280,8 +269,8 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
         { left: x - offset + 'px', top: y + 'px' },
       ], { duration: 650, easing: 'cubic-bezier(.16,1,.3,1)' });
       const animation = positionAnimation;
-      animation.onfinish = () => { if (positionAnimation === animation) positionAnimation = null; reassessPalette(); };
-    } else reassessPalette();
+      animation.onfinish = () => { if (positionAnimation === animation) positionAnimation = null; };
+    }
   }
   function fitClock() {
     cancelPositionAnimation(false);
@@ -317,21 +306,23 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
   function updateClock() {
     clearTimeout(clockTimer);
     const wasHidden = clock.hidden;
-    clock.hidden = !clockOn || closing;
-    if (!clockOn) clock.classList.remove('visible');
+    clock.hidden = (!clockOn && !clockLeaving) || closing;
+    clock.setAttribute('aria-hidden', String(!clockOn || closing));
+    if (!clockOn && !clockLeaving) clock.classList.remove('visible');
     clockToggle.setAttribute('aria-pressed', String(clockOn));
     clockToggle.firstChild.textContent = focusMode ? 'Timer' : 'Clock';
     clockToggle.querySelector('em').textContent = clockOn ? 'on' : 'off';
     clockToggle.setAttribute('aria-label', (focusMode ? 'Countdown: ' : 'Clock: ') + (clockOn ? 'on' : 'off'));
-    if (!clockOn || closed || closing) return;
+    clock.dataset.mode = focusMode ? 'focus' : 'clock';
+    if (!clockOn || closed || closing || clock.classList.contains('rolling') && !clockEnterPending) return;
     const now = new Date();
     const first = !clockDigits.value;
     const beforeBounds = clockDigits.bounds();
     const focus = focusMode ? focusTimer.snapshot() : null;
-    const text = clockDigits.update(focusMode ? focus.seconds : now, clock.classList.contains('visible') && !wasHidden);
+    const text = clockDigits.update(focusMode ? focus.seconds : now, clock.classList.contains('visible') && !wasHidden && !clockEnterPending);
     const label = focusMode ? `${focus.kind === 'focus' ? 'Focus' : 'Break'} ${focus.status === 'completed' ? 'complete' : 'remaining: ' + text}${focus.status === 'paused' ? ', paused' : ''}` : 'Current time: ' + text;
     clockFace.setAttribute('aria-label', label + '. Tap for color, hold to move, triple tap to center.');
-    clock.dateTime = focusMode ? `PT${focus.seconds}S` : now.toISOString(); clock.dataset.mode = focusMode ? 'focus' : 'clock';
+    clock.dateTime = focusMode ? `PT${focus.seconds}S` : now.toISOString();
     clock.setAttribute('aria-label', label);
     if (first || wasHidden) fitClock();
     else {
@@ -352,6 +343,30 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
     }
     if (!focusMode) clockTimer = setTimeout(updateClock, 60000 - (now.getSeconds() * 1000 + now.getMilliseconds()) + 25);
   }
+  function readyClock() {
+    if (!clockOn || !clockSettled || !clockFontsReady || clockSwitching || closing || flight) return;
+    if (clockEnterPending) {
+      clockEnterPending = false;
+      rollClock(true);
+    } else if (!clock.classList.contains('visible')) clock.classList.add('visible');
+  }
+  function rollClock(visible) {
+    const serial = ++clockRollSerial;
+    clockLeaving = !visible;
+    clock.hidden = false;
+    clock.classList.add('rolling', 'visible');
+    clock.classList.toggle('leaving', !visible);
+    const finish = () => {
+      if (serial !== clockRollSerial || closed || closing) return;
+      clockLeaving = false;
+      if (!clockOn) { clock.hidden = true; clock.classList.remove('visible'); }
+      clock.classList.remove('rolling', 'leaving');
+      updateClock();
+    };
+    const pending = clockDigits.roll(visible);
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) finish();
+    else pending.then(finish);
+  }
   // Capture gestures that start on the clock; a second finger may land beside it.
   const fingers = new Map();
   let gesture = null, pinched = false, tap = null, holdTimer = 0, tapTimer = 0, tapCount = 0, lastTap = 0, dragged = false;
@@ -359,10 +374,10 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
   const clearTaps = () => { clearTimeout(tapTimer); tapCount = 0; };
   const recordTap = () => {
     const now = performance.now();
-    tapCount = now - lastTap < 350 ? tapCount + 1 : 1; lastTap = now;
+    tapCount = now - lastTap < 500 ? tapCount + 1 : 1; lastTap = now;
     clearTimeout(tapTimer);
     if (tapCount === 3) { tapCount = 0; centerClock(); }
-    else tapTimer = setTimeout(() => { if (tapCount === 1 && !closed && clockOn) toggleClockColor(); tapCount = 0; }, 350);
+    else tapTimer = setTimeout(() => { if (tapCount === 1 && !closed && clockOn) toggleClockColor(); tapCount = 0; }, 500);
   };
   const distance = () => { const [a, b] = [...fingers.values()]; return Math.hypot(b.x - a.x, b.y - a.y); };
   const beginGesture = () => {
@@ -377,7 +392,7 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
     const ids = [...fingers.keys()]; fingers.clear(); gesture = null; pinched = false; tap = null;
     for (const id of ids) if (root.hasPointerCapture(id)) root.releasePointerCapture(id);
     saveClockStyle();
-    if (dragged) { saveClockPosition(); dragged = false; reassessPalette(); }
+    if (dragged) { saveClockPosition(); dragged = false; }
   };
   root.addEventListener('pointerdown', (e) => {
     if (!clockOn || flight || closing || clockSwitching || focusPanel?.active || colorPicker?.sampling || e.button !== 0 || ui.contains(e.target) || colorPicker?.element.contains(e.target)) return;
@@ -426,7 +441,7 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
     if (!fingers.size) {
       clearHold(); gesture = null; pinched = false; saveClockStyle();
       if (e.type !== 'pointerup') clearTaps();
-      if (dragged) { saveClockPosition(); dragged = false; reassessPalette(); }
+      if (dragged) { saveClockPosition(); dragged = false; }
     }
     else beginGesture();
     if (tapped) recordTap();
@@ -446,7 +461,7 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
       const p = clockCenter();
       moveClock(p.x + (e.key === 'ArrowLeft' ? -16 : e.key === 'ArrowRight' ? 16 : 0),
         p.y + (e.key === 'ArrowUp' ? -16 : e.key === 'ArrowDown' ? 16 : 0));
-      saveClockPosition(); reassessPalette(); return;
+      saveClockPosition(); return;
     }
     if (['Enter', ' '].includes(e.key)) { e.preventDefault(); toggleClockColor(); return; }
     if (['ArrowLeft', 'ArrowRight'].includes(e.key)) clockWeight = clamp(clockWeight + (e.key === 'ArrowRight' ? 50 : -50), 100, 900);
@@ -458,26 +473,33 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
     stopClockGesture(); clockOn = !clockOn;
     if (focusMode) { focusVisible = clockOn; localStorage.setItem('scenes-focus-visible', clockOn ? '1' : '0'); }
     else { normalClockOn = clockOn; localStorage.setItem('wavz-clock', clockOn ? '1' : '0'); }
-    updateClock();
+    ++clockRollSerial;
+    if (clockOn) {
+      clockLeaving = false; clockEnterPending = true;
+      clock.classList.remove('rolling', 'leaving');
+      updateClock(); readyClock();
+    } else {
+      clockEnterPending = false;
+      const visible = !clock.hidden && clock.classList.contains('visible');
+      clockLeaving = visible;
+      updateClock();
+      if (visible) rollClock(false);
+      else clock.classList.remove('rolling', 'leaving');
+    }
   });
   const resumeClock = () => { if (document.visibilityState === 'visible') updateClock(); };
   document.addEventListener('visibilitychange', resumeClock);
   updateClock();
-  fontReady.then(() => { if (!closed) { clockDigits.measure(); clockFontsReady = true; fitClock(); if (!flight) saveClockStyle(); } });
+  fontReady.then(() => { if (!closed) { clockDigits.measure(); clockFontsReady = true; fitClock(); if (!flight) saveClockStyle(); readyClock(); } });
 
-  // ---- colour: three prominent poster inks, a clean scene sample, white or adaptive ink.
+  // ---- colour: up to eight manual poster inks and a clean scene sample, with solid white.
   colorPicker = makeColorPicker({ root, face: clockFace, button: $('wz-color-toggle'), title: SCENES[name].title,
-    selected: clockColor, getPalette: () => samplePalette()?.dominant, sampleColor: makeSceneColorSampler(scene, SCENES[name].dark),
+    selected: clockColor, getPalette: () => sceneColors.getPalette(), sampleColor: sceneColors,
     onSelect: selectClockColor,
     onOpen() {
       focusPanel?.close(false);
       stopClockGesture(); clearTimeout(hide); ui.hidden = true;
-      if (!clockOn) {
-        clockOn = true;
-        if (focusMode) { focusVisible = true; localStorage.setItem('scenes-focus-visible', '1'); }
-        else { normalClockOn = true; localStorage.setItem('wavz-clock', '1'); }
-        updateClock();
-      }
+      if (!clockOn) clockToggle.click();
     },
     onClose() { ui.hidden = false; show(); },
   });
@@ -526,9 +548,8 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
     flight?.(now);
     const t0 = performance.now(), t = now / 1000 + skip;
     frame1(t);
-    if (clockOn) updateClockColor(now, t);
-    // The time appears only after the poster has landed, loaded its face and sampled its ink.
-    if (clockOn && clockSettled && clockFontsReady && !clockSwitching && !closing && !flight) clock.classList.add('visible');
+    // The time appears only after the poster has landed and its font has loaded.
+    readyClock();
     ms += (performance.now() - t0 - ms) * 0.05; fps += (1000 / Math.max(1, now - last) - fps) * 0.05; last = now;
     if (debug && ++n % 3 === 0) hud.textContent = `${scene.width} x ${scene.height}  ${fps.toFixed(0)} fps  draw ${ms.toFixed(1)} ms  t ${t.toFixed(0)} s` + (notes.length ? '\n' + notes.join('\n') : '');
     requestAnimationFrame(tick);
@@ -577,7 +598,7 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
   async function startSound() {
     if (!hasAudio) return;
     // Once loaded, make and resume audio synchronously during the next iOS tap.
-    if (!soundFactory) soundFactory = (await import('./sound.js?v=20261011-dreamscapes-motion')).makeSound;
+    if (!soundFactory) soundFactory = (await import('./sound.js?v=20261011-clock-controls')).makeSound;
     if (closed || !on) return;
     if (sound) { levels(); sound.resume(); return; }
     sound = soundFactory(name, typeof SCENES[name].audio === 'string' ? SCENES[name].audio : name);
@@ -645,6 +666,8 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
     }
     if (clockSwitching && pendingMode === state.active) return;
     clearTimeout(clockSwitchTimer); clearTimeout(clockTimer); stopClockGesture();
+    ++clockRollSerial; clockLeaving = false; clockEnterPending = false;
+    clock.classList.remove('rolling', 'leaving');
     const visible = !clock.hidden && Number(getComputedStyle(clock).opacity) > 0;
     clockSwitching = true; pendingMode = state.active; clock.classList.remove('visible');
     const swap = () => {
@@ -653,7 +676,7 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
       focusMode = focusTimer.snapshot().active; clockOn = focusMode ? focusVisible : normalClockOn;
       clockScale = savedNumber(focusMode ? 'scenes-focus-scale' : 'wavz-clock-scale', 1, .5, MAX_CLOCK_SCALE);
       clockDigits = makeClockDigits(clockFace, focusMode ? countdownFormatter : clockFormat);
-      clockSwitching = false; pendingMode = null; reassessPalette(); updateClock(); fitClock();
+      clockSwitching = false; pendingMode = null; updateClock(); fitClock();
     };
     if (visible && !matchMedia('(prefers-reduced-motion: reduce)').matches) clockSwitchTimer = setTimeout(swap, CLOCK_FADE);
     else swap();
@@ -692,6 +715,8 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
         if (to && !immediate) fly(root.getBoundingClientRect(), to, 'b', end); else end();
       };
       clearTimeout(closeTimer); clearTimeout(clockTimer); clearTimeout(clockSwitchTimer); unsubscribeFocus(); closing = true; clockSettled = false;
+      ++clockRollSerial; clockLeaving = false; clockEnterPending = false;
+      clock.classList.remove('rolling', 'leaving');
       focusPanel.close(false);
       stopClockGesture(); colorPicker.close(false); root.inert = true; ui.classList.add('off');
       on = false; sound?.stop(); sound = null;

@@ -1,5 +1,5 @@
 // Jazz Piano Essentials: floating ivory/teal bars articulate a swung eighth-note phrase.
-import { make as geometry,setup,swing,rectangle,circle } from './genre-kit.js?v=20261011-dreamscapes-motion';
+import { make as geometry,setup,swing,rectangle,circle } from './genre-kit.js?v=20261011-clock-controls';
 export const title='Blue Notes', no='No. 03', genre='Jazz', text='#c9e8f3', dark='#082e40', audio=false, textless=true;
 export function make(W,H) {
   return {...geometry(W,H),bars:[

@@ -2,9 +2,9 @@
 // sliding at their own speeds and a great oval storm going round. Everything about the planet is drawn in a frame
 // turned to the ring plane, in order: moons behind, the back half of the rings, the disc, the front half, moons in front.
 // In the foreground, jagged ice ridges and a geyser that vents in bursts.
-import { mulberry, clamp, osc, sway, noise1, circle, star4, TAU } from './geom.js?v=20261011-dreamscapes-motion';
-import { C, F } from './kit.js?v=20261011-dreamscapes-motion';
-import { hash, el, makeStars, paintStars } from './bits.js?v=20261011-dreamscapes-motion';
+import { mulberry, clamp, osc, sway, noise1, circle, star4, TAU } from './geom.js?v=20261011-clock-controls';
+import { C, F } from './kit.js?v=20261011-clock-controls';
+import { hash, el, makeStars, paintStars } from './bits.js?v=20261011-clock-controls';
 
 export const title = 'RINGED GIANT', no = 'No. 02', text = '#161a44', dark = '#070920';
 const A = { sky: '#0a0c26', r1: '#10153c', r2: '#192052', butter: '#e0a458', tan: '#c08a52', brown: '#96623e', night: '#1b1436', ringB: '#d9b98a', shadow: '#4a3348', i1: '#c6e4ec', i2: '#8fbdd2', i3: '#5a8cb0', i4: '#2c4f7c', ink: '#0c1430' };

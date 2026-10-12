@@ -1,5 +1,5 @@
-import { focusTimer, countdownText } from './focus-timer.js?v=20261011-dreamscapes-motion';
-import { lockPage } from './scroll-lock.js?v=20261011-dreamscapes-motion';
+import { focusTimer, countdownText } from './focus-timer.js?v=20261011-clock-controls';
+import { lockPage } from './scroll-lock.js?v=20261011-clock-controls';
 
 const FACE = 'var(--face, "Barlow Condensed", system-ui, sans-serif)';
 export const FOCUS_CSS = `
@@ -25,20 +25,14 @@ export const FOCUS_CSS = `
   .wz-focus-progress { height: 3px; background: #f2e5c333; margin-bottom: 20px; overflow: hidden; }
   .wz-focus-progress span { display: block; height: 100%; background: #dd7f45; transform: scaleX(var(--progress, 0)); transform-origin: left; }
   .wz-focus-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .wz-focus-actions .wz-focus-primary { grid-column: 1 / -1; }
   .wz-focus-finished p { font-size: 20px; line-height: 1.4; margin: 18px 0; }
-  .wz-focus-sound { display: flex; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid #f2e5c344; margin-top: 20px; padding-top: 14px; }
-  .wz-focus-sound button { font-size: 16px; }
-  .wz-focus-sound button em { font-style: normal; color: var(--sub, #f0bd4d); margin-left: 8px; }
-  .wz-focus-editor .wz-focus-preview { border: 0; text-decoration: underline; text-underline-offset: 5px; }
   .wz-focus-live { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
   .scenes-focus-dock { position: fixed; z-index: 8; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); max-width: calc(100% - 32px); display: flex; align-items: center; gap: 14px; border: 1px solid var(--gallery-accent, #dd7f45); border-radius: 10px; padding: 14px 18px; background: var(--gallery-paper, #f2e5c3); color: var(--gallery-ink, #0e1c3a); font: 600 18px/1.2 ${FACE}; cursor: pointer; }
   .scenes-focus-dock em { font-style: normal; font-variant-numeric: tabular-nums; }
   body:has(.wz-player) .scenes-focus-dock { display: none; }
   .wz-focus-gallery { position: fixed; z-index: 20; --paper: var(--gallery-paper, #f2e5c3); --ink: var(--gallery-ink, #0e1c3a); --sub: var(--gallery-accent, #8f4520); }
   .wz-focus-gallery button, .wz-focus-gallery input { border-color: color-mix(in srgb, currentColor 35%, transparent); }
-  .wz-focus-gallery .wz-focus-sound { border-color: color-mix(in srgb, currentColor 20%, transparent); }
-  @media (max-height: 480px) { .wz-focus-panel { padding-top: 10px; } .wz-focus-panel-time { font-size: 52px; margin-top: 4px; } .wz-focus-intro { margin: 6px 0 10px; } .wz-focus-sound { margin-top: 12px; padding-top: 8px; } }
+  @media (max-height: 480px) { .wz-focus-panel { padding-top: 10px; } .wz-focus-panel-time { font-size: 52px; margin-top: 4px; } .wz-focus-intro { margin: 6px 0 10px; } }
 `;
 
 let id = 0;
@@ -46,10 +40,10 @@ export function makeFocusPanel({ root, button, onOpen = () => {}, onClose = () =
   const editor = document.createElement('section'); editor.className = 'wz-focus-editor' + (gallery ? ' wz-focus-gallery' : '');
   editor.id = 'scenes-focus-panel-' + ++id; editor.hidden = true; editor.setAttribute('role', 'dialog'); editor.setAttribute('aria-modal', 'true');
   editor.innerHTML = `<div class="wz-focus-panel"><div class="wz-focus-heading"><h2 id="${editor.id}-title">Focus timer</h2><button type="button" class="wz-focus-close" aria-label="Close focus controls">×</button></div>
-    <form class="wz-focus-settings"><p class="wz-focus-intro">One scene. A little space to concentrate.</p><div class="wz-focus-presets" role="group" aria-label="Focus duration">${[15, 25, 45, 60].map(minutes => `<button type="button" data-minutes="${minutes}" aria-pressed="${minutes === 25}">${minutes} min</button>`).join('')}</div><label class="wz-focus-custom">Choose your minutes<input type="number" min="1" max="99" step="1" value="25" required inputmode="numeric" aria-label="Focus duration in minutes" aria-describedby="${editor.id}-error"></label><p class="wz-focus-error" id="${editor.id}-error" role="alert" hidden>Choose a whole number from 1 to 99 minutes.</p><button class="wz-focus-primary" type="submit">Start focus</button></form>
-    <div class="wz-focus-session" hidden><time class="wz-focus-panel-time">25:00</time><p class="wz-focus-status"></p><div class="wz-focus-progress" role="progressbar" aria-label="Session progress" aria-valuemin="0" aria-valuemax="100"><span></span></div><div class="wz-focus-actions"><button type="button" class="wz-focus-primary wz-focus-pause">Pause</button><button type="button" class="wz-focus-restart">Restart</button><button type="button" class="wz-focus-end">End timer</button></div></div>
-    <div class="wz-focus-finished" hidden><p class="wz-focus-finish-copy"></p><div class="wz-focus-actions"><button type="button" class="wz-focus-primary wz-focus-next">Start a 5-minute break</button><button type="button" class="wz-focus-new">New focus</button><button type="button" class="wz-focus-done">Done</button></div></div>
-    <div class="wz-focus-sound"><button type="button" class="wz-focus-chime" role="switch" aria-checked="true">Soft Arrival<em>on</em></button><button type="button" class="wz-focus-preview">Preview chime</button></div><p class="wz-focus-live" role="status"></p></div>`;
+    <form class="wz-focus-settings"><p class="wz-focus-intro">A little space to concentrate. A gentle chime when you’re done.</p><div class="wz-focus-presets" role="group" aria-label="Focus duration">${[15, 30, 45, 60].map(minutes => `<button type="button" data-minutes="${minutes}" aria-pressed="${minutes === 30}">${minutes} min</button>`).join('')}</div><label class="wz-focus-custom">Choose your minutes<input type="number" min="1" max="99" step="1" value="30" required inputmode="numeric" aria-label="Focus duration in minutes" aria-describedby="${editor.id}-error"></label><p class="wz-focus-error" id="${editor.id}-error" role="alert" hidden>Choose a whole number from 1 to 99 minutes.</p><button class="wz-focus-primary" type="submit">Start focus</button></form>
+    <div class="wz-focus-session" hidden><time class="wz-focus-panel-time">30:00</time><p class="wz-focus-status"></p><div class="wz-focus-progress" role="progressbar" aria-label="Session progress" aria-valuemin="0" aria-valuemax="100"><span></span></div><div class="wz-focus-actions"><button type="button" class="wz-focus-primary wz-focus-pause">Pause</button><button type="button" class="wz-focus-end">End timer</button></div></div>
+    <div class="wz-focus-finished" hidden><p class="wz-focus-finish-copy"></p><div class="wz-focus-actions"><button type="button" class="wz-focus-primary wz-focus-next">Start a 5-minute break</button><button type="button" class="wz-focus-done">Done</button></div></div>
+    <p class="wz-focus-live" role="status"></p></div>`;
   editor.setAttribute('aria-labelledby', editor.id + '-title'); root.append(editor);
   const $ = cls => editor.querySelector('.' + cls), panel = $('wz-focus-panel'), input = editor.querySelector('input');
   const viewport = window.visualViewport, presets = [...editor.querySelectorAll('[data-minutes]')];
@@ -84,7 +78,6 @@ export function makeFocusPanel({ root, button, onOpen = () => {}, onClose = () =
     $('wz-focus-progress').style.setProperty('--progress', progress); $('wz-focus-progress').setAttribute('aria-valuenow', String(Math.round(progress * 100)));
     $('wz-focus-finish-copy').textContent = state.kind === 'focus' ? 'Your focus session is complete. A short break is waiting when you are.' : 'A little refreshed. Start again whenever you’re ready.';
     $('wz-focus-next').textContent = state.kind === 'focus' ? 'Start a 5-minute break' : 'Start another focus';
-    $('wz-focus-chime').setAttribute('aria-checked', String(state.soundEnabled)); $('wz-focus-chime').querySelector('em').textContent = state.soundEnabled ? 'on' : 'off';
     if (state.status === 'completed' && !editor.dataset.completed) $('wz-focus-live').textContent = state.kind === 'focus' ? 'Focus complete.' : 'Break complete.';
     editor.dataset.completed = done ? '1' : '';
     if (active) fit();
@@ -101,13 +94,9 @@ export function makeFocusPanel({ root, button, onOpen = () => {}, onClose = () =
     input.removeAttribute('aria-invalid'); close();
   });
   $('wz-focus-pause').addEventListener('click', () => focusTimer.snapshot().status === 'paused' ? focusTimer.resume() : focusTimer.pause());
-  $('wz-focus-restart').addEventListener('click', () => focusTimer.restart());
   $('wz-focus-end').addEventListener('click', () => { focusTimer.stop(); $('wz-focus-settings').querySelector('button[type=submit]').focus(); });
   $('wz-focus-done').addEventListener('click', () => { focusTimer.stop(); close(); });
-  $('wz-focus-next').addEventListener('click', () => { const completed = focusTimer.snapshot(); focusTimer.start(completed.kind === 'focus' ? 5 : 25, completed.kind === 'focus' ? 'break' : 'focus'); close(); });
-  $('wz-focus-new').addEventListener('click', () => { focusTimer.stop(); $('wz-focus-settings').querySelector('button[type=submit]').focus(); });
-  $('wz-focus-chime').addEventListener('click', () => focusTimer.setSound(!focusTimer.snapshot().soundEnabled));
-  $('wz-focus-preview').addEventListener('click', () => { focusTimer.preview().then(played => { $('wz-focus-live').textContent = played ? 'Playing Soft Arrival.' : 'Tap Preview chime to try again.'; }); });
+  $('wz-focus-next').addEventListener('click', () => { const completed = focusTimer.snapshot(); focusTimer.start(completed.kind === 'focus' ? 5 : 30, completed.kind === 'focus' ? 'break' : 'focus'); close(); });
   $('wz-focus-close').addEventListener('click', () => close());
   button.setAttribute('aria-controls', editor.id); button.setAttribute('aria-haspopup', 'dialog'); button.setAttribute('aria-expanded', 'false'); button.addEventListener('click', open);
   editor.addEventListener('pointerdown', event => { if (event.target === editor) close(); });

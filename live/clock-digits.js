@@ -4,6 +4,8 @@ const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 const normalize = text => text.replace(/[\u00a0\u202f]/g, ' ');
 const numeric = type => ['hour', 'minute', 'second'].includes(type);
 export const CLOCK_LINE_HEIGHT = 1.12;
+export const CLOCK_ROLL_DURATION = 480;
+const rollTiming = { duration: CLOCK_ROLL_DURATION, easing: 'cubic-bezier(.22,1,.36,1)' };
 
 export function makeClockDigits(face, formatter) {
   const parts = date => formatter.formatToParts(date).map(part => ({ ...part, value: normalize(part.value) }));
@@ -85,9 +87,8 @@ export function makeClockDigits(face, formatter) {
     slot.char = char; slot.glyph = next; slot.element.dataset.char = char;
     slot.element.replaceChildren(...(old && animate && !reduced() ? [old, next] : [next]));
     if (!old || !animate || reduced()) return;
-    const timing = { duration: 480, easing: 'cubic-bezier(.22,1,.36,1)' };
-    const out = old.animate([{ transform: 'translateY(0)' }, { transform: 'translateY(-100%)' }], { ...timing, fill: 'forwards' });
-    const incoming = next.animate([{ transform: 'translateY(100%)' }, { transform: 'translateY(0)' }], timing);
+    const out = old.animate([{ transform: 'translateY(0)' }, { transform: 'translateY(-100%)' }], { ...rollTiming, fill: 'forwards' });
+    const incoming = next.animate([{ transform: 'translateY(100%)' }, { transform: 'translateY(0)' }], rollTiming);
     slot.motions = [out, incoming];
     incoming.onfinish = () => { if (slot.glyph === next) { old.remove(); out.cancel(); slot.motions = []; } };
   }
@@ -102,6 +103,26 @@ export function makeClockDigits(face, formatter) {
     return value;
   }
   function cancelPulse() { pulse?.cancel(); pulse = null; }
+  function roll(visible) {
+    const pending = [];
+    for (const part of schema) for (const slot of part.slots) {
+      const glyph = slot.glyph;
+      if (!glyph) continue;
+      // Preserve the current outgoing position if a toggle interrupts a roll.
+      // Incoming characters always rise from below, just like a new digit.
+      const from = visible ? 'translateY(100%)' : getComputedStyle(glyph).transform;
+      cancelMotions(slot); slot.element.replaceChildren(glyph);
+      const to = visible ? 'translateY(0)' : 'translateY(-100%)';
+      glyph.style.transform = to;
+      if (reduced()) continue;
+      const motion = glyph.animate([{ transform: from === 'none' ? 'translateY(0)' : from }, { transform: to }], rollTiming);
+      slot.motions = [motion];
+      pending.push(motion.finished.catch(() => {}).then(() => {
+        if (slot.motions[0] === motion) slot.motions = [];
+      }));
+    }
+    return Promise.all(pending);
+  }
   function held() {
     cancelPulse(); if (reduced()) return;
     pulse = run.animate([{ transform: 'scale(1)', easing: 'ease-out' },
@@ -110,6 +131,6 @@ export function makeClockDigits(face, formatter) {
     { duration: 460, easing: 'linear' });
   }
   measure();
-  return { update, measure, held, cancelPulse, bounds, refreshBounds, get widthEm() { return widthEm; }, get value() { return value; },
+  return { update, measure, roll, held, cancelPulse, bounds, refreshBounds, get widthEm() { return widthEm; }, get value() { return value; },
     destroy() { cancelPulse(); schema.forEach(part => part.slots.forEach(cancelMotions)); } };
 }

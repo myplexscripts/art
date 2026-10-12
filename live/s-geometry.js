@@ -38,9 +38,9 @@ export function stackState(t, { H, S }) {
     surface: H * .08 + range * drift.value + phase * height,
     scrollSpeed: range * drift.derivative * camera.rate + height * arrival.rate };
 }
-function scene(title, no, dark, audio, render, clockHue) {
+function scene(title, no, dark, audio, render) {
   // The gallery uses the same framed title and number band as the original posters.
-  return { title, no: 'No. ' + no, dark, text: '#0e1c3a', audio, grain: true, clockHue, make,
+  return { title, no: 'No. ' + no, dark, text: '#0e1c3a', audio, grain: true, make,
     paint(c, p, t, G) { c.save(); render(c, t, G); c.restore(); } };
 }
 const stacks = scene('Stacks', '01', '#1d2939', 'openblue', (c, t, G) => {
@@ -58,7 +58,7 @@ const stacks = scene('Stacks', '01', '#1d2939', 'openblue', (c, t, G) => {
     c.fillStyle = ink(hue, 51 - depth * 30);
     c.fillRect(slide, y, W, state.height + 1);
   }
-}, stacksHue);
+});
 
 // Each flower keeps the shape and shade it was born with as it expands across the canvas.
 // Cached unit paths make repeated scaling inexpensive on mobile Safari.
@@ -110,7 +110,7 @@ const blooms = scene('Blooms', '02', '#482c43', 'lavender', (c, t, G) => {
     c.fillStyle = ink(hue, bloomShades[mod(birth, bloomShades.length)]);
     bloom(c, radius, bloomShape(birth, state)); c.restore();
   }
-}, bloomsHue);
+});
 
 export function waveState(t, { W, H, S }) {
   // A slow vertical camera scroll reveals different parts of the same ripple field.

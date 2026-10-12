@@ -1,9 +1,9 @@
 // Nocturne Series No. 05: Night Train. The view travels with the train: it holds its place on the causeway while the
 // country slides past behind it, far ridges slowly and the near bank fast, with a lake in front that carries its lights.
 // The land is drawn from noise along an endless strip, so it never comes round again.
-import { clamp, osc, noise1, poly, circle, pill, TAU } from './geom.js?v=20261011-dreamscapes-motion';
-import { C, F } from './kit.js?v=20261011-dreamscapes-motion';
-import { hash, makeStars, paintStars, meteor, bars, pine } from './bits.js?v=20261011-dreamscapes-motion';
+import { clamp, osc, noise1, poly, circle, pill, TAU } from './geom.js?v=20261011-clock-controls';
+import { C, F } from './kit.js?v=20261011-clock-controls';
+import { hash, makeStars, paintStars, meteor, bars, pine } from './bits.js?v=20261011-clock-controls';
 
 export const title = 'NIGHT TRAIN', no = 'No. 05', text = C.navy, dark = C.ink;
 const nF = noise1(101), nM = noise1(113), nN = noise1(127);

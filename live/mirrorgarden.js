@@ -1,5 +1,5 @@
 // Dreamscapes No. 05: a wind-tossed garden reflected in a suspended lake.
-import { makeWorld, hash, frac, box, disc, oval, polygon, line, leaf, stars, clouds } from './dream-kit.js?v=20261011-dreamscapes-motion';
+import { makeWorld, hash, frac, box, disc, oval, polygon, line, leaf, stars, clouds } from './dream-kit.js?v=20261011-clock-controls';
 export const title = 'Mirror Garden', no = 'No. 05', dark = '#253f43', text = '#253f43', audio = 'jungle', grain = true;
 const K = { sky: '#3a575c', halo: '#4e7174', soft: '#6f8a86', moon: '#c8bd91', dark: '#233f40',
   tree: '#365c50', leaf: '#5c8165', light: '#869b75', bank: '#688573', edge: '#a6ae8b', water: '#477880', deepWater: '#37616b', gold: '#d4b37b' };

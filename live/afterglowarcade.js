@@ -1,5 +1,5 @@
 // A perspective procession of iridescent arches, inspired by Chilltronics.
-import { make as geometry, setup, gradient, glow, disc, hash, TAU } from './art-kit.js?v=20261011-dreamscapes-motion';
+import { make as geometry, setup, gradient, glow, disc, hash, TAU } from './art-kit.js?v=20261011-clock-controls';
 export const title='Afterglow Arcade', no='No. 09', text='#d7d2fc', dark='#18102d', audio=false, textless=true;
 let archSurface, stageSurface;
 const depthMasks = new Map();

@@ -1,5 +1,5 @@
 // Small drawing primitives shared by the original Music Series.
-import { FONT } from './kit.js?v=20261011-dreamscapes-motion';
+import { FONT } from './kit.js?v=20261011-clock-controls';
 export const TAU = Math.PI * 2;
 export const paper = '#f2e5c3';
 export function makeRoom(W, H) { return { W, H, s: Math.min(W / 1000, H / 920) }; }

@@ -2,9 +2,9 @@
 // farmhouse and its cypresses stand on the meadow where the rows end, with a line of hills behind. The rows are flat
 // wedges of two violets fanned from the vanishing point. Every boundary between two rows carries a line of round tufts
 // that grow with nearness, placed once in make, and paint leans them in waves that travel over the field.
-import { mulberry, clamp, osc, sway, noise1, poly, circle, TAU } from './geom.js?v=20261011-dreamscapes-motion';
-import { C, F } from './kit.js?v=20261011-dreamscapes-motion';
-import { hash, el, bars } from './bits.js?v=20261011-dreamscapes-motion';
+import { mulberry, clamp, osc, sway, noise1, poly, circle, TAU } from './geom.js?v=20261011-clock-controls';
+import { C, F } from './kit.js?v=20261011-clock-controls';
+import { hash, el, bars } from './bits.js?v=20261011-clock-controls';
 
 export const title = 'LAVENDER FIELD', no = 'No. 02', text = '#33245f', dark = '#221942';
 const P = { sky: '#f4ae84', r1: '#f7c08c', r2: '#f9d199', r3: '#fbe0ac', h1: '#b3c4a2', h2: '#86a78a', green: '#2f5c4c', v1: '#8266b8', v2: '#654a9e', vl: '#b29ade', ink: '#35266c', shade: '#dcc79c' };

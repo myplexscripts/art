@@ -1,9 +1,9 @@
 // Nocturne Series No. 07: Northern Lights. Curtains of light hang over a frozen lake and are doubled in it; a cabin
 // with one lit window sits on the near bank between the pines. The curtains are built from upright rays whose
 // heights come from noise that drifts, so they ripple and fold without ever repeating.
-import { mulberry, clamp, osc, sway, noise1, frac, poly, circle, pill, TAU } from './geom.js?v=20261011-dreamscapes-motion';
-import { C, F } from './kit.js?v=20261011-dreamscapes-motion';
-import { hash, makeStars, paintStars, meteor, pine } from './bits.js?v=20261011-dreamscapes-motion';
+import { mulberry, clamp, osc, sway, noise1, frac, poly, circle, pill, TAU } from './geom.js?v=20261011-clock-controls';
+import { C, F } from './kit.js?v=20261011-clock-controls';
+import { hash, makeStars, paintStars, meteor, pine } from './bits.js?v=20261011-clock-controls';
 
 export const title = 'NORTHERN LIGHTS', no = 'No. 07', text = '#0c2038', dark = '#060d1c';
 const A = { sky: '#0a1430', violet: '#3b3476', g1: '#17666a', g2: '#2aa585', g3: '#93e6b4', far: '#3d7c98', rock: '#1b3f66', rock2: '#122c4e', wood: '#0a1a33', lake: '#0d2140', snow: '#a8cdd6', shade: '#6fa5b9', ink: '#060d1c', smoke: '#31557a' };

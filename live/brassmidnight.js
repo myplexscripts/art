@@ -1,5 +1,5 @@
 // Original Music Series No. 04: a golden saxophone on a stand in an intimate jazz room.
-import { paper, makeRoom, box, disc, oval, stroke, polygon, hash, screw, wood, word } from './music-kit.js?v=20261011-dreamscapes-motion';
+import { paper, makeRoom, box, disc, oval, stroke, polygon, hash, screw, wood, word } from './music-kit.js?v=20261011-clock-controls';
 export const title = 'BRASS MIDNIGHT', no = 'No. 04', text = '#482738', dark = '#281e32', audio = false;
 export const make = makeRoom;
 const K={wall:'#482738',night:'#281e32',rose:'#9f5868',light:'#c77b72',gold:'#edba60',shade:'#c78245',teal:'#4d807e'};
