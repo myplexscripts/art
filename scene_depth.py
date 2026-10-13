@@ -55,6 +55,7 @@ LAYERS = {
     'hanginggardens': [('main-garden', 'Main floating garden', None), ('near-garden', 'Near floating garden', None)],
     'moonstairs': [('stairs', 'Stairway', None), ('handrails', 'Handrails', None), ('night-leaves', 'Night leaves', None)],
     'mirrorgarden': [('lake-rim', 'Lake banks', None), ('upright-trees', 'Upright trees', None), ('inverted-trees', 'Inverted trees', None)],
+    'afterhours': [('night-block', 'Night block', None), ('streetlight', 'Street lamp', None), ('near-facades', 'Near facades', None)],
 }
 
 

@@ -1,5 +1,5 @@
 // Alternative Hip-Hop Essentials: chopped blocks, a looping sample and an 88 BPM backbeat.
-import { make,setup,beat,rectangle,circle,polygon,TAU } from './genre-kit.js?v=20261011-clock-controls';
+import { make,setup,beat,rectangle,circle,polygon,TAU } from './genre-kit.js?v=20261013-after-hours';
 export { make };
 export const title='Break Grid', no='No. 02', genre='Hip-hop', text='#f8bb24', dark='#123e78', audio=false, textless=true;
 const BPM=88;

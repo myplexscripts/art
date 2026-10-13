@@ -48,5 +48,6 @@ export const DEPTH_LAYERS = {
   "endlessarches": [{"id": "middle-arches", "label": "Middle arches"}, {"id": "near-arches", "label": "Near arches"}],
   "hanginggardens": [{"id": "main-garden", "label": "Main floating garden"}, {"id": "near-garden", "label": "Near floating garden"}],
   "moonstairs": [{"id": "stairs", "label": "Stairway"}, {"id": "handrails", "label": "Handrails"}, {"id": "night-leaves", "label": "Night leaves"}],
-  "mirrorgarden": [{"id": "lake-rim", "label": "Lake banks"}, {"id": "upright-trees", "label": "Upright trees"}, {"id": "inverted-trees", "label": "Inverted trees"}]
+  "mirrorgarden": [{"id": "lake-rim", "label": "Lake banks"}, {"id": "upright-trees", "label": "Upright trees"}, {"id": "inverted-trees", "label": "Inverted trees"}],
+  "afterhours": [{"id": "night-block", "label": "Night block"}, {"id": "streetlight", "label": "Street lamp"}, {"id": "near-facades", "label": "Near facades"}]
 };

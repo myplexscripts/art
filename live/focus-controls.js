@@ -1,5 +1,5 @@
-import { focusTimer, countdownText } from './focus-timer.js?v=20261011-clock-controls';
-import { lockPage } from './scroll-lock.js?v=20261011-clock-controls';
+import { focusTimer, countdownText } from './focus-timer.js?v=20261013-after-hours';
+import { lockPage } from './scroll-lock.js?v=20261013-after-hours';
 
 const FACE = 'var(--face, "Barlow Condensed", system-ui, sans-serif)';
 export const FOCUS_CSS = `

@@ -1,5 +1,5 @@
 // EDM Essentials: striped triangular beams sweep like club spotlights, on a four-on-the-floor clock.
-import { make,setup,beat,polygon,circle } from './genre-kit.js?v=20261011-clock-controls';
+import { make,setup,beat,polygon,circle } from './genre-kit.js?v=20261013-after-hours';
 export { make };
 export const title='Club Prism', no='No. 01', genre='Dance / EDM', text='#b3efdc', dark='#003b2d', audio=false, textless=true;
 const BPM=124;

@@ -2,7 +2,7 @@
 
 Static recreations of the Essentials genre covers, with all text and Apple logos removed, are available in [`covers/essentials/`](covers/essentials/).
 
-Scenes includes the 32 original living posters published at [WAVZ](https://wavz.us), five **Music Series** posters, three **Geometry** scenes and five **Dreamscapes**: 45 scenes across nine series. Original WAVZ artwork, code and audio are by **Nick Saulino**. Source attribution is retained in this repository; the app has no credit footer.
+Scenes includes the 32 original living posters published at [WAVZ](https://wavz.us), five **Music Series** posters, three **Geometry** scenes and six **Dreamscapes**: 46 scenes across nine series. Original WAVZ artwork, code and audio are by **Nick Saulino**. Source attribution is retained in this repository; the app has no credit footer.
 
 The existing original **Lantern Cove** page is preserved at [`lantern-cove/index.html`](lantern-cove/index.html).
 
@@ -30,7 +30,7 @@ Hold the clock for 380 ms to drag it anywhere within the poster; a small compres
 
 On the first visit, a short welcome splash leads to the app's features and an animated iPhone installation guide. It demonstrates Safari's page menu, Share, scrolling to Add to Home Screen, keeping Open as Web App enabled, adding the icon and opening Scenes without browser bars. The steps follow [Apple's iPhone guide](https://support.apple.com/guide/iphone/turn-a-website-into-an-app-iph42ab2f3a7/ios). The top **Skip** button dismisses the welcome; the bottom **Next** button advances from features through each installation step and then returns to the gallery. **Back** returns to the previous step. The welcome occupies the visible viewport, keeps navigation visible and scrolls its own content while freezing the gallery; closing restores the exact gallery position. Its scroll lock also works when a first visit opens directly into a scene. Pause, replay, direct step selection and skipping are available; reduced motion uses static, manually advanced steps. Installed PWA launches show the features and skip installation instructions. Dismissing the welcome is remembered on that device. The gallery has no welcome or iPhone-setup button.
 
-**Barlow Condensed** is the fixed global font for the interface, headings, poster lettering and clock; the preview selectors have been removed. Interface labels, onboarding copy, phone-guide labels and the clock colour editor have a 16px minimum, with larger headings retained. All 45 gallery cards use HTML captions beneath the artwork: 28px names and 16px series/number labels. Captions therefore keep their real text size independently of canvas resolution or thumbnail size. Other framed canvas layouts also use a 16 CSS-pixel caption minimum. Clock colour, weight, size and position preferences stay intact; earlier preview font choices are ignored. All nine static font weights (100–900) load before clock fitting. Google Fonts WOFF2 files are self-hosted under [`live/fonts/`](live/fonts/) with their SIL Open Font License and source URLs, so font loading needs no Google connection at runtime.
+**Barlow Condensed** is the fixed global font for the interface, headings, poster lettering and clock; the preview selectors have been removed. Interface labels, onboarding copy, phone-guide labels and the clock colour editor have a 16px minimum, with larger headings retained. All 46 gallery cards use HTML captions beneath the artwork: 28px names and 16px series/number labels. Captions therefore keep their real text size independently of canvas resolution or thumbnail size. Other framed canvas layouts also use a 16 CSS-pixel caption minimum. Clock colour, weight, size and position preferences stay intact; earlier preview font choices are ignored. All nine static font weights (100–900) load before clock fitting. Google Fonts WOFF2 files are self-hosted under [`live/fonts/`](live/fonts/) with their SIL Open Font License and source URLs, so font loading needs no Google connection at runtime.
 
 The gallery has light and dark appearances. On a fresh device it follows `prefers-color-scheme`, including system changes while the page is open. The **Dark mode** switch changes the gallery and welcome palette and remembers that explicit choice across visits. The artwork and clock palettes remain scene-specific.
 
@@ -40,7 +40,7 @@ The timer stores an absolute deadline and a paused remainder. It continues betwe
 
 Clock depth is temporarily inactive in the app, with no toolbar button or loaded depth editor. Its authored layer boundaries, renderer, picker module and saved selections remain intact for future use. The viewer's `DEPTH_ENABLED` switch disables foreground compositing without deleting those preferences.
 
-The retained depth renderer uses a foreground coverage mask clipped to the clock's area, captured during the existing Canvas 2D drawing pass. The finished poster is shown through that mask so its colours and translucent details stay unchanged. All 45 active scenes have authored boundaries; gallery previews use the original rendering without depth. [`scene_depth.py`](scene_depth.py) maintains their labels and reapplies the original scene boundaries during an upstream refresh. Geometry, Dreamscapes and the archived Afterglow Arcade stage supply their own boundaries. No segmentation service, image downloads or WebGL are required. [Archived depth editor preview](docs/clock-depth-preview.png).
+The retained depth renderer uses a foreground coverage mask clipped to the clock's area, captured during the existing Canvas 2D drawing pass. The finished poster is shown through that mask so its colours and translucent details stay unchanged. All 46 active scenes have authored boundaries; gallery previews use the original rendering without depth. [`scene_depth.py`](scene_depth.py) maintains their labels and reapplies the original scene boundaries during an upstream refresh. Geometry, Dreamscapes and the archived Afterglow Arcade stage supply their own boundaries. No segmentation service, image downloads or WebGL are required. [Archived depth editor preview](docs/clock-depth-preview.png).
 
 ## Included posters
 
@@ -54,7 +54,7 @@ The retained depth renderer uses a foreground coverage mask clipped to the clock
 | Orbit | Earthrise, Ringed Giant, Space Station, Red Planet, Comet Pass |
 | Music | Needle Drop, Tape Loop, Blue Hour, Brass Midnight, Signal Bloom |
 | Geometry | Stacks, Blooms, Deep Waves |
-| Dreamscapes | Sea Door, Endless Arches, Hanging Gardens, Moon Stairs, Mirror Garden |
+| Dreamscapes | Sea Door, Endless Arches, Hanging Gardens, Moon Stairs, Mirror Garden, After Hours |
 
 **Needle Drop** (`?scene=needledrop`) is an original animated listening-room scene: a detailed direct-drive turntable with vinyl grooves, strobe dots, a calibrated pitch fader and a cueing lever, flanked by cloth-front speakers. A shelf of records, rainy round window, pendant light, sleeve, plant and steaming mug establish the room. Its warm rose, plum and teal inks use the collection's shared poster frame. This poster is intentionally silent: it creates no audio context, requests no audio files and hides the player audio controls.
 
@@ -83,7 +83,7 @@ The audio uses existing local files, streamed and crossfaded through the same Am
 
 [View the Geometry scenes](docs/geometry-preview.png) or [watch ten seconds of their motion](docs/geometry-motion.mp4). These exported previews contain no grain. [`geometry-references.json`](geometry-references.json) records the authored motion and audio sources. No external SVGs or image assets are needed.
 
-The **Dreamscapes** series contains five original illustrated places. Flat architectural shapes, botanical details and muted inks use the existing poster language, with layered wind, water and perspective animation adapted from the gallery's original scenes. The gallery supplies its usual titles, numbers and global grain; the player supplies full-bleed artwork, grain over the clock, clock gestures and colours, the focus timer and independent audio sliders. No grain is baked into these images, and no new audio or image dependencies are needed.
+The **Dreamscapes** series contains six original illustrated places. Flat architectural shapes, botanical details and muted inks use the existing poster language, with layered wind, water and perspective animation adapted from the gallery's original scenes. The gallery supplies its usual titles, numbers and global grain; the player supplies full-bleed artwork, grain over the clock, clock gestures and colours, the focus timer and independent audio sliders. No grain is baked into these images, and no new audio or image dependencies are needed.
 
 | Scene | Motion | Reused ambience and music |
 | --- | --- | --- |
@@ -92,6 +92,7 @@ The **Dreamscapes** series contains five original illustrated places. Flat archi
 | **Hanging Gardens** (`?scene=hanginggardens`) | Orchards visibly drift at different rates. Trees, leaves, hanging vines and flowers follow the wind with different delays. Pool rings spread and a waterfall flows from the floating garden. | Lavender Field. |
 | **Moon Stairs** (`?scene=moonstairs`) | An endless escalator carries individual grooved treads along a fixed curved track towards a stationary moon. A new tread enters every 2.2 seconds, shrinking into the distance. Stringers, rails and posts remain stationary while wisps drift below. | Northern Lights. |
 | **Mirror Garden** (`?scene=mirrorgarden`) | Wind moves the trees and leaves. The enlarged lake reflects the current sky, moon and upright trees; travelling water distortion, spreading rings and swimming fish move across the reflection. | Hidden Falls. |
+| **After Hours** (`?scene=afterhours`) | A quiet violet-blue block takes its cue from the first supplied nighttime street still. A streetlamp gently flickers, apartment windows change independently, clouds drift and loose paper blows over the road and sidewalks. The illustration is original, with no characters, logos or reused footage. | First Snow. |
 
 Their palettes stay within each scene's inks. Standard Canvas 2D paths and time-based motion allow the same artwork to recompose for mobile Safari, portrait and landscape screens. [View the Dreamscapes](docs/dreamscapes-preview.png) or [watch their motion](docs/dreamscapes-motion.mp4); these exported previews contain no grain.
 

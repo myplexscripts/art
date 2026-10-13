@@ -3,9 +3,9 @@
 // the top of a stalk later than its foot, so the forest leans over together and comes back. Bands of water darken
 // with depth and carry shafts of light; a school of gold fish threads between the middle and the near stalks.
 // Extra width becomes more stalks, extra height taller ones.
-import { mulberry, clamp, osc, sway, noise1, poly, circle, frac, TAU } from './geom.js?v=20261011-clock-controls';
-import { C, F } from './kit.js?v=20261011-clock-controls';
-import { hash } from './bits.js?v=20261011-clock-controls';
+import { mulberry, clamp, osc, sway, noise1, poly, circle, frac, TAU } from './geom.js?v=20261013-after-hours';
+import { C, F } from './kit.js?v=20261013-after-hours';
+import { hash } from './bits.js?v=20261013-after-hours';
 
 export const title = 'KELP FOREST', no = 'No. 01', text = '#0f3a3a', dark = '#07201f';
 const K = { w: ['#4ea892', '#35887c', '#256d69', '#185458'], light: '#c3d88c', far: '#5aa583', mid: '#4d7130', near: '#0f3326', rock1: '#1c5c57', rock2: '#12393c', ink: '#07201f' };

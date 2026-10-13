@@ -3,9 +3,9 @@
 // carries the peaks upside down, cut by slow ripples, with mist sliding over it. A jetty and a rowing boat sit under
 // the pines on the near bank. Each range is a row of peaks built once in make as a skyline, with a second line below
 // it where the light stops; the same two lines, flipped, make the reflection.
-import { mulberry, clamp, osc, sway, noise1, poly, circle, pill, TAU } from './geom.js?v=20261011-clock-controls';
-import { C, F } from './kit.js?v=20261011-clock-controls';
-import { hash, el, bars, pine } from './bits.js?v=20261011-clock-controls';
+import { mulberry, clamp, osc, sway, noise1, poly, circle, pill, TAU } from './geom.js?v=20261013-after-hours';
+import { C, F } from './kit.js?v=20261013-after-hours';
+import { hash, el, bars, pine } from './bits.js?v=20261013-after-hours';
 
 export const title = 'ALPINE LAKE', no = 'No. 03', text = '#143f3c', dark = '#0d2a29';
 const P = { sky: '#eda594', r1: '#f2b79b', r2: '#f6c9a0', far: '#a48fb0', rose: '#fbd2ba', near: '#56708e', glow: '#f7d48a', green: '#1d4d46', lake: '#2f8f98', lake2: '#237a86', deep: '#195f6b', ink: '#0f2d2b' };

@@ -1,5 +1,5 @@
 // Dreamscapes No. 02: an endless arcade floats above a cloud sea.
-import { frac, makeWorld, box, disc, polygon, line, archRing, archJoints, cloud } from './dream-kit.js?v=20261011-clock-controls';
+import { frac, makeWorld, box, disc, polygon, line, archRing, archJoints, cloud } from './dream-kit.js?v=20261013-after-hours';
 export const title = 'Endless Arches', no = 'No. 02', dark = '#363146', text = '#363146', audio = 'mesa', grain = true;
 export const make = (W, H) => makeWorld(W, H, 51);
 const K = { sky: '#596578', horizon: '#7e8893', cloud: '#a9a79f', pale: '#cfbeb0', rose: '#a77272',
