@@ -1,5 +1,5 @@
 // Dreamscapes No. 04: a winding, endlessly ascending stairway to the moon.
-import { frac, makeWorld, box, disc, oval, polygon, line, stars, clouds, sprig } from './dream-kit.js?v=20261013-after-hours';
+import { frac, makeWorld, box, disc, oval, polygon, line, stars, clouds, sprig } from './dream-kit.js?v=20261019-after-hours-detail';
 export const title = 'Moon Stairs', no = 'No. 04', dark = '#1f304b', text = '#1f304b', audio = 'aurora', grain = true;
 export const make = (W, H) => makeWorld(W, H, 81);
 const K = { sky: '#24344f', halo: '#344966', blue: '#465f78', dark: '#283c55', step: '#77949b', alternate: '#668590',

@@ -2,9 +2,9 @@
 // small and pale, the near ones big and striped. Each drifts on its own wind, lifts and sinks over minutes, turns
 // slowly so its stripes creep round, and fires its burner in short pulses. One that leaves the frame comes back in on
 // the other side. The valley is three bands of spires, lighter far and darker near, with a river and mist between.
-import { mulberry, clamp, lerp, frac, osc, sway, noise1, poly, circle, pill, TAU } from './geom.js?v=20261013-after-hours';
-import { C, F } from './kit.js?v=20261013-after-hours';
-import { hash, el, bars } from './bits.js?v=20261013-after-hours';
+import { mulberry, clamp, lerp, frac, osc, sway, noise1, poly, circle, pill, TAU } from './geom.js?v=20261019-after-hours-detail';
+import { C, F } from './kit.js?v=20261019-after-hours-detail';
+import { hash, el, bars } from './bits.js?v=20261019-after-hours-detail';
 
 export const title = 'BALLOON DAWN', no = 'No. 04', text = '#4a2340', dark = '#2c1528';
 const P = { sky: '#ee9a82', r1: '#f3ae8a', r2: '#f7c492', r3: '#f5c868', t1: '#e3b196', t2: '#cf937e', t3: '#ad6f68', t4: '#7c4856', plum: '#55264a', ink: '#371a33' };

@@ -1,5 +1,5 @@
 // Shared geometry and musical clocks; all animation is silent and deterministic.
-export { make, setup, TAU } from './art-kit.js?v=20261013-after-hours';
+export { make, setup, TAU } from './art-kit.js?v=20261019-after-hours-detail';
 export const ease = x => x*x*(3-2*x);
 export const beat = (t, bpm, offset=0) => Math.pow(Math.max(0,Math.cos(Math.PI*2*(t*bpm/60-offset))),4);
 // A jazz eighth-note pair takes 2/3 then 1/3 of a beat.

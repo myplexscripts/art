@@ -3,9 +3,9 @@
 // curling paths, a new path every trip. Grass runs over the hill in toothed waves, clouds race, a kite tied to the
 // fence tugs on a bowed string, and the gate swings on its post. The hill is a hump placed at a share of the width;
 // extra height becomes more sky for the kite and the leaves.
-import { mulberry, clamp, lerp, osc, sway, noise1, poly, circle, pill, TAU } from './geom.js?v=20261013-after-hours';
-import { C, F } from './kit.js?v=20261013-after-hours';
-import { hash, el, bez, bezT, bars } from './bits.js?v=20261013-after-hours';
+import { mulberry, clamp, lerp, osc, sway, noise1, poly, circle, pill, TAU } from './geom.js?v=20261019-after-hours-detail';
+import { C, F } from './kit.js?v=20261019-after-hours-detail';
+import { hash, el, bez, bezT, bars } from './bits.js?v=20261019-after-hours-detail';
 
 export const title = 'AUTUMN GALE', no = 'No. 04', text = '#2e2a3a', dark = '#231a1c';
 const A = { sky: '#8399ac', sky2: '#9db0bf', sky3: '#b6c5cf', cloud: '#d3dde2', scud: '#71879b', far: '#6b8296', far2: '#566d82', hill: '#c79b39', h2: '#a87c2c', h3: '#8a6026', near: '#5c3d1f', red: '#8f3a22', ink: '#2c1a14' };

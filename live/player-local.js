@@ -2,16 +2,16 @@
 // A full-screen poster is drawn live every frame and recomposed to the screen's shape, with its controls
 // and sound. The main page opens it over itself, growing out of the poster that was tapped, or at once for a scene's own address.
 // For checking: ?debug shows a readout, ?res=3840 forces the long side, ?t=40 starts the clock 40 s in.
-import './nozoom.js?v=20261013-after-hours';
-import { draw, makeLayout, styleFor, SCENES } from './poster.js?v=20261013-after-hours';
-import { hex, makeSceneColorSampler } from './clock-palette.js?v=20261013-after-hours';
-import { makeClockDigits, CLOCK_LINE_HEIGHT } from './clock-digits.js?v=20261013-after-hours';
-import { depthLayersFor, makeDepthRenderer } from './clock-depth.js?v=20261013-after-hours';
-import { COLOR_CSS, makeColorPicker } from './clock-color-picker.js?v=20261013-after-hours';
-import { fontReady, MIN_FONT_SIZE, TEXT_SCALE } from './typography.js?v=20261013-after-hours';
-import { lockPage } from './scroll-lock.js?v=20261013-after-hours';
-import { focusTimer, countdownFormatter, countdownText } from './focus-timer.js?v=20261013-after-hours';
-import { FOCUS_CSS, makeFocusPanel, installGalleryFocus } from './focus-controls.js?v=20261013-after-hours';
+import './nozoom.js?v=20261019-after-hours-detail';
+import { draw, makeLayout, styleFor, SCENES } from './poster.js?v=20261019-after-hours-detail';
+import { hex, makeSceneColorSampler } from './clock-palette.js?v=20261019-after-hours-detail';
+import { makeClockDigits, CLOCK_LINE_HEIGHT } from './clock-digits.js?v=20261019-after-hours-detail';
+import { depthLayersFor, makeDepthRenderer } from './clock-depth.js?v=20261019-after-hours-detail';
+import { COLOR_CSS, makeColorPicker } from './clock-color-picker.js?v=20261019-after-hours-detail';
+import { fontReady, MIN_FONT_SIZE, TEXT_SCALE } from './typography.js?v=20261019-after-hours-detail';
+import { lockPage } from './scroll-lock.js?v=20261019-after-hours-detail';
+import { focusTimer, countdownFormatter, countdownText } from './focus-timer.js?v=20261019-after-hours-detail';
+import { FOCUS_CSS, makeFocusPanel, installGalleryFocus } from './focus-controls.js?v=20261019-after-hours-detail';
 
 const LOOP = 30, MAXPX = 3840, CREAM = '#f2e5c3', FLIGHT = 650, CLOCK_FADE = 180;
 const MAX_CLOCK_SCALE = 8, CLOCK_BLEED = .03;
@@ -598,7 +598,7 @@ export function openScene(first, { from = null, home = null, at = null, thumbnai
   async function startSound() {
     if (!hasAudio) return;
     // Once loaded, make and resume audio synchronously during the next iOS tap.
-    if (!soundFactory) soundFactory = (await import('./sound.js?v=20261013-after-hours')).makeSound;
+    if (!soundFactory) soundFactory = (await import('./sound.js?v=20261019-after-hours-detail')).makeSound;
     if (closed || !on) return;
     if (sound) { levels(); sound.resume(); return; }
     sound = soundFactory(name, typeof SCENES[name].audio === 'string' ? SCENES[name].audio : name);

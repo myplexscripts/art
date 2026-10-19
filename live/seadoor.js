@@ -1,6 +1,6 @@
 // Dreamscapes No. 01: a freestanding stone doorway contains an entire moonlit sea.
-import { TAU, hash, makeWorld, box, disc, oval, polygon, line, archPath, archRing, archJoints, stars, clouds } from './dream-kit.js?v=20261013-after-hours';
-import { frac, noise1 } from './geom.js?v=20261013-after-hours';
+import { TAU, hash, makeWorld, box, disc, oval, polygon, line, archPath, archRing, archJoints, stars, clouds } from './dream-kit.js?v=20261019-after-hours-detail';
+import { frac, noise1 } from './geom.js?v=20261019-after-hours-detail';
 export const title = 'Sea Door', no = 'No. 01', dark = '#222c43', text = '#222c43', audio = 'beach', grain = true;
 export const make = (W, H) => ({ ...makeWorld(W, H, 41), sand: Array.from({ length: 76 }, (_, i) => ({
   x: hash(i, 91), y: hash(i, 93), speed: .012 + hash(i, 97) * .013,

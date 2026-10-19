@@ -1,5 +1,5 @@
 // Small drawing primitives shared by the original Music Series.
-import { FONT } from './kit.js?v=20261013-after-hours';
+import { FONT } from './kit.js?v=20261019-after-hours-detail';
 export const TAU = Math.PI * 2;
 export const paper = '#f2e5c3';
 export function makeRoom(W, H) { return { W, H, s: Math.min(W / 1000, H / 920) }; }

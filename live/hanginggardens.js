@@ -1,5 +1,5 @@
 // Dreamscapes No. 03: floating orchards ride the wind above flowing cloud banks.
-import { hash, frac, makeWorld, box, disc, oval, polygon, line, leaf, archRing, cloud, clouds } from './dream-kit.js?v=20261013-after-hours';
+import { hash, frac, makeWorld, box, disc, oval, polygon, line, leaf, archRing, cloud, clouds } from './dream-kit.js?v=20261019-after-hours-detail';
 export const title = 'Hanging Gardens', no = 'No. 03', dark = '#273f49', text = '#273f49', audio = 'lavender', grain = true;
 export const make = (W, H) => makeWorld(W, H, 61);
 const K = { sky: '#3e5661', distant: '#58727a', mist: '#798c8d', cloud: '#a0aaa0', rock: '#344d55', strata: '#526f6b',

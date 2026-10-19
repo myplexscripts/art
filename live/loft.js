@@ -3,9 +3,9 @@
 // an elevated road carrying two streams of lights, a big moon and a water tower. Plants trail from the sill and from
 // a hanging pot, and a bare bulb swings on its cord. The panes keep their size (more of them on a bigger window);
 // towers are a share of the glass in height but keep their widths, so a wide screen simply sees more city.
-import { mulberry, lerp, clamp, osc, noise1, poly, circle, pill, frac, TAU } from './geom.js?v=20261013-after-hours';
-import { C, F } from './kit.js?v=20261013-after-hours';
-import { hash, el, makeStars, paintStars } from './bits.js?v=20261013-after-hours';
+import { mulberry, lerp, clamp, osc, noise1, poly, circle, pill, frac, TAU } from './geom.js?v=20261019-after-hours-detail';
+import { C, F } from './kit.js?v=20261019-after-hours-detail';
+import { hash, el, makeStars, paintStars } from './bits.js?v=20261019-after-hours-detail';
 
 export const title = 'CITY LOFT', no = 'No. 04', text = '#1e1650', dark = '#0c0818';
 const L = { s1: '#1e1650', s2: '#3a2074', s3: '#742e80', s4: '#b84a80', far: '#6a3a8c', mid: '#44266c', near: '#28174e', ink: '#0c0818', wall: '#1a102e', brick: '#2a1a42', leaf: '#2a7a6c' };
