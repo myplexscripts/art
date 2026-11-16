@@ -1,0 +1,130 @@
+{
+  "name": "Ringed Horizon",
+  "designSize": {
+    "width": 1920,
+    "height": 1080
+  },
+  "loopDurationSeconds": 360,
+  "scrollDirection": "rightToLeft",
+  "layers": [
+    {
+      "id": "sky",
+      "sharp": "sky.webp",
+      "blur": "sky-blur.webp",
+      "repeatWidth": 1920,
+      "top": 0,
+      "bottom": 1080,
+      "repeatsPerLoop": 0,
+      "opaque": true,
+      "blurCovers": {
+        "top": -32,
+        "bottom": 1112
+      }
+    },
+    {
+      "id": "asteroids",
+      "sharp": "asteroids.webp",
+      "blur": "asteroids-blur.webp",
+      "repeatWidth": 3840,
+      "top": 290,
+      "bottom": 464,
+      "repeatsPerLoop": 1,
+      "opaque": false,
+      "blurCovers": {
+        "top": 258,
+        "bottom": 496
+      },
+      "speedDesignPxPerSecond": 10.6667
+    },
+    {
+      "id": "far",
+      "sharp": "far.webp",
+      "blur": "far-blur.webp",
+      "repeatWidth": 3840,
+      "top": 534,
+      "bottom": 820,
+      "repeatsPerLoop": 2,
+      "opaque": false,
+      "blurCovers": {
+        "top": 502,
+        "bottom": 852
+      },
+      "speedDesignPxPerSecond": 21.3333
+    },
+    {
+      "id": "ridge",
+      "sharp": "ridge.webp",
+      "blur": "ridge-blur.webp",
+      "repeatWidth": 3840,
+      "top": 631,
+      "bottom": 1080,
+      "repeatsPerLoop": 4,
+      "opaque": false,
+      "blurCovers": {
+        "top": 599,
+        "bottom": 1112
+      },
+      "speedDesignPxPerSecond": 42.6667
+    },
+    {
+      "id": "colony",
+      "sharp": "colony.webp",
+      "blur": "colony-blur.webp",
+      "repeatWidth": 3840,
+      "top": 509,
+      "bottom": 1080,
+      "repeatsPerLoop": 8,
+      "opaque": false,
+      "blurCovers": {
+        "top": 477,
+        "bottom": 1112
+      },
+      "speedDesignPxPerSecond": 85.3333
+    },
+    {
+      "id": "regolith",
+      "sharp": "regolith.webp",
+      "blur": "regolith-blur.webp",
+      "repeatWidth": 3840,
+      "top": 817,
+      "bottom": 1080,
+      "repeatsPerLoop": 12,
+      "opaque": false,
+      "blurCovers": {
+        "top": 785,
+        "bottom": 1112
+      },
+      "speedDesignPxPerSecond": 128.0
+    }
+  ],
+  "sprites": [
+    {
+      "id": "station",
+      "image": "station.webp",
+      "parentLayer": "sky",
+      "drawAfterParent": true,
+      "sizeDesignPx": {
+        "width": 170,
+        "height": 170
+      },
+      "textureScale": 2,
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "positions": [
+        {
+          "x": 1060,
+          "y": 180
+        }
+      ],
+      "motion": {
+        "type": "rotate",
+        "direction": "counterclockwise",
+        "turnsPerLoop": 4,
+        "secondsPerTurn": 90.0,
+        "phaseAtLoopStartDegrees": 0
+      }
+    }
+  ]
+}
