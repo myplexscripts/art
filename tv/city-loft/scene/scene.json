@@ -1,0 +1,160 @@
+{
+  "name": "Loft Rooftops",
+  "designSize": {
+    "width": 1920,
+    "height": 1080
+  },
+  "loopDurationSeconds": 360,
+  "scrollDirection": "rightToLeft",
+  "layers": [
+    {
+      "id": "sky",
+      "sharp": "sky.webp",
+      "blur": "sky-blur.webp",
+      "repeatWidth": 1920,
+      "top": 0,
+      "bottom": 1080,
+      "repeatsPerLoop": 0,
+      "opaque": true,
+      "blurCovers": {
+        "top": -32,
+        "bottom": 1112
+      }
+    },
+    {
+      "id": "clouds",
+      "sharp": "clouds.webp",
+      "blur": "clouds-blur.webp",
+      "repeatWidth": 3840,
+      "top": 286,
+      "bottom": 550,
+      "repeatsPerLoop": 1,
+      "opaque": false,
+      "blurCovers": {
+        "top": 254,
+        "bottom": 582
+      },
+      "speedDesignPxPerSecond": 10.6667
+    },
+    {
+      "id": "far",
+      "sharp": "far.webp",
+      "blur": "far-blur.webp",
+      "repeatWidth": 3840,
+      "top": 388,
+      "bottom": 900,
+      "repeatsPerLoop": 2,
+      "opaque": false,
+      "blurCovers": {
+        "top": 356,
+        "bottom": 932
+      },
+      "speedDesignPxPerSecond": 21.3333
+    },
+    {
+      "id": "mid",
+      "sharp": "mid.webp",
+      "blur": "mid-blur.webp",
+      "repeatWidth": 3840,
+      "top": 456,
+      "bottom": 901,
+      "repeatsPerLoop": 4,
+      "opaque": false,
+      "blurCovers": {
+        "top": 424,
+        "bottom": 933
+      },
+      "speedDesignPxPerSecond": 42.6667
+    },
+    {
+      "id": "lofts",
+      "sharp": "lofts.webp",
+      "blur": "lofts-blur.webp",
+      "repeatWidth": 3840,
+      "top": 554,
+      "bottom": 900,
+      "repeatsPerLoop": 8,
+      "opaque": false,
+      "blurCovers": {
+        "top": 522,
+        "bottom": 932
+      },
+      "speedDesignPxPerSecond": 85.3333
+    },
+    {
+      "id": "rooftop",
+      "sharp": "rooftop.webp",
+      "blur": "rooftop-blur.webp",
+      "repeatWidth": 3840,
+      "top": 562,
+      "bottom": 1080,
+      "repeatsPerLoop": 12,
+      "opaque": false,
+      "blurCovers": {
+        "top": 530,
+        "bottom": 1112
+      },
+      "speedDesignPxPerSecond": 128.0
+    }
+  ],
+  "sprites": [
+    {
+      "id": "beam-left",
+      "image": "beam.webp",
+      "parentLayer": "sky",
+      "drawAfterParent": true,
+      "sizeDesignPx": {
+        "width": 240,
+        "height": 900
+      },
+      "textureScale": 1,
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      },
+      "positions": [
+        {
+          "x": 690,
+          "y": 800
+        }
+      ],
+      "motion": {
+        "type": "swing",
+        "centerDegrees": -14,
+        "amplitudeDegrees": 12,
+        "cyclesPerLoop": 8,
+        "phase": 0,
+        "secondsPerSwing": 45.0
+      }
+    },
+    {
+      "id": "beam-right",
+      "image": "beam.webp",
+      "parentLayer": "sky",
+      "drawAfterParent": true,
+      "sizeDesignPx": {
+        "width": 240,
+        "height": 900
+      },
+      "textureScale": 1,
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      },
+      "positions": [
+        {
+          "x": 1180,
+          "y": 800
+        }
+      ],
+      "motion": {
+        "type": "swing",
+        "centerDegrees": -4,
+        "amplitudeDegrees": 10,
+        "cyclesPerLoop": 6,
+        "phase": 0.35,
+        "secondsPerSwing": 60.0
+      }
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 // Checks a packaged scene the way a developer would use it, from its WebP files and scene.json:
-//   node tv/night-express/verify.mjs <scene-dir> <checks-dir>
+//   node tv/verify.mjs <scene-dir> <checks-dir>
 // - preview.png: the 1920 x 1080 frame at t = 0
 // - seam-<layer>.png: two adjacent copies of every moving strip, sharp above and blur (scaled up) below,
 //   and a measure of the step across each seam against the strip's own column-to-column changes

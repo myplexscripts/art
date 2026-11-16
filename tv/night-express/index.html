@@ -15,7 +15,7 @@
 <label><input type="checkbox" id="blur"> show blur layers</label>
 <script type="module">
   // Plays the scene from scene.json and its WebP files with the reference renderer. Serve this folder over HTTP.
-  import { drawScene } from './player.js';
+  import { drawScene } from '../player.js';
   const base = new URL('./scene/', location.href), scene = await (await fetch(new URL('scene.json', base))).json();
   const names = [...scene.layers.flatMap((l) => [l.sharp, l.blur]), ...scene.sprites.map((s) => s.image)];
   const images = Object.fromEntries(await Promise.all(names.map(async (n) => [n, await createImageBitmap(await (await fetch(new URL(n, base))).blob())])));

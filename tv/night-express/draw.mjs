@@ -6,7 +6,7 @@
 // Writes one full-height RGBA PNG per layer, plus sprites and layout.json, into the directory given:
 //   npm install --no-save @napi-rs/canvas
 //   node tv/night-express/draw.mjs <out-dir>
-// tv/night-express/package.py crops, encodes, blurs and checks them.
+// tv/package.py crops, encodes and blurs them; tv/verify.mjs checks the result.
 import { createRequire } from 'module';
 import { mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';

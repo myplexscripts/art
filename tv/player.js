@@ -4,7 +4,7 @@
 // Each layer is drawn back to front. A strip with repeatsPerLoop n moves left by n strip widths per loop, so its
 // offset is frac(n * t / loop) * repeatWidth; it is filled with a horizontally repeating pattern, which wraps
 // without the hairline a pair of separately placed copies can leave at a fractional position. A layer with
-// repeatsPerLoop 0 stays put. Sprites are drawn right after their parent layer, rotated about their pivot.
+// repeatsPerLoop 0 stays put. Sprites are drawn right after their parent layer, turned about their pivot.
 const frac = (x) => x - Math.floor(x);
 
 export function drawScene(ctx, scene, images, t, { blur = false } = {}) {
@@ -22,7 +22,10 @@ export function drawScene(ctx, scene, images, t, { blur = false } = {}) {
     for (const sprite of scene.sprites) {
       if (sprite.parentLayer !== layer.id) continue;
       const img = images[sprite.image], { width: sw, height: sh } = sprite.sizeDesignPx, m = sprite.motion;
-      const angle = (m.direction === 'clockwise' ? 1 : -1) * 2 * Math.PI * frac(m.turnsPerLoop * u) + (m.phaseAtLoopStartDegrees * Math.PI) / 180;
+      // rotate: whole turns per loop. swing: back and forth about centreDegrees, whole swings per loop.
+      const angle = m.type === 'swing'
+        ? ((m.centerDegrees + m.amplitudeDegrees * Math.sin(2 * Math.PI * (m.cyclesPerLoop * u + m.phase))) * Math.PI) / 180
+        : (m.direction === 'clockwise' ? 1 : -1) * 2 * Math.PI * frac(m.turnsPerLoop * u) + (m.phaseAtLoopStartDegrees * Math.PI) / 180;
       for (const p of sprite.positions) {
         ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(angle);
         ctx.drawImage(img, -sprite.pivot.x * sw, -sprite.pivot.y * sh, sw, sh);

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Turn draw.mjs's full-height PNG layers into Simple Home runtime assets.
 
-    python3 tv/night-express/package.py <layers-dir> <out-dir>
+    python3 tv/package.py <layers-dir> <out-dir>
 
 For each layer: crop away fully transparent rows, encode a WebP (whichever of lossless or high-quality lossy is
 smaller), and make a matching -blur.webp at 1/8 scale covering the same strip width and 32 design pixels above and
@@ -16,10 +16,10 @@ from PIL import Image, ImageFilter
 PAD, SCALE, BLUR_RADIUS = 32, 8, 3.0
 
 
-def webp(img, lossless_ok=True, quality=88):
+def webp(img, lossless_ok=True, quality=88, lossy_ok=True):
     best = None
     options = [dict(lossless=True, method=6, quality=100)] if lossless_ok else []
-    options.append(dict(lossless=False, method=6, quality=quality, alpha_quality=90))
+    if lossy_ok: options.append(dict(lossless=False, method=6, quality=quality, alpha_quality=90))
     for opt in options:
         buf = io.BytesIO(); img.save(buf, 'WEBP', **opt)
         if best is None or buf.tell() < len(best): best = buf.getvalue()
@@ -60,7 +60,7 @@ def main(src, dst):
         rows = np.where(alpha.max(axis=1) > 0)[0]
         top, bottom = int(rows[0]), int(rows[-1]) + 1
         art = img.crop((0, top, img.width, bottom))
-        sharp = f"{l['id']}.webp"; data = webp(art); (dst / sharp).write_bytes(data); sizes[sharp] = len(data)
+        sharp = f"{l['id']}.webp"; data = webp(art, lossy_ok=not l.get('lossless')); (dst / sharp).write_bytes(data); sizes[sharp] = len(data)
 
         # blur source: the artwork with 32 design px above and below; an opaque edge is extended, a transparent one stays clear
         a = np.asarray(art)
@@ -77,15 +77,23 @@ def main(src, dst):
         scene['layers'].append(entry)
 
     for s in layout['sprites']:
-        img = Image.open(src / f"{s['id']}.png").convert('RGBA')
-        name = f"{s['id']}.webp"; data = webp(img); (dst / name).write_bytes(data); sizes[name] = len(data)
+        name = f"{s.get('image', s['id'])}.webp"
+        if name not in sizes:
+            img = Image.open(src / f"{s.get('image', s['id'])}.png").convert('RGBA')
+            data = webp(img); (dst / name).write_bytes(data); sizes[name] = len(data)
+        w, h = s['size'] if isinstance(s['size'], list) else (s['size'], s['size'])
+        if 'motion' in s:
+            motion = dict(s['motion'])
+            if motion['type'] == 'swing': motion['secondsPerSwing'] = round(layout['loopSeconds'] / motion['cyclesPerLoop'], 6)
+        else:
+            motion = {'type': 'rotate', 'direction': s['direction'], 'turnsPerLoop': s['turnsPerLoop'],
+                      'secondsPerTurn': round(layout['loopSeconds'] / s['turnsPerLoop'], 6), 'phaseAtLoopStartDegrees': 0}
         scene['sprites'].append({
             'id': s['id'], 'image': name, 'parentLayer': s['parent'], 'drawAfterParent': True,
-            'sizeDesignPx': {'width': s['size'], 'height': s['size']}, 'textureScale': s['textureScale'],
+            'sizeDesignPx': {'width': w, 'height': h}, 'textureScale': s['textureScale'],
             'pivot': {'x': s['pivot'][0], 'y': s['pivot'][1]},
             'positions': [{'x': x, 'y': y} for x, y in s['positions']],
-            'motion': {'type': 'rotate', 'direction': s['direction'], 'turnsPerLoop': s['turnsPerLoop'],
-                       'secondsPerTurn': round(layout['loopSeconds'] / s['turnsPerLoop'], 6), 'phaseAtLoopStartDegrees': 0},
+            'motion': motion,
         })
     (dst / 'scene.json').write_text(json.dumps(scene, indent=2) + '\n')
     total = sum(sizes.values())
