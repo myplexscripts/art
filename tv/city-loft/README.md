@@ -3,11 +3,11 @@
 This is an original layered, looping background for the **Simple Home** Android TV launcher, inspired by the City Loft poster. Instead of looking out through the loft's window, the view pans slowly along a row of loft rooftops at blue hour.
 
 From front to back:
-- the rooftop, with potted plants, string lights, skylights and a water tower
-- brick warehouses with fire escapes, and an elevated road showing light trails
-- mid-town towers
-- a hazy far skyline
-- a dusty-rose horizon under a crescent moon, with two searchlights sweeping slowly behind the skyline
+- **Rooftop:** a vine-covered pergola with lights, a café table with a lantern, a lounger, planters, a bicycle, a lit stair door, a laundry line, a telescope, a cat, skylights, a water tower, and ivy hanging over the parapet.
+- **Lofts:** brick warehouses with cornices and dentils, arched windows with lamps and plants inside, fire escapes with stairs and ladders, a ghost sign, a rooftop greenhouse, and an elevated road on girders with lamps and light trails.
+- **Mid-town:** art-deco, glass and plain towers, with a neon blade sign, a lit billboard and aviation lights.
+- **Far skyline:** a hazy skyline with a suspension bridge strung with lights.
+- **Sky:** a dusty-rose horizon under a crescent moon with earthshine, with two searchlights sweeping slowly behind the skyline.
 
 The design size is 1920 × 1080, and the master loop runs for six minutes. The upper-right corner is clear sky for the clock: the searchlights never reach it. The bottom fifth is a plain brick parapet for the app row. With the launcher UI hidden, the scene still reads as complete.
 
@@ -28,10 +28,10 @@ Everything else (`preview.png`, `reference/`, `checks/`) is documentation.
 | --- | --- | --- | --- | --- |
 | sky | 0–1080, opaque | 1920 | 0 (stationary) | 0 |
 | — beam-left, beam-right | on the sky | — | — | slow swing |
-| clouds | 286–550 | 3840 | 1 | 10.67 |
+| clouds | 286–552 | 3840 | 1 | 10.67 |
 | far | 388–900 | 3840 | 2 | 21.33 |
-| mid | 456–901 | 3840 | 4 | 42.67 |
-| lofts | 554–900 | 3840 | 8 | 85.33 |
+| mid | 456–915 | 3840 | 4 | 42.67 |
+| lofts | 573–912 | 3840 | 8 | 85.33 |
 | rooftop | 562–1080, opaque at the bottom | 3840 | 12 | 128 |
 
 `scene.json` is authoritative. The table only summarises it.
@@ -73,10 +73,10 @@ Both beams use `beam.webp`, a 240 × 900 soft wedge, and belong to the `sky` lay
 ## Checks done before hand-off
 
 - **Seams:** two adjacent copies of every moving strip, sharp and blur, are in `checks/seams.png`. The colour step across each seam is within the strip's own column-to-column variation.
-- **Loop:** the frame at 6:00 is identical to the frame at 0:00. Frame-to-frame change was sampled every 3 s across the full loop at 60 fps. It stays between 0.49 and 0.69, including at the wrap, so the scroll has no jumps, pauses or speed changes.
+- **Loop:** the frame at 6:00 is identical to the frame at 0:00. Frame-to-frame change was sampled every 3 s across the full loop at 60 fps. It stays between 0.70 and 0.90, including at the wrap, so the scroll has no jumps, pauses or speed changes.
 - **Wrap clip:** `checks/wrap.mp4` is 10 seconds at 60 fps running through the loop point.
 - **Glass mock:** `checks/glass-mock.png` shows the dock and clock built from the blur layers.
 
 `reference/player.js` is a short renderer that follows these rules. `reference/index.html` plays the scene live when this folder is served over HTTP.
 
-Size: about 127 KB for all runtime WebP files.
+Size: about 204 KB for all runtime WebP files.

@@ -2,6 +2,16 @@
 
 This is an original layered, looping background for the **Simple Home** Android TV launcher. An electric night express crosses a stone viaduct below snowy peaks, under a pale moon. The view travels with the train, so the train holds its place while the country scrolls from right to left. The design size is 1920 × 1080, and the master loop runs for six minutes.
 
+Details include:
+- **Sky:** the Milky Way, and craters on the moon.
+- **Clouds:** banks with moonlit rims.
+- **Mountains:** two ranges with snow streaks and stippled shade.
+- **Forest ridge:** snow-tipped pines, a lit village with a church and street lamps, and a car's headlights on a mountain road.
+- **Valley:** a frozen lake under mist.
+- **Viaduct:** coursed stone, corbels, snowy ledges and icicles, lattice masts with insulators, and a signal lamp.
+- **Train:** passengers, curtains and reading lamps in the windows, doors, a two-tone livery stripe, sprung bogies, a driver in the cab, and two pantographs. Warm window light falls on the viaduct.
+- **Snowbank:** snow-capped shrubs, saplings and fence posts.
+
 The upper-right corner is clear sky for the clock. The bottom fifth is a quiet, low-contrast snowbank for the app row. With the launcher UI hidden, the scene still reads as complete.
 
 ## Runtime files
@@ -20,13 +30,13 @@ Everything else (`preview.png`, `reference/`, `checks/`) is documentation.
 | id | y range | strip width | repeats / loop | speed (design px/s) |
 | --- | --- | --- | --- | --- |
 | sky | 0–1080, opaque | 1920 | 0 (stationary) | 0 |
-| clouds | 306–436 | 3840 | 1 | 10.67 |
-| peaks | 381–750 | 3840 | 2 | 21.33 |
-| ridge | 503–1080, opaque at the bottom | 3840 | 5 | 53.33 |
-| viaduct | 548–1080 | 1920 | 30 | 160 |
-| train | 602–757 | 1920 | 0 (stationary) | 0 |
+| clouds | 257–459 | 3840 | 1 | 10.67 |
+| peaks | 331–760 | 3840 | 2 | 21.33 |
+| ridge | 493–1080, opaque at the bottom | 3840 | 5 | 53.33 |
+| viaduct | 546–1080 | 1920 | 30 | 160 |
+| train | 602–805 (includes the window light falling on the viaduct) | 1920 | 0 (stationary) | 0 |
 | — wheel sprites | on the train | — | — | 833 turns / loop |
-| snowbank | 811–1080, opaque at the bottom | 3840 | 20 | 213.33 |
+| snowbank | 800–1080, opaque at the bottom | 3840 | 20 | 213.33 |
 
 `scene.json` is authoritative. The table only summarises it.
 
@@ -63,10 +73,10 @@ Moving strips were blurred across their horizontal wrap, so the glass tiles with
 ## Checks done before hand-off
 
 - **Seams:** two adjacent copies of every moving strip, sharp and blur, are in `checks/seams.png`. The colour step across each seam is within the strip's own column-to-column variation.
-- **Loop:** the frame at 6:00 is identical to the frame at 0:00. Frame-to-frame change was sampled every 3 s across the full loop at 60 fps. It stays between 0.22 and 0.26, including at the wrap, so the scroll has no jumps, pauses or speed changes.
+- **Loop:** the frame at 6:00 is identical to the frame at 0:00. Frame-to-frame change was sampled every 3 s across the full loop at 60 fps. It stays between 0.57 and 0.64, including at the wrap, so the scroll has no jumps, pauses or speed changes.
 - **Wrap clip:** `checks/wrap.mp4` is 10 seconds at 60 fps running through the loop point.
 - **Glass mock:** `checks/glass-mock.png` shows the dock and clock built from the blur layers.
 
 `reference/player.js` is a 40-line renderer that follows these rules. `reference/index.html` plays the scene live when this folder is served over HTTP.
 
-Size: about 135 KB for all runtime WebP files.
+Size: about 232 KB for all runtime WebP files.

@@ -26,13 +26,13 @@
       "sharp": "clouds.webp",
       "blur": "clouds-blur.webp",
       "repeatWidth": 3840,
-      "top": 306,
-      "bottom": 436,
+      "top": 257,
+      "bottom": 459,
       "repeatsPerLoop": 1,
       "opaque": false,
       "blurCovers": {
-        "top": 274,
-        "bottom": 468
+        "top": 225,
+        "bottom": 491
       },
       "speedDesignPxPerSecond": 10.6667
     },
@@ -41,13 +41,13 @@
       "sharp": "peaks.webp",
       "blur": "peaks-blur.webp",
       "repeatWidth": 3840,
-      "top": 381,
-      "bottom": 750,
+      "top": 331,
+      "bottom": 760,
       "repeatsPerLoop": 2,
       "opaque": false,
       "blurCovers": {
-        "top": 349,
-        "bottom": 782
+        "top": 299,
+        "bottom": 792
       },
       "speedDesignPxPerSecond": 21.3333
     },
@@ -56,12 +56,12 @@
       "sharp": "ridge.webp",
       "blur": "ridge-blur.webp",
       "repeatWidth": 3840,
-      "top": 503,
+      "top": 493,
       "bottom": 1080,
       "repeatsPerLoop": 5,
       "opaque": false,
       "blurCovers": {
-        "top": 471,
+        "top": 461,
         "bottom": 1112
       },
       "speedDesignPxPerSecond": 53.3333
@@ -71,12 +71,12 @@
       "sharp": "viaduct.webp",
       "blur": "viaduct-blur.webp",
       "repeatWidth": 1920,
-      "top": 548,
+      "top": 546,
       "bottom": 1080,
       "repeatsPerLoop": 30,
       "opaque": false,
       "blurCovers": {
-        "top": 516,
+        "top": 514,
         "bottom": 1112
       },
       "speedDesignPxPerSecond": 160.0
@@ -87,12 +87,12 @@
       "blur": "train-blur.webp",
       "repeatWidth": 1920,
       "top": 602,
-      "bottom": 757,
+      "bottom": 805,
       "repeatsPerLoop": 0,
       "opaque": false,
       "blurCovers": {
         "top": 570,
-        "bottom": 789
+        "bottom": 837
       }
     },
     {
@@ -100,12 +100,12 @@
       "sharp": "snowbank.webp",
       "blur": "snowbank-blur.webp",
       "repeatWidth": 3840,
-      "top": 811,
+      "top": 800,
       "bottom": 1080,
       "repeatsPerLoop": 20,
       "opaque": false,
       "blurCovers": {
-        "top": 779,
+        "top": 768,
         "bottom": 1112
       },
       "speedDesignPxPerSecond": 213.3333

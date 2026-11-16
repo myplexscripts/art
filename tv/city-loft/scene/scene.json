@@ -27,12 +27,12 @@
       "blur": "clouds-blur.webp",
       "repeatWidth": 3840,
       "top": 286,
-      "bottom": 550,
+      "bottom": 552,
       "repeatsPerLoop": 1,
       "opaque": false,
       "blurCovers": {
         "top": 254,
-        "bottom": 582
+        "bottom": 584
       },
       "speedDesignPxPerSecond": 10.6667
     },
@@ -57,12 +57,12 @@
       "blur": "mid-blur.webp",
       "repeatWidth": 3840,
       "top": 456,
-      "bottom": 901,
+      "bottom": 915,
       "repeatsPerLoop": 4,
       "opaque": false,
       "blurCovers": {
         "top": 424,
-        "bottom": 933
+        "bottom": 947
       },
       "speedDesignPxPerSecond": 42.6667
     },
@@ -71,13 +71,13 @@
       "sharp": "lofts.webp",
       "blur": "lofts-blur.webp",
       "repeatWidth": 3840,
-      "top": 554,
-      "bottom": 900,
+      "top": 573,
+      "bottom": 912,
       "repeatsPerLoop": 8,
       "opaque": false,
       "blurCovers": {
-        "top": 522,
-        "bottom": 932
+        "top": 541,
+        "bottom": 944
       },
       "speedDesignPxPerSecond": 85.3333
     },
