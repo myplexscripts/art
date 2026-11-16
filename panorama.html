@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Desert Mesa Drift</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #1a1338; overflow: hidden; cursor: none; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+</style>
+</head>
+<body>
+<canvas></canvas>
+<script type="module">
+  // The Desert Mesa panorama, live: the plain drifts past forever, one six-minute loop after another.
+  import { make, paint } from './live/mesapano.js?v=20261019-after-hours-detail';
+  const canvas = document.querySelector('canvas'), ctx = canvas.getContext('2d');
+  let G = null;
+  const size = () => { const d = Math.min(2, devicePixelRatio); canvas.width = Math.round(innerWidth * d); canvas.height = Math.round(innerHeight * d); G = make(canvas.width, canvas.height); };
+  addEventListener('resize', size); size();
+  const frame = (now) => { paint(ctx, now / 1000, G); requestAnimationFrame(frame); };
+  requestAnimationFrame(frame);
+  navigator.wakeLock?.request('screen').catch(() => {});
+</script>
+</body>
+</html>

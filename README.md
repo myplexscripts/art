@@ -100,6 +100,21 @@ All **132 original WAVZ audio files** are included in `live/audio/` (about 553 M
 
 **Soft Arrival** is an original Scenes chime: three soft bell notes (D4, A4, D5) with a rounded attack and a warm reverberant tail. The 7.2-second [MP3](live/audio/scenes-chime.mp3) plays on focus completion; the [WAV master](live/audio/scenes-chime.wav) is also included. It uses synthesized tones and room reflections, with no third-party samples. To regenerate it, install NumPy and SciPy, make ffmpeg available, and run `python3 make-chime.py`.
 
+## Desert Mesa panorama
+
+[`panorama.html`](panorama.html) plays **Desert Mesa Drift**, an endless panoramic version of Desert Mesa made for a TV home-screen background. The plain slides from right to left with five depth layers. The far tableland moves about 11 design units a second and the foreground about 80. The moon, its halo and the stars stay put. Each layer is a repeating strip that travels a whole number of its own widths in six minutes. The wind pumps, grass, dust, twinkling stars, clouds, tumbleweeds, meteors and distant headlights also complete whole cycles in that time, so the six-minute loop has no seam. The panorama adds stone arches, telephone poles, a ranch fence, prickly pear, yucca and ocotillo to the original scene. [`live/mesapano.js`](live/mesapano.js) draws it in 1080-tall design units, so any width shows more plain rather than a stretched one.
+
+To record the loop as a video, install ffmpeg and run:
+
+```sh
+npm install --no-save @napi-rs/canvas
+node make-panorama.mjs --out mesa-panorama.mp4                         # 1920x1080, 60 fps, H.264
+node make-panorama.mjs --width 3840 --height 2160 --fps 30 --out mesa-panorama-4k.mp4
+node make-panorama.mjs --still mesa-panorama.png --width 3840 --height 2160
+```
+
+The video's last frame falls one step before the loop point, so a player set to repeat shows no seam.
+
 ## Snapshot and refresh
 
 `wavz-source.json` records the original asset URLs, retrieval time, sizes and SHA-256 hashes. `wavz-audio.json` records all audio URLs, sizes and hashes. Scene drawing code is copied as published. Hosting adaptations remove upstream Google Analytics, make URLs relative and use local audio.
