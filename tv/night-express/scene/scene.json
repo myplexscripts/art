@@ -1,0 +1,228 @@
+{
+  "name": "Night Express",
+  "designSize": {
+    "width": 1920,
+    "height": 1080
+  },
+  "loopDurationSeconds": 360,
+  "scrollDirection": "rightToLeft",
+  "layers": [
+    {
+      "id": "sky",
+      "sharp": "sky.webp",
+      "blur": "sky-blur.webp",
+      "repeatWidth": 1920,
+      "top": 0,
+      "bottom": 1080,
+      "repeatsPerLoop": 0,
+      "opaque": true,
+      "blurCovers": {
+        "top": -32,
+        "bottom": 1112
+      }
+    },
+    {
+      "id": "clouds",
+      "sharp": "clouds.webp",
+      "blur": "clouds-blur.webp",
+      "repeatWidth": 3840,
+      "top": 306,
+      "bottom": 436,
+      "repeatsPerLoop": 1,
+      "opaque": false,
+      "blurCovers": {
+        "top": 274,
+        "bottom": 468
+      },
+      "speedDesignPxPerSecond": 10.6667
+    },
+    {
+      "id": "peaks",
+      "sharp": "peaks.webp",
+      "blur": "peaks-blur.webp",
+      "repeatWidth": 3840,
+      "top": 381,
+      "bottom": 750,
+      "repeatsPerLoop": 2,
+      "opaque": false,
+      "blurCovers": {
+        "top": 349,
+        "bottom": 782
+      },
+      "speedDesignPxPerSecond": 21.3333
+    },
+    {
+      "id": "ridge",
+      "sharp": "ridge.webp",
+      "blur": "ridge-blur.webp",
+      "repeatWidth": 3840,
+      "top": 503,
+      "bottom": 1080,
+      "repeatsPerLoop": 5,
+      "opaque": false,
+      "blurCovers": {
+        "top": 471,
+        "bottom": 1112
+      },
+      "speedDesignPxPerSecond": 53.3333
+    },
+    {
+      "id": "viaduct",
+      "sharp": "viaduct.webp",
+      "blur": "viaduct-blur.webp",
+      "repeatWidth": 1920,
+      "top": 548,
+      "bottom": 1080,
+      "repeatsPerLoop": 30,
+      "opaque": false,
+      "blurCovers": {
+        "top": 516,
+        "bottom": 1112
+      },
+      "speedDesignPxPerSecond": 160.0
+    },
+    {
+      "id": "train",
+      "sharp": "train.webp",
+      "blur": "train-blur.webp",
+      "repeatWidth": 1920,
+      "top": 602,
+      "bottom": 757,
+      "repeatsPerLoop": 0,
+      "opaque": false,
+      "blurCovers": {
+        "top": 570,
+        "bottom": 789
+      }
+    },
+    {
+      "id": "snowbank",
+      "sharp": "snowbank.webp",
+      "blur": "snowbank-blur.webp",
+      "repeatWidth": 3840,
+      "top": 811,
+      "bottom": 1080,
+      "repeatsPerLoop": 20,
+      "opaque": false,
+      "blurCovers": {
+        "top": 779,
+        "bottom": 1112
+      },
+      "speedDesignPxPerSecond": 213.3333
+    }
+  ],
+  "sprites": [
+    {
+      "id": "wheel",
+      "image": "wheel.webp",
+      "parentLayer": "train",
+      "drawAfterParent": true,
+      "sizeDesignPx": {
+        "width": 26,
+        "height": 26
+      },
+      "textureScale": 2,
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "positions": [
+        {
+          "x": 45,
+          "y": 731
+        },
+        {
+          "x": 71,
+          "y": 731
+        },
+        {
+          "x": 259,
+          "y": 731
+        },
+        {
+          "x": 285,
+          "y": 731
+        },
+        {
+          "x": 363,
+          "y": 731
+        },
+        {
+          "x": 389,
+          "y": 731
+        },
+        {
+          "x": 577,
+          "y": 731
+        },
+        {
+          "x": 603,
+          "y": 731
+        },
+        {
+          "x": 681,
+          "y": 731
+        },
+        {
+          "x": 707,
+          "y": 731
+        },
+        {
+          "x": 895,
+          "y": 731
+        },
+        {
+          "x": 921,
+          "y": 731
+        },
+        {
+          "x": 999,
+          "y": 731
+        },
+        {
+          "x": 1025,
+          "y": 731
+        },
+        {
+          "x": 1213,
+          "y": 731
+        },
+        {
+          "x": 1239,
+          "y": 731
+        },
+        {
+          "x": 1320,
+          "y": 731
+        },
+        {
+          "x": 1346,
+          "y": 731
+        },
+        {
+          "x": 1372,
+          "y": 731
+        },
+        {
+          "x": 1500,
+          "y": 731
+        },
+        {
+          "x": 1526,
+          "y": 731
+        },
+        {
+          "x": 1552,
+          "y": 731
+        }
+      ],
+      "motion": {
+        "type": "rotate",
+        "direction": "clockwise",
+        "turnsPerLoop": 833,
+        "secondsPerTurn": 0.432173,
+        "phaseAtLoopStartDegrees": 0
+      }
+    }
+  ]
+}

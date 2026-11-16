@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Night Express</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #0b0f1c; overflow: hidden; }
+  canvas { position: absolute; inset: 0; margin: auto; max-width: 100vw; max-height: 100vh; aspect-ratio: 16 / 9; }
+  label { position: fixed; left: 12px; bottom: 10px; font: 14px system-ui, sans-serif; color: #9aa3bb; }
+</style>
+</head>
+<body>
+<canvas width="1920" height="1080"></canvas>
+<label><input type="checkbox" id="blur"> show blur layers</label>
+<script type="module">
+  // Plays the scene from scene.json and its WebP files with the reference renderer. Serve this folder over HTTP.
+  import { drawScene } from './player.js';
+  const base = new URL('./scene/', location.href), scene = await (await fetch(new URL('scene.json', base))).json();
+  const names = [...scene.layers.flatMap((l) => [l.sharp, l.blur]), ...scene.sprites.map((s) => s.image)];
+  const images = Object.fromEntries(await Promise.all(names.map(async (n) => [n, await createImageBitmap(await (await fetch(new URL(n, base))).blob())])));
+  const ctx = document.querySelector('canvas').getContext('2d'), blur = document.getElementById('blur');
+  const frame = (now) => { ctx.clearRect(0, 0, 1920, 1080); drawScene(ctx, scene, images, now / 1000, { blur: blur.checked }); requestAnimationFrame(frame); };
+  requestAnimationFrame(frame);
+</script>
+</body>
+</html>
